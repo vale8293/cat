@@ -5,10 +5,10 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
 
-    public boolean wDown = false;
-    public boolean aDown = false;
-    public boolean sDown = false;
-    public boolean dDown = false;
+    public static boolean wDown = false;
+    public static boolean aDown = false;
+    public static boolean sDown = false;
+    public static boolean dDown = false;
 
     @Override
     public void keyTyped(KeyEvent event) {}
