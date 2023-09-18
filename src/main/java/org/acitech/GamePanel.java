@@ -1,9 +1,11 @@
 package org.acitech;
 
+import org.acitech.entities.Enemy;
 import org.acitech.entities.Player;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -15,6 +17,7 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keys = new KeyHandler();
     Thread gameThread;
 
+    ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     Player player = new Player();
 
     public GamePanel() {
@@ -28,6 +31,11 @@ public class GamePanel extends JPanel implements Runnable {
     public void startGameThread() {
         gameThread = new Thread(this);
         gameThread.start();
+
+        // Initialize enemies
+        for (int i = 0; i < 10; i++) {
+            enemies.add(new Enemy(Math.random() * screenWidth, Math.random() * screenHeight));
+        }
     }
 
     @Override
@@ -52,12 +60,20 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update(double delta) {
+        for (Enemy enemy : enemies) {
+            enemy.tickEntity(delta);
+        }
+
         player.tickEntity(delta);
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D ctx = (Graphics2D) g;
+
+        for (Enemy enemy : enemies) {
+            enemy.draw(ctx);
+        }
 
         player.draw(ctx);
 
