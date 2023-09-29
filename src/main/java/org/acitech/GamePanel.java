@@ -11,20 +11,20 @@ public class GamePanel extends JPanel implements Runnable {
 
     final int screenWidth = 800;
     final int screenHeight = 600;
-    final int fps = 60;
-
+    public static final int fps = 60;
 
     KeyHandler keys = new KeyHandler();
     Thread gameThread;
 
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-    Player player = new Player();
+    public static Player player = new Player();
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
         this.addKeyListener(keys);
+        this.addMouseListener(keys);
         this.setFocusable(true);
     }
 
@@ -33,7 +33,7 @@ public class GamePanel extends JPanel implements Runnable {
         gameThread.start();
 
         // Initialize enemies
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10_000; i++) {
             enemies.add(new Enemy(Math.random() * screenWidth, Math.random() * screenHeight));
         }
     }
@@ -65,6 +65,8 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         player.tickEntity(delta);
+
+        KeyHandler.mouseClicks.clear();
     }
 
     public void paintComponent(Graphics g) {
