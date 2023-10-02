@@ -1,6 +1,7 @@
 package org.acitech;
 
 import org.acitech.entities.Enemy;
+import org.acitech.entities.Entity;
 import org.acitech.entities.Player;
 
 import javax.swing.*;
@@ -11,30 +12,34 @@ public class GamePanel extends JPanel implements Runnable {
 
     final int screenWidth = 800;
     final int screenHeight = 600;
-    public static final int fps = 60;
+    final int fps = 60;
 
     KeyHandler keys = new KeyHandler();
     Thread gameThread;
 
-    ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+    ArrayList<Entity> entities = new ArrayList<Entity>();
     public static Player player = new Player();
 
     public GamePanel() {
+        // Configure the JPanel
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
+        this.setFocusable(true);
+
+        // Register keyboard and mouse listeners
         this.addKeyListener(keys);
         this.addMouseListener(keys);
-        this.setFocusable(true);
     }
 
     public void startGameThread() {
+        // Create and start the game loop thread
         gameThread = new Thread(this);
         gameThread.start();
 
-        // Initialize enemies
-        for (int i = 0; i < 10_000; i++) {
-            enemies.add(new Enemy(Math.random() * screenWidth, Math.random() * screenHeight));
+        // Create 1,000 enemies for no reason ¯\_(ツ)_/¯
+        for (int i = 0; i < 1_000; i++) {
+            entities.add(new Enemy(Math.random() * screenWidth, Math.random() * screenHeight));
         }
     }
 
@@ -60,12 +65,15 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update(double delta) {
-        for (Enemy enemy : enemies) {
-            enemy.tickEntity(delta);
+        // Loop through each entity and tick them
+        for (Entity entity : entities) {
+            entity.tickEntity(delta);
         }
 
+        // Tick the player
         player.tickEntity(delta);
 
+        // Clear the list of mouse clicks
         KeyHandler.mouseClicks.clear();
     }
 
@@ -73,10 +81,12 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D ctx = (Graphics2D) g;
 
-        for (Enemy enemy : enemies) {
-            enemy.draw(ctx);
+        // Loop through each entity and draw them
+        for (Entity entity : entities) {
+            entity.draw(ctx);
         }
 
+        // Draw the player
         player.draw(ctx);
 
         ctx.dispose();

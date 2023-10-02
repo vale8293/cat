@@ -13,6 +13,7 @@ public class ResourceLoader {
     private HashMap<String, String> soundMap = new HashMap<>();
 
     public boolean load() {
+        // Load hardcoded assets and return the result of loading them
         return loadTexture("cow", "cow.png") &&
                 loadTexture("scratch", "effect/scratch.png") &&
                 loadSpriteSheet("player/running", "player/running.png", 32, 32) &&

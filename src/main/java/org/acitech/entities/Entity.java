@@ -12,6 +12,7 @@ abstract public class Entity {
     protected double friction;
 
     Entity() {
+        // Initialize the variables
         this.position = new Vector2D(0, 0);
         this.velocity = new Vector2D(0, 0);
         this.acceleration = new Vector2D(0, 0);
@@ -19,8 +20,10 @@ abstract public class Entity {
     }
 
     public void tickEntity(double delta) {
+        // Execute the tick implementation of the entity
         this.tick(delta);
 
+        // Calculate the updated velocity and new position
         this.velocity = this.velocity.add(this.acceleration);
         this.acceleration = new Vector2D(0, 0);
         this.velocity = this.velocity.scalarMultiply(this.friction);
