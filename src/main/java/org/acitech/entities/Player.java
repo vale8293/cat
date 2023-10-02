@@ -1,6 +1,5 @@
 package org.acitech.entities;
 
-import org.acitech.GamePanel;
 import org.acitech.KeyHandler;
 import org.acitech.Main;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
@@ -8,7 +7,6 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.InputStream;
 
 public class Player extends Entity {
 

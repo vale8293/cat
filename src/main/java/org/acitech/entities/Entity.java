@@ -3,7 +3,6 @@ package org.acitech.entities;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import java.awt.*;
-import java.util.Vector;
 
 abstract public class Entity {
 
