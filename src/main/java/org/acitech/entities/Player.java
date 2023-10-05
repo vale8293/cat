@@ -1,5 +1,6 @@
 package org.acitech.entities;
 
+import org.acitech.GamePanel;
 import org.acitech.KeyHandler;
 import org.acitech.Main;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
@@ -11,9 +12,15 @@ import java.awt.image.BufferedImage;
 public class Player extends Entity {
 
     private int animationTick = 0;
+    private int width = 64 * 3;
+    private int height = 64 * 3;
 
     public Player() {
         this.friction = 0.9;
+    }
+
+    public Vector2D getCenterPosition() {
+        return new Vector2D(this.position.getX() + (double) width / 2d, this.position.getY() + (double) height / 2d);
     }
 
     @Override
@@ -35,6 +42,14 @@ public class Player extends Entity {
             clip.setFramePosition(0);
             clip.loop(0);
             clip.start();
+
+            Vector2D centerVec = getCenterPosition();
+
+            for (KeyHandler.Click click : KeyHandler.mouseClicks) {
+                double angle = Math.atan2(centerVec.getY() - click.getY(), centerVec.getX() - click.getX());
+
+                GamePanel.entities.add(new Scratch((int) centerVec.getX(), (int) centerVec.getY(), 150, angle));
+            }
         }
     }
 
@@ -80,6 +95,6 @@ public class Player extends Entity {
             }
         }
 
-        ctx.drawImage(texture, (int) Math.round(this.position.getX()), (int) Math.round(this.position.getY()), 64 * 3, 64 * 3, Main.getGamePanel());
+        ctx.drawImage(texture, (int) Math.round(this.position.getX()), (int) Math.round(this.position.getY()), width, height, Main.getGamePanel());
     }
 }

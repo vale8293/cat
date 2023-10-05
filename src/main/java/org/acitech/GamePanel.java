@@ -17,7 +17,7 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keys = new KeyHandler();
     Thread gameThread;
 
-    ArrayList<Entity> entities = new ArrayList<Entity>();
+    public static ArrayList<Entity> entities = new ArrayList<Entity>();
     public static Player player = new Player();
 
     public GamePanel() {
@@ -65,13 +65,25 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update(double delta) {
+        ArrayList<Entity> disposedEntities = new ArrayList<Entity>();
+
         // Loop through each entity and tick them
         for (Entity entity : entities) {
             entity.tickEntity(delta);
+
+            // Check if entity is disposed and add them to a list
+            if (entity.isDisposed()) {
+                disposedEntities.add(entity);
+            }
         }
 
         // Tick the player
         player.tickEntity(delta);
+
+        // Loop through each disposed entity and remove them
+        for (Entity entity : disposedEntities) {
+            entities.remove(entity);
+        }
 
         // Clear the list of mouse clicks
         KeyHandler.mouseClicks.clear();

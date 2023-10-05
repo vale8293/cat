@@ -17,6 +17,7 @@ public class ResourceLoader {
         return loadTexture("cow", "cow.png") &&
                 loadTexture("scratch", "effect/scratch.png") &&
                 loadSpriteSheet("player/running", "player/running.png", 32, 32) &&
+                loadSpriteSheet("player/scratch", "player/scratch.png", 32, 32) &&
                 loadSound("player_scratch", "player/scratch.wav");
     }
 

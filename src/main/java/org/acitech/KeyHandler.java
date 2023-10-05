@@ -78,7 +78,7 @@ public class KeyHandler implements KeyListener, MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {}
 
-    private class Click {
+    public class Click {
         private final int x;
         private final int y;
         private final int button;

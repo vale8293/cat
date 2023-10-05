@@ -10,6 +10,7 @@ abstract public class Entity {
     protected Vector2D velocity;
     protected Vector2D acceleration;
     protected double friction;
+    protected boolean disposed = false;
 
     Entity() {
         // Initialize the variables
@@ -33,4 +34,10 @@ abstract public class Entity {
     abstract protected void tick(double delta);
     abstract public void draw(Graphics2D ctx);
 
+    public void dispose() {
+        this.disposed = true;
+    }
+    public boolean isDisposed() {
+        return disposed;
+    }
 }
