@@ -12,15 +12,11 @@ import java.awt.image.BufferedImage;
 public class Player extends Entity {
 
     private int animationTick = 0;
-    private int width = 64 * 3;
-    private int height = 64 * 3;
+    private int width = 160;
+    private int height = 160;
 
     public Player() {
         this.friction = 0.9;
-    }
-
-    public Vector2D getCenterPosition() {
-        return new Vector2D(this.position.getX() + (double) width / 2d, this.position.getY() + (double) height / 2d);
     }
 
     @Override
@@ -43,12 +39,10 @@ public class Player extends Entity {
             clip.loop(0);
             clip.start();
 
-            Vector2D centerVec = getCenterPosition();
-
             for (KeyHandler.Click click : KeyHandler.mouseClicks) {
-                double angle = Math.atan2(centerVec.getY() - click.getY(), centerVec.getX() - click.getX());
+                double angle = Math.atan2(this.position.getY() - click.getY(), this.position.getX() - click.getX());
 
-                GamePanel.entities.add(new Scratch((int) centerVec.getX(), (int) centerVec.getY(), 150, angle));
+                GamePanel.entities.add(new Scratch((int) this.position.getX(), (int) this.position.getY(), 150, angle));
             }
         }
     }
@@ -95,6 +89,6 @@ public class Player extends Entity {
             }
         }
 
-        ctx.drawImage(texture, (int) Math.round(this.position.getX()), (int) Math.round(this.position.getY()), width, height, Main.getGamePanel());
+        ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
     }
 }

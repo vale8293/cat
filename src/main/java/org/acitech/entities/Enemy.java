@@ -15,18 +15,15 @@ public class Enemy extends Entity {
         this.friction = 0.9;
     }
 
-    public Vector2D getCenterPosition() {
-        return new Vector2D(this.position.getX() + (double) width / 2d, this.position.getY() + (double) height / 2d);
-    }
-
     @Override
     protected void tick(double delta) {
-        Vector2D centerVec = GamePanel.player.getCenterPosition();
+        Vector2D playerPos = GamePanel.player.position;
 
-        double angle = Math.atan2(centerVec.getY() - this.getCenterPosition().getY(), centerVec.getX() - this.getCenterPosition().getX());
+        // Gets the angle between the player and the enemy
+        double angle = Math.atan2(playerPos.getY() - this.position.getY(), playerPos.getX() - this.position.getX());
         double x = Math.cos(angle) * 0.5;
         double y = Math.sin(angle) * 0.5;
-        if (this.position.distance(centerVec) < 100) {
+        if (this.position.distance(playerPos) < 112) {
             x *= -1;
             y *= -1;
         }
@@ -36,6 +33,6 @@ public class Enemy extends Entity {
     @Override
     public void draw(Graphics2D ctx) {
         ctx.setColor(Color.red);
-        ctx.fillRect((int) this.position.getX() - height / 2, (int) this.position.getY() - height / 2, width, height);
+        ctx.fillRect((int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height);
     }
 }
