@@ -38,7 +38,7 @@ public class Scratch extends Entity {
 
     @Override
     public void draw(Graphics2D ctx) {
-        BufferedImage texture = Main.getResources().getTexture("player/scratch/" + (animationTick / 3) + ":0");
+        BufferedImage texture = Main.getResources().getTexture("effect/scratch/" + (animationTick / 3) + ":0");
 
         // TODO: angle the texture
 
