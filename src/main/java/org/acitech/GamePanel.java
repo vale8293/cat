@@ -1,7 +1,12 @@
 package org.acitech;
 
+import org.acitech.entities.Enemy;
+import org.acitech.entities.Entity;
+import org.acitech.entities.Player;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -12,20 +17,30 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keys = new KeyHandler();
     Thread gameThread;
 
-    int squareX = 0;
-    int squareY = 0;
+    public static ArrayList<Entity> entities = new ArrayList<Entity>();
+    public static Player player = new Player();
 
     public GamePanel() {
+        // Configure the JPanel
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
-        this.addKeyListener(keys);
         this.setFocusable(true);
+
+        // Register keyboard and mouse listeners
+        this.addKeyListener(keys);
+        this.addMouseListener(keys);
     }
 
     public void startGameThread() {
+        // Create and start the game loop thread
         gameThread = new Thread(this);
         gameThread.start();
+
+        // Create 1,000 enemies for no reason ¯\_(ツ)_/¯
+        for (int i = 0; i < 1_000; i++) {
+            entities.add(new Enemy(Math.random() * screenWidth, Math.random() * screenHeight));
+        }
     }
 
     @Override
@@ -50,26 +65,41 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update(double delta) {
-        if (keys.wDown) {
-            squareY -= 5;
+        ArrayList<Entity> disposedEntities = new ArrayList<Entity>();
+
+        // Loop through each entity and tick them
+        for (Entity entity : entities) {
+            entity.tickEntity(delta);
+
+            // Check if entity is disposed and add them to a list
+            if (entity.isDisposed()) {
+                disposedEntities.add(entity);
+            }
         }
-        if (keys.aDown) {
-            squareX -= 5;
+
+        // Tick the player
+        player.tickEntity(delta);
+
+        // Loop through each disposed entity and remove them
+        for (Entity entity : disposedEntities) {
+            entities.remove(entity);
         }
-        if (keys.sDown) {
-            squareY += 5;
-        }
-        if (keys.dDown) {
-            squareX += 5;
-        }
+
+        // Clear the list of mouse clicks
+        KeyHandler.mouseClicks.clear();
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D ctx = (Graphics2D) g;
 
-        ctx.setColor(Color.white);
-        ctx.fillRect(squareX, squareY, 32 * 2, 32 * 2);
+        // Loop through each entity and draw them
+        for (Entity entity : entities) {
+            entity.draw(ctx);
+        }
+
+        // Draw the player
+        player.draw(ctx);
 
         ctx.dispose();
     }
