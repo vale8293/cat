@@ -18,7 +18,10 @@ public class ResourceLoader {
                 loadTexture("scratch", "effect/scratch.png") &&
                 loadSpriteSheet("player/running", "player/running.png", 32, 32) &&
                 loadSpriteSheet("effect/scratch", "effect/scratch.png", 32, 32) &&
-                loadSound("player_scratch", "player/scratch.wav");
+                loadSound("player_scratch", "player/scratch.wav") &&
+                loadSpriteSheet("ui/hearts", "ui/hearts.png", 18, 16) &&
+                loadSpriteSheet("ui/mana", "ui/mana.png", 13, 13) &&
+                loadSpriteSheet("ui/numbers", "ui/numbers.png", 3, 5);
     }
 
     private boolean loadTexture(String key, String path) {

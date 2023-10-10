@@ -19,6 +19,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public static ArrayList<Entity> entities = new ArrayList<Entity>();
     public static Player player = new Player();
+    public static UI ui = new UI();
 
     public GamePanel() {
         // Configure the JPanel
@@ -98,8 +99,9 @@ public class GamePanel extends JPanel implements Runnable {
             entity.draw(ctx);
         }
 
-        // Draw the player
+        // Draw the player & ui
         player.draw(ctx);
+        ui.draw(ctx);
 
         ctx.dispose();
     }
