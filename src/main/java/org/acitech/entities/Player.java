@@ -36,6 +36,10 @@ public class Player extends Entity {
         if (KeyHandler.dDown) {
             this.acceleration = this.acceleration.add(new Vector2D(.5, 0));
         }
+        if (KeyHandler.zDown) {
+            this.health -= 1;
+        }
+
         if (KeyHandler.mouseClicks.size() > 0) {
             Clip clip = Main.getResources().getSound("player_scratch");
             clip.setFramePosition(0);
@@ -45,7 +49,7 @@ public class Player extends Entity {
             for (KeyHandler.Click click : KeyHandler.mouseClicks) {
                 double angle = Math.atan2(this.position.getY() - click.getY(), this.position.getX() - click.getX());
 
-                GamePanel.entities.add(new Scratch((int) this.position.getX(), (int) this.position.getY(), 150, angle));
+                GamePanel.entities.add(new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle));
             }
         }
     }
