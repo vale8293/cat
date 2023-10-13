@@ -14,10 +14,10 @@ public class Player extends Entity {
     private int animationTick = 0;
     private int width = 160;
     private int height = 160;
-    public int maxHealth = 14;
-    public int health = 14;
-    public int maxMana = 24;
-    public int mana = 24;
+    public int maxHealth = 6;
+    public int health = 6;
+    public int maxMana = 6;
+    public int mana = 6;
     public Player() {
         this.friction = 0.9;
     }

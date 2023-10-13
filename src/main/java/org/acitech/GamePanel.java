@@ -2,6 +2,7 @@ package org.acitech;
 
 import org.acitech.entities.Enemy;
 import org.acitech.entities.Entity;
+import org.acitech.entities.Item;
 import org.acitech.entities.Player;
 
 import javax.swing.*;
@@ -24,6 +25,7 @@ public class GamePanel extends JPanel implements Runnable {
     public GamePanel() {
         // Configure the JPanel
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+        this.setMinimumSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
         this.setFocusable(true);
@@ -38,9 +40,14 @@ public class GamePanel extends JPanel implements Runnable {
         gameThread = new Thread(this);
         gameThread.start();
 
-        // Create 1,000 enemies for no reason ¯\_(ツ)_/¯
-        for (int i = 0; i < 1_000; i++) {
+        // Create 10 enemies for no reason ¯\_(ツ)_/¯
+        for (int i = 0; i < 10; i++) {
             entities.add(new Enemy(Math.random() * screenWidth, Math.random() * screenHeight));
+        }
+
+        // Create 10 items for no reason ¯\_(ツ)_/¯
+        for (int i = 0; i < 10; i++) {
+            entities.add(new Item(Math.random() * screenWidth, Math.random() * screenHeight));
         }
     }
 
