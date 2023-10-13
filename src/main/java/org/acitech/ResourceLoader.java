@@ -18,10 +18,11 @@ public class ResourceLoader {
                 loadTexture("scratch", "effect/scratch.png") &&
                 loadSpriteSheet("player/running", "player/running.png", 32, 32) &&
                 loadSpriteSheet("effect/scratch", "effect/scratch.png", 32, 32) &&
-                loadSound("player_scratch", "player/scratch.wav");
+                loadSound("player_scratch", "player/scratch.wav") &&
+                loadSpriteSheet("environment/grass", "environment/grass.png", 32, 32);
     }
 
-    private boolean loadTexture(String key, String path) {
+    public boolean loadTexture(String key, String path) {
         try {
             InputStream is = getClass().getResourceAsStream("/textures/" + path);
             assert is != null;
@@ -34,7 +35,7 @@ public class ResourceLoader {
         }
     }
 
-    private boolean loadSpriteSheet(String key, String path, int width, int height) {
+    public boolean loadSpriteSheet(String key, String path, int width, int height) {
         if (!loadTexture(key, path)) return false;
 
         BufferedImage sheet = textures.get(key);
@@ -54,7 +55,7 @@ public class ResourceLoader {
         return true;
     }
 
-    private boolean loadSound(String key, String path) {
+    public boolean loadSound(String key, String path) {
         InputStream is = getClass().getResourceAsStream("/sounds/" + path);
         if (is == null) return false;
         soundMap.put(key, "/sounds/" + path);

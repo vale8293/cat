@@ -7,6 +7,7 @@ import org.acitech.entities.Player;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -19,6 +20,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     public static ArrayList<Entity> entities = new ArrayList<Entity>();
     public static Player player = new Player();
+    public static HashMap<String, Room> rooms = new HashMap<>();
+    public static String currentRoom = null;
 
     public GamePanel() {
         // Configure the JPanel
@@ -37,10 +40,23 @@ public class GamePanel extends JPanel implements Runnable {
         gameThread = new Thread(this);
         gameThread.start();
 
+        // Create a room
+        currentRoom = "default";
+        Room room = new Room(10, 10);
+        for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 10; y++) {
+                if (Math.random() > 0.5) continue;
+
+                room.setTile(x, y, Tile.grass);
+            }
+        }
+        rooms.put(currentRoom, room);
+
         // Create 1,000 enemies for no reason ¯\_(ツ)_/¯
         for (int i = 0; i < 1_000; i++) {
             entities.add(new Enemy(Math.random() * screenWidth, Math.random() * screenHeight));
         }
+
     }
 
     @Override
@@ -92,6 +108,9 @@ public class GamePanel extends JPanel implements Runnable {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D ctx = (Graphics2D) g;
+
+        // Draw the current room
+        rooms.get(currentRoom).draw(ctx);
 
         // Loop through each entity and draw them
         for (Entity entity : entities) {
