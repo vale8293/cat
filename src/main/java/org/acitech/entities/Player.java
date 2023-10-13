@@ -14,7 +14,10 @@ public class Player extends Entity {
     private int animationTick = 0;
     private int width = 160;
     private int height = 160;
-
+    public int maxHealth = 6;
+    public int health = 6;
+    public int maxMana = 6;
+    public int mana = 6;
     public Player() {
         this.friction = 0.9;
     }
@@ -33,6 +36,13 @@ public class Player extends Entity {
         if (KeyHandler.dDown) {
             this.acceleration = this.acceleration.add(new Vector2D(.5, 0));
         }
+        if (KeyHandler.zDown) {
+            this.health -= 1;
+        }
+        if (KeyHandler.xDown) {
+            this.mana -= 1;
+        }
+
         if (KeyHandler.mouseClicks.size() > 0) {
             Clip clip = Main.getResources().getSound("player_scratch");
             clip.setFramePosition(0);
@@ -42,7 +52,7 @@ public class Player extends Entity {
             for (KeyHandler.Click click : KeyHandler.mouseClicks) {
                 double angle = Math.atan2(this.position.getY() - click.getY(), this.position.getX() - click.getX());
 
-                GamePanel.entities.add(new Scratch((int) this.position.getX(), (int) this.position.getY(), 150, angle));
+                GamePanel.entities.add(new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle));
             }
         }
     }

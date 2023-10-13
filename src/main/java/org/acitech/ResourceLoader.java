@@ -16,9 +16,13 @@ public class ResourceLoader {
         // Load hardcoded assets and return the result of loading them
         return loadTexture("cow", "cow.png") &&
                 loadTexture("scratch", "effect/scratch.png") &&
+                loadTexture("ui/inv_bar_default", "ui/inv_bar_default.png") &&
                 loadSpriteSheet("player/running", "player/running.png", 32, 32) &&
                 loadSpriteSheet("effect/scratch", "effect/scratch.png", 32, 32) &&
                 loadSound("player_scratch", "player/scratch.wav") &&
+                loadSpriteSheet("ui/hearts", "ui/hearts.png", 18, 16) &&
+                loadSpriteSheet("ui/mana", "ui/mana.png", 13, 13) &&
+                loadSpriteSheet("ui/numbers", "ui/numbers.png", 3, 5) &&
                 loadSpriteSheet("environment/grass", "environment/grass.png", 32, 32);
     }
 
