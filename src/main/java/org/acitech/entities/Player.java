@@ -61,14 +61,14 @@ public class Player extends Entity {
     public void draw(Graphics2D ctx) {
         BufferedImage texture = Main.getResources().getTexture("cow");
 
-        int e = 4;
         animationTick += 1;
-        animationTick = animationTick % (6 * e);
-        int aniFrame = animationTick / e;
+        animationTick = animationTick % 24;
+        int aniFrame = animationTick / 4;
 
         double largest = 0;
         String direction = null;
 
+        // Check which direction is the largest
         if (Math.abs(this.velocity.getX()) > largest) {
             largest = Math.abs(this.velocity.getX());
             direction = this.velocity.getX() > 0 ? "right" : "left";
@@ -78,6 +78,7 @@ public class Player extends Entity {
             direction = this.velocity.getY() > 0 ? "down" : "up";
         }
 
+        // If the player is moving enough, draw the sprite in the direction that movement is
         if (largest > 1.125) {
             switch (direction) {
                 case "up": {

@@ -18,6 +18,7 @@ public class ResourceLoader {
                 loadTexture("scratch", "effect/scratch.png") &&
                 loadTexture("ui/inv_bar_default", "ui/inv_bar_default.png") &&
                 loadSpriteSheet("player/running", "player/running.png", 32, 32) &&
+                loadSpriteSheet("enemies/Rico", "enemies/Rico.png", 32, 32) &&
                 loadSpriteSheet("effect/scratch", "effect/scratch.png", 32, 32) &&
                 loadSpriteSheet("environment/grass", "environment/grass.png", 32, 32) &&
                 loadSound("player_scratch", "player/scratch.wav") &&

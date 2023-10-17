@@ -1,9 +1,6 @@
 package org.acitech;
 
-import org.acitech.entities.Enemy;
-import org.acitech.entities.Entity;
-import org.acitech.entities.Item;
-import org.acitech.entities.Player;
+import org.acitech.entities.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -58,6 +55,11 @@ public class GamePanel extends JPanel implements Runnable {
         // Create 10 enemies for no reason ¯\_(ツ)_/¯
         for (int i = 0; i < 10; i++) {
             entities.add(new Enemy(Math.random() * screenWidth, Math.random() * screenHeight));
+        }
+
+        // Create 1 Rico for reason ¯\_(ツ)_/¯
+        for (int i = 0; i < 10; i++) {
+            entities.add(new Rico(Math.random() * screenWidth, Math.random() * screenHeight));
         }
 
         // Create 10 items for no reason ¯\_(ツ)_/¯
