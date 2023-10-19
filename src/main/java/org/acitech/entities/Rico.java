@@ -12,7 +12,6 @@ public class Rico extends Entity {
     private int animationTick = 0;
     private int width = 160;
     private int height = 160;
-    private String facing = "left";
     public int maxHealth = 6;
     public int health = 6;
 
@@ -34,50 +33,42 @@ public class Rico extends Entity {
         }
     }
 
-        @Override
-        public void draw(Graphics2D ctx) {
-            BufferedImage texture = Main.getResources().getTexture("enemies/Rico/:" + "Placeholder");
+    @Override
+    public void draw(Graphics2D ctx) {
+        BufferedImage texture = Main.getResources().getTexture("enemies/Rico/:" + "Placeholder");
 
-            animationTick += 1;
-            animationTick = animationTick % 24;
-            int aniFrame = animationTick / 4;
+        animationTick += 1;
+        animationTick = animationTick % 24;
+        int aniFrame = animationTick / 4;
 
-            double largest = 0;
-            String direction = null;
+        double largest = 0;
+        String direction = null;
 
-            // Check which direction is the largest
-            if (Math.abs(this.velocity.getX()) > largest) {
-                largest = Math.abs(this.velocity.getX());
-                direction = this.velocity.getX() > 0 ? "right" : "left";
-                facing = direction;
-            }
-            if (Math.abs(this.velocity.getY()) > largest) {
-                largest = Math.abs(this.velocity.getY());
-                direction = this.velocity.getY() > 0 ? "up" : "down";
-            }
-
-            // If rico is moving enough, draw the sprite in the direction that movement is
-            if (largest > 1.125) {
-                switch (direction) {
-                    case "left": {
-                        texture = Main.getResources().getTexture("enemies/Rico/" + aniFrame + ":0");
-                        break;
-                    }
-                    case "right": {
-                        texture = Main.getResources().getTexture("enemies/Rico/" + aniFrame + ":1");
-                        break;
-                    }
-//                    case "moving": {
-//                        texture
-//                    }
-                }
-            }
-
-            else {
-                    texture = Main.getResources().getTexture("enemies/Rico/" + aniFrame + ":2");
-                }
-
-            ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
+        // Check which direction is the largest
+        if (Math.abs(this.velocity.getX()) > largest) {
+            largest = Math.abs(this.velocity.getX());
+            direction = this.velocity.getX() > 0 ? "right" : "left";
         }
+
+        // If rico is moving enough, draw the sprite in the direction that movement is
+        if (largest > 0.125) {
+            switch (direction) {
+                case "left": {
+                    texture = Main.getResources().getTexture("enemies/Rico/" + aniFrame + ":0");
+                    break;
+                }
+                case "right": {
+                    texture = Main.getResources().getTexture("enemies/Rico/" + aniFrame + ":1");
+                    break;
+                }
+                default:
+                    texture = Main.getResources().getTexture("enemies/Rico/" + aniFrame + ":0");
+            }
+        } else {
+            texture = Main.getResources().getTexture("enemies/Rico/" + aniFrame + ":2");
+        }
+
+        ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
+    }
 
 }
