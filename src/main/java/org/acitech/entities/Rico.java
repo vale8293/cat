@@ -6,6 +6,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class Rico extends Entity {
 
@@ -30,6 +31,21 @@ public class Rico extends Entity {
         double y = Math.sin(angle) * 0.5;
         if (this.position.distance(playerPos) < 400) {
             this.acceleration = new Vector2D(x, y);
+        }
+
+        // PIZZA
+        for (Entity entity : GamePanel.entities) {
+            if (!(entity instanceof Scratch)) continue;
+
+            Scratch scratch = (Scratch) entity;
+            double dist = scratch.position.distance(this.position);
+            double rot = scratch.angle; // SHUT IT DOWN!
+
+//            if (dist < 30) {
+//                this.velocity = new ;
+//                this.health -= 1;
+//                System.out.println(this.health);
+//            }
         }
     }
 
@@ -70,5 +86,6 @@ public class Rico extends Entity {
 
         ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
     }
+
 
 }

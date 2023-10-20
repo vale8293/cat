@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 
 public class Scratch extends Entity {
 
-    private final double angle;
+    public final double angle;
     private final Vector2D originPosition;
     private final int distance;
     private int animationTick = 0;
@@ -39,8 +39,6 @@ public class Scratch extends Entity {
     @Override
     public void draw(Graphics2D ctx) {
         BufferedImage texture = Main.getResources().getTexture("effect/scratch/" + (animationTick / 3) + ":0");
-
-        // TODO: angle the texture
 
         AffineTransform oldXForm = ctx.getTransform();
 
