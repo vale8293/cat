@@ -15,9 +15,9 @@ public class Player extends Entity {
     private int width = 160;
     private int height = 160;
     public int maxHealth = 6;
-    public int health = 6;
+    public int health = maxHealth;
     public int maxMana = 6;
-    public int mana = 6;
+    public int mana = maxMana;
     public Player() {
         this.friction = 0.9;
     }

@@ -6,7 +6,6 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 public class Rico extends Entity {
 
@@ -14,7 +13,8 @@ public class Rico extends Entity {
     private int width = 160;
     private int height = 160;
     public int maxHealth = 6;
-    public int health = 6;
+    public int health = maxHealth;
+    public int immunity = 20;
 
     public Rico(double startX, double startY) {
         this.position = new Vector2D(startX, startY);
@@ -41,17 +41,27 @@ public class Rico extends Entity {
             double dist = scratch.position.distance(this.position);
             double rot = scratch.angle; // SHUT IT DOWN!
 
-//            if (dist < 30) {
-//                this.velocity = new ;
-//                this.health -= 1;
-//                System.out.println(this.health);
-//            }
+            if (dist < 50) {
+                if (this.immunity == 0) {
+                    this.velocity = new Vector2D(-20 * x, -20 * y);
+                    this.health -= 1;
+                    this.immunity = 20;
+                }
+
+                if (this.immunity > 0) {
+                    this.immunity -= 1;
+                }
+            }
+        }
+
+        if (this.health <= 0) {
+            this.dispose();
         }
     }
 
     @Override
     public void draw(Graphics2D ctx) {
-        BufferedImage texture = Main.getResources().getTexture("enemies/Rico/:" + "Placeholder");
+        BufferedImage texture = Main.getResources().getTexture("enemies/Rico/:" + "0");
 
         animationTick += 1;
         animationTick = animationTick % 24;
@@ -84,8 +94,17 @@ public class Rico extends Entity {
             texture = Main.getResources().getTexture("enemies/Rico/" + aniFrame + ":2");
         }
 
+//        ctx.setColor(Color.getHSBColor(1, 100, 200));
         ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
     }
 
-
-}
+//    public BufferedImage werwer(BufferedImage image) {
+//        for (int x = 0; x < image.getWidth(); x++) {
+//            for (int y = 0; y < image.getHeight(); y++) {
+//                int e = image.getRGB(x, y);
+//                e += 10;
+//                image.setRGB(x, y, e);
+//            }
+//        }
+//        return image;
+    }

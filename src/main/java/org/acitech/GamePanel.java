@@ -58,7 +58,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         // Create 1 Rico for reason ¯\_(ツ)_/¯
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1; i++) {
             entities.add(new Rico(Math.random() * screenWidth, Math.random() * screenHeight));
         }
 
