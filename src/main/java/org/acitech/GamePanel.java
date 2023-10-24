@@ -1,6 +1,7 @@
 package org.acitech;
 
 import org.acitech.entities.*;
+import org.acitech.entities.enemies.Rico;
 
 import javax.swing.*;
 import java.awt.*;

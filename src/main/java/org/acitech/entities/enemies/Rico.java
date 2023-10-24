@@ -1,7 +1,9 @@
-package org.acitech.entities;
+package org.acitech.entities.enemies;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.entities.Entity;
+import org.acitech.entities.Scratch;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import java.awt.*;
@@ -33,14 +35,17 @@ public class Rico extends Entity {
             this.acceleration = new Vector2D(x, y);
         }
 
-        // PIZZA
+        // Looks for any instances of a scratch
         for (Entity entity : GamePanel.entities) {
             if (!(entity instanceof Scratch)) continue;
 
+            // Gets the position and angle of the scratch
             Scratch scratch = (Scratch) entity;
             double dist = scratch.position.distance(this.position);
-            double rot = scratch.angle; // SHUT IT DOWN!
+            double rot = scratch.angle;
 
+            // If the scratch makes contact with rico
+            // knock it back, lose 1hp, and start i-frames
             if (dist < 50) {
                 if (this.immunity == 0) {
                     this.velocity = new Vector2D(-20 * x, -20 * y);
@@ -54,6 +59,7 @@ public class Rico extends Entity {
             }
         }
 
+        // If rico dies, get rid of the rico, todo: play an animation, drop items
         if (this.health <= 0) {
             this.dispose();
         }

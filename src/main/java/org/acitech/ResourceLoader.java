@@ -17,6 +17,7 @@ public class ResourceLoader {
         return loadTexture("cow", "cow.png") &&
                 loadTexture("scratch", "effect/scratch.png") &&
                 loadTexture("ui/inv_bar_default", "ui/inv_bar_default.png") &&
+                loadTexture("Water", "items/water_Material.png") &&
                 loadSpriteSheet("player/running", "player/running.png", 32, 32) &&
                 loadSpriteSheet("enemies/Rico", "enemies/Rico.png", 32, 32) &&
                 loadSpriteSheet("effect/scratch", "effect/scratch.png", 32, 32) &&

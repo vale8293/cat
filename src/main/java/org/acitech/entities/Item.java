@@ -30,6 +30,7 @@ public class Item extends Entity {
             this.width = (int) (this.width * 0.7);
             if (this.height < 2) {
                 this.dispose();
+
             }
         }
     }
