@@ -79,7 +79,7 @@ public class Player extends Entity {
         }
 
         // If the player is moving enough, draw the sprite in the direction that movement is
-        if (largest > 1.125) {
+        if (largest > 0.5) {
             switch (direction) {
                 case "up": {
                     texture = Main.getResources().getTexture("player/running/" + aniFrame + ":3");
@@ -97,8 +97,14 @@ public class Player extends Entity {
                     texture = Main.getResources().getTexture("player/running/" + aniFrame + ":1");
                     break;
                 }
+
             }
         }
+
+        else {
+            // Play idle animation todo: based on direction
+            texture = Main.getResources().getTexture("player/idle/" + aniFrame / 3 + ":0");
+            }
 
         ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
     }

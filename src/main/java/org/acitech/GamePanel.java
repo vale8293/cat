@@ -2,6 +2,7 @@ package org.acitech;
 
 import org.acitech.entities.*;
 import org.acitech.entities.enemies.Rico;
+import org.acitech.entities.items.Water;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +14,7 @@ public class GamePanel extends JPanel implements Runnable {
     final int screenWidth = 800;
     final int screenHeight = 600;
     final int fps = 60;
+    private ArrayList<Entity> newEntities = new ArrayList<Entity>();
 
     KeyHandler keys = new KeyHandler();
     Thread gameThread;
@@ -54,19 +56,28 @@ public class GamePanel extends JPanel implements Runnable {
         rooms.put(currentRoom, room);
 
         // Create 10 enemies for no reason ¯\_(ツ)_/¯
-        for (int i = 0; i < 10; i++) {
-            entities.add(new Enemy(Math.random() * screenWidth, Math.random() * screenHeight));
-        }
+//        for (int i = 0; i < 10; i++) {
+//            addNewEntity(new Enemy(Math.random() * screenWidth, Math.random() * screenHeight));
+//        }
 
         // Create 1 Rico for reason ¯\_(ツ)_/¯
         for (int i = 0; i < 1; i++) {
-            entities.add(new Rico(Math.random() * screenWidth, Math.random() * screenHeight));
+            addNewEntity(new Rico(Math.random() * screenWidth, Math.random() * screenHeight));
         }
 
         // Create 10 items for no reason ¯\_(ツ)_/¯
-        for (int i = 0; i < 10; i++) {
-            entities.add(new Item(Math.random() * screenWidth, Math.random() * screenHeight));
-        }
+//        for (int i = 0; i < 10; i++) {
+//            addNewEntity(new Item(Math.random() * screenWidth, Math.random() * screenHeight));
+//        }
+
+        // Create 10 Water for no reason ¯\_(ツ)_/¯
+//        for (int i = 0; i < 10; i++) {
+//            addNewEntity(new Water(Math.random() * screenWidth, Math.random() * screenHeight));
+//        }
+    }
+
+    public void addNewEntity(Entity entity) {
+        newEntities.add(entity);
     }
 
     @Override
@@ -92,6 +103,10 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update(double delta) {
         ArrayList<Entity> disposedEntities = new ArrayList<Entity>();
+
+        // Add newly created entities
+        entities.addAll(newEntities);
+        newEntities.clear();
 
         // Loop through each entity and tick them
         for (Entity entity : entities) {

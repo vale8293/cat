@@ -4,6 +4,7 @@ import org.acitech.GamePanel;
 import org.acitech.Main;
 import org.acitech.entities.Entity;
 import org.acitech.entities.Scratch;
+import org.acitech.entities.items.Water;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import java.awt.*;
@@ -46,7 +47,7 @@ public class Rico extends Entity {
 
             // If the scratch makes contact with rico
             // knock it back, lose 1hp, and start i-frames
-            if (dist < 50) {
+            if (dist < 80) {
                 if (this.immunity == 0) {
                     this.velocity = new Vector2D(-20 * x, -20 * y);
                     this.health -= 1;
@@ -59,9 +60,14 @@ public class Rico extends Entity {
             }
         }
 
-        // If rico dies, get rid of the rico, todo: play an animation, drop items
+        // If rico dies, get rid of the rico, todo: play an animation
         if (this.health <= 0) {
             this.dispose();
+        }
+
+        // If rico is gone, drop a water item todo: with the dead rico's velocity when applicable
+        if (this.isDisposed()) {
+            Main.getGamePanel().addNewEntity(new Water(this.position.getX(), this.position.getY()));
         }
     }
 
@@ -83,7 +89,7 @@ public class Rico extends Entity {
         }
 
         // If rico is moving enough, draw the sprite in the direction that movement is
-        if (largest > 0.125) {
+        if (largest > 0.5) {
             switch (direction) {
                 case "left": {
                     texture = Main.getResources().getTexture("enemies/Rico/" + aniFrame + ":0");

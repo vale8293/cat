@@ -20,15 +20,11 @@ public class Water extends Item {
 
     @Override
     protected void tick(double delta) {
-        // UFUCK
-
         super.tick(delta);
-
-        // hehgwetr
     }
     @Override
     public void draw(Graphics2D ctx) {
-        BufferedImage texture = Main.getResources().getTexture("Water");
+        BufferedImage texture = Main.getResources().getTexture("items/water_Material");
+        ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
     }
-
 }
