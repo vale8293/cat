@@ -12,7 +12,7 @@ public class Item extends Entity {
 
     public Item(double startX, double startY) {
         this.position = new Vector2D(startX, startY);
-        this.friction = 0.98;
+        this.friction = 0.95;
     }
 
     @Override

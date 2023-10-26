@@ -7,7 +7,9 @@ import org.acitech.entities.items.Water;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -39,10 +41,6 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void startGameThread() {
-        // Create and start the game loop thread
-        gameThread = new Thread(this);
-        gameThread.start();
-      
         // Create a room
         currentRoom = "default";
         Room room = new Room(10, 10);
@@ -61,7 +59,7 @@ public class GamePanel extends JPanel implements Runnable {
 //        }
 
         // Create 1 Rico for reason ¯\_(ツ)_/¯
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 25; i++) {
             addNewEntity(new Rico(Math.random() * screenWidth, Math.random() * screenHeight));
         }
 
@@ -74,6 +72,10 @@ public class GamePanel extends JPanel implements Runnable {
 //        for (int i = 0; i < 10; i++) {
 //            addNewEntity(new Water(Math.random() * screenWidth, Math.random() * screenHeight));
 //        }
+
+        // Create and start the game loop thread
+        gameThread = new Thread(this);
+        gameThread.start();
     }
 
     public void addNewEntity(Entity entity) {
@@ -137,8 +139,8 @@ public class GamePanel extends JPanel implements Runnable {
         // Draw the current room
         rooms.get(currentRoom).draw(ctx);
 
-        // Loop through each entity and draw them
-        for (Entity entity : entities) {
+        // Loop through each entity in a cloned list of entities and draw them
+        for (Entity entity : new ArrayList<>(entities)) {
             entity.draw(ctx);
         }
 

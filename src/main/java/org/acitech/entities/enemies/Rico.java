@@ -47,11 +47,11 @@ public class Rico extends Entity {
 
             // If the scratch makes contact with rico
             // knock it back, lose 1hp, and start i-frames
-            if (dist < 80) {
+            if (dist < 100) {
                 if (this.immunity == 0) {
                     this.velocity = new Vector2D(-20 * x, -20 * y);
                     this.health -= 1;
-                    this.immunity = 20;
+                    this.immunity = 10;
                 }
 
                 if (this.immunity > 0) {
@@ -63,12 +63,13 @@ public class Rico extends Entity {
         // If rico dies, get rid of the rico, todo: play an animation
         if (this.health <= 0) {
             this.dispose();
+
+            // drop a water item todo: with the dead rico's velocity when applicable
+            Water water = new Water(this.position.getX(), this.position.getY());
+            water.velocity = this.velocity;
+            Main.getGamePanel().addNewEntity(water);
         }
 
-        // If rico is gone, drop a water item todo: with the dead rico's velocity when applicable
-        if (this.isDisposed()) {
-            Main.getGamePanel().addNewEntity(new Water(this.position.getX(), this.position.getY()));
-        }
     }
 
     @Override
