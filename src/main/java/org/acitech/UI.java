@@ -15,7 +15,7 @@ public class UI {
     public void draw(Graphics2D ctx) {
         int health = GamePanel.player.health;
         int mana = GamePanel.player.mana;
-        ArrayList<String> inventory = new ArrayList<>(); //unused for now, todo next sprint
+        ArrayList<String> inventory = new ArrayList<>(); //unused for now, todo next next sprint
 
         int x = 0;
         int cobalt = health; // thanks cobalt :)

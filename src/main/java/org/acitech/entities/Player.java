@@ -15,9 +15,9 @@ public class Player extends Entity {
     private int width = 160;
     private int height = 160;
     public int maxHealth = 6;
-    public int health = 6;
+    public int health = maxHealth;
     public int maxMana = 6;
-    public int mana = 6;
+    public int mana = maxMana;
     public Player() {
         this.friction = 0.9;
     }
@@ -52,7 +52,7 @@ public class Player extends Entity {
             for (KeyHandler.Click click : KeyHandler.mouseClicks) {
                 double angle = Math.atan2(this.position.getY() - click.getY(), this.position.getX() - click.getX());
 
-                GamePanel.entities.add(new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle));
+                Main.getGamePanel().addNewEntity(new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle));
             }
         }
     }
@@ -61,14 +61,14 @@ public class Player extends Entity {
     public void draw(Graphics2D ctx) {
         BufferedImage texture = Main.getResources().getTexture("cow");
 
-        int e = 4;
         animationTick += 1;
-        animationTick = animationTick % (6 * e);
-        int aniFrame = animationTick / e;
+        animationTick = animationTick % 24;
+        int aniFrame = animationTick / 4;
 
         double largest = 0;
         String direction = null;
 
+        // Check which direction is the largest
         if (Math.abs(this.velocity.getX()) > largest) {
             largest = Math.abs(this.velocity.getX());
             direction = this.velocity.getX() > 0 ? "right" : "left";
@@ -78,7 +78,8 @@ public class Player extends Entity {
             direction = this.velocity.getY() > 0 ? "down" : "up";
         }
 
-        if (largest > 1.125) {
+        // If the player is moving enough, draw the sprite in the direction that movement is
+        if (largest > 0.5) {
             switch (direction) {
                 case "up": {
                     texture = Main.getResources().getTexture("player/running/" + aniFrame + ":3");
@@ -96,8 +97,14 @@ public class Player extends Entity {
                     texture = Main.getResources().getTexture("player/running/" + aniFrame + ":1");
                     break;
                 }
+
             }
         }
+
+        else {
+            // Play idle animation todo: based on direction
+            texture = Main.getResources().getTexture("player/idle/" + aniFrame / 3 + ":0");
+            }
 
         ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
     }

@@ -1,20 +1,22 @@
 package org.acitech;
 
-import org.acitech.entities.Enemy;
-import org.acitech.entities.Entity;
-import org.acitech.entities.Item;
-import org.acitech.entities.Player;
+import org.acitech.entities.*;
+import org.acitech.entities.enemies.Rico;
+import org.acitech.entities.items.Water;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 public class GamePanel extends JPanel implements Runnable {
 
     final int screenWidth = 800;
     final int screenHeight = 600;
     final int fps = 60;
+    private ArrayList<Entity> newEntities = new ArrayList<Entity>();
 
     KeyHandler keys = new KeyHandler();
     Thread gameThread;
@@ -39,10 +41,6 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void startGameThread() {
-        // Create and start the game loop thread
-        gameThread = new Thread(this);
-        gameThread.start();
-      
         // Create a room
         currentRoom = "default";
         Room room = new Room(10, 10);
@@ -56,14 +54,32 @@ public class GamePanel extends JPanel implements Runnable {
         rooms.put(currentRoom, room);
 
         // Create 10 enemies for no reason ¯\_(ツ)_/¯
-        for (int i = 0; i < 10; i++) {
-            entities.add(new Enemy(Math.random() * screenWidth, Math.random() * screenHeight));
+//        for (int i = 0; i < 10; i++) {
+//            addNewEntity(new Enemy(Math.random() * screenWidth, Math.random() * screenHeight));
+//        }
+
+        // Create 1 Rico for reason ¯\_(ツ)_/¯
+        for (int i = 0; i < 25; i++) {
+            addNewEntity(new Rico(Math.random() * screenWidth, Math.random() * screenHeight));
         }
 
         // Create 10 items for no reason ¯\_(ツ)_/¯
-        for (int i = 0; i < 10; i++) {
-            entities.add(new Item(Math.random() * screenWidth, Math.random() * screenHeight));
-        }
+//        for (int i = 0; i < 10; i++) {
+//            addNewEntity(new Item(Math.random() * screenWidth, Math.random() * screenHeight));
+//        }
+
+        // Create 10 Water for no reason ¯\_(ツ)_/¯
+//        for (int i = 0; i < 10; i++) {
+//            addNewEntity(new Water(Math.random() * screenWidth, Math.random() * screenHeight));
+//        }
+
+        // Create and start the game loop thread
+        gameThread = new Thread(this);
+        gameThread.start();
+    }
+
+    public void addNewEntity(Entity entity) {
+        newEntities.add(entity);
     }
 
     @Override
@@ -89,6 +105,10 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update(double delta) {
         ArrayList<Entity> disposedEntities = new ArrayList<Entity>();
+
+        // Add newly created entities
+        entities.addAll(newEntities);
+        newEntities.clear();
 
         // Loop through each entity and tick them
         for (Entity entity : entities) {
@@ -119,8 +139,8 @@ public class GamePanel extends JPanel implements Runnable {
         // Draw the current room
         rooms.get(currentRoom).draw(ctx);
 
-        // Loop through each entity and draw them
-        for (Entity entity : entities) {
+        // Loop through each entity in a cloned list of entities and draw them
+        for (Entity entity : new ArrayList<>(entities)) {
             entity.draw(ctx);
         }
 

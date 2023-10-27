@@ -12,7 +12,7 @@ public class Item extends Entity {
 
     public Item(double startX, double startY) {
         this.position = new Vector2D(startX, startY);
-        this.friction = 0.98;
+        this.friction = 0.95;
     }
 
     @Override
@@ -26,12 +26,17 @@ public class Item extends Entity {
         // Sucks up the item if it's close enough to the player
         if (this.position.distance(playerPos) < 100) {
             this.acceleration = new Vector2D(x, y);
-            this.height = (int) (this.height * 0.7);
-            this.width = (int) (this.width * 0.7);
+            this.height = (int) (this.height * 0.85);
+            this.width = (int) (this.width * 0.85);
             if (this.height < 2) {
                 this.dispose();
+
             }
         }
+
+//        if (this.isDisposed()) {
+//            // Add to the player's inventory in the first empty slot
+//        }
     }
 
     @Override

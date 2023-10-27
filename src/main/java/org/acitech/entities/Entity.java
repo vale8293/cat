@@ -6,13 +6,13 @@ import java.awt.*;
 
 abstract public class Entity {
 
-    protected Vector2D position;
-    protected Vector2D velocity;
-    protected Vector2D acceleration;
+    public Vector2D position;
+    public Vector2D velocity;
+    public Vector2D acceleration;
     protected double friction;
     protected boolean disposed = false;
 
-    Entity() {
+    protected Entity() {
         // Initialize the variables
         this.position = new Vector2D(0, 0);
         this.velocity = new Vector2D(0, 0);
