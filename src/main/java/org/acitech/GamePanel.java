@@ -1,15 +1,15 @@
 package org.acitech;
 
-import org.acitech.entities.*;
 import org.acitech.entities.enemies.Rico;
-import org.acitech.entities.items.Water;
+import org.acitech.entities.Entity;
+import org.acitech.entities.Player;
+import org.acitech.tilemap.Room;
+import org.acitech.tilemap.Tile;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.HashMap;
-import java.util.stream.Collectors;
 
 public class GamePanel extends JPanel implements Runnable {
 
