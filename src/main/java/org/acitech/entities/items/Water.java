@@ -24,7 +24,7 @@ public class Water extends Item {
     }
     @Override
     public void draw(Graphics2D ctx) {
-        BufferedImage texture = Main.getResources().getTexture("items/water_Material");
+        BufferedImage texture = Main.getResources().getTexture("items/water_material");
         ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
     }
 }

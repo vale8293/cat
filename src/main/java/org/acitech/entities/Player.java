@@ -1,8 +1,8 @@
 package org.acitech.entities;
 
-import org.acitech.GamePanel;
 import org.acitech.KeyHandler;
 import org.acitech.Main;
+import org.acitech.inventory.Inventory;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import javax.sound.sampled.Clip;
@@ -18,6 +18,7 @@ public class Player extends Entity {
     public int health = maxHealth;
     public int maxMana = 6;
     public int mana = maxMana;
+    public Inventory inventory = new Inventory(10);
     public Player() {
         this.friction = 0.9;
     }
@@ -100,11 +101,10 @@ public class Player extends Entity {
 
             }
         }
-
         else {
             // Play idle animation todo: based on direction
             texture = Main.getResources().getTexture("player/idle/" + aniFrame / 3 + ":0");
-            }
+        }
 
         ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
     }
