@@ -4,6 +4,8 @@ import org.acitech.GamePanel;
 import org.acitech.Main;
 import org.acitech.entities.Entity;
 import org.acitech.entities.Item;
+import org.acitech.inventory.ItemStack;
+import org.acitech.inventory.ItemType;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import java.awt.*;
@@ -21,7 +23,19 @@ public class Water extends Item {
     @Override
     protected void tick(double delta) {
         super.tick(delta);
+
+        if (gettingPickedUp) {
+            System.out.println("I AM BEING PCIEKDKED UP");
+            int slot = GamePanel.player.inventory.getEmptySlots().stream().filter(i -> i > 2).findFirst().orElse(-1);
+
+            if (slot == -1) {
+                System.out.println("OOPS ITEM WENT INTO THE VOID");
+            } else {
+                GamePanel.player.inventory.setItem(slot, new ItemStack(ItemType.WATER, 1));
+            }
+        }
     }
+
     @Override
     public void draw(Graphics2D ctx) {
         BufferedImage texture = Main.getResources().getTexture("items/water_material");

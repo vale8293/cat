@@ -9,6 +9,7 @@ public class Item extends Entity {
 
     private int width = 32;
     private int height = 32;
+    protected boolean gettingPickedUp = false;
 
     public Item(double startX, double startY) {
         this.position = new Vector2D(startX, startY);
@@ -29,8 +30,8 @@ public class Item extends Entity {
             this.height = (int) (this.height * 0.85);
             this.width = (int) (this.width * 0.85);
             if (this.height < 2) {
+                gettingPickedUp = true;
                 this.dispose();
-
             }
         }
 

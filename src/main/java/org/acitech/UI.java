@@ -86,8 +86,8 @@ public class UI {
 
             BufferedImage itemTexture = item.getType().getTexture();
 
-            int itemPos = invWidth / GamePanel.player.inventory.getMaxSlots() * slot + 6;
-            ctx.drawImage(itemTexture, itemPos, 64, 12, 12, Main.getGamePanel());
+            int itemPos = (Main.getGamePanel().getWidth() / 2 - invWidth / 2 + invWidth / GamePanel.player.inventory.getMaxSlots() * slot) + 6;
+            ctx.drawImage(itemTexture, itemPos, Main.getGamePanel().getHeight() - 64, 36, 36, Main.getGamePanel());
         }
     }
 }

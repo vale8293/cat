@@ -31,6 +31,16 @@ public class Inventory {
         slots[slot] = null;
     }
 
+    public ArrayList<Integer> getEmptySlots() {
+        ArrayList<Integer> emptySlots = new ArrayList<>();
+
+        for (int slot = 0; slot < this.maxSlots; slot++) {
+            if (slots[slot] == null) emptySlots.add(slot);
+        }
+
+        return emptySlots;
+    }
+
     public int getMaxSlots() {
         return maxSlots;
     }
