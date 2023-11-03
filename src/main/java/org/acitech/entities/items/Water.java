@@ -2,11 +2,9 @@ package org.acitech.entities.items;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
-import org.acitech.entities.Entity;
 import org.acitech.entities.Item;
 import org.acitech.inventory.ItemStack;
 import org.acitech.inventory.ItemType;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

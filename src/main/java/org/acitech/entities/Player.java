@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 public class Player extends Entity {
 
     private int animationTick = 0;
+    private int scratchCooldown = 0;
     private int width = 160;
     private int height = 160;
     public int maxHealth = 6;
@@ -51,10 +52,15 @@ public class Player extends Entity {
             clip.start();
 
             for (KeyHandler.Click click : KeyHandler.mouseClicks) {
-                double angle = Math.atan2(this.position.getY() - click.getY(), this.position.getX() - click.getX());
-
-                Main.getGamePanel().addNewEntity(new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle));
+                if (scratchCooldown == 0) {
+                    double angle = Math.atan2(this.position.getY() - click.getY(), this.position.getX() - click.getX());
+                    Main.getGamePanel().addNewEntity(new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle));
+                    scratchCooldown = 20;
+                }
             }
+        }
+        if (scratchCooldown > 0) {
+            scratchCooldown -= 1;
         }
     }
 

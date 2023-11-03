@@ -72,7 +72,7 @@ public class UI {
     }
 
     public void drawInventory(Graphics2D ctx) {
-        int invX = Main.getGamePanel().getWidth() / 2 - 344;
+        int invX = Main.getGamePanel().getWidth() / 2 - 346;
         int invY = Main.getGamePanel().getHeight() - 96;
         int invWidth = 692;
         int invHeight = 64;
@@ -86,8 +86,8 @@ public class UI {
 
             BufferedImage itemTexture = item.getType().getTexture();
 
-            int itemPos = (Main.getGamePanel().getWidth() / 2 - invWidth / 2 + invWidth / GamePanel.player.inventory.getMaxSlots() * slot) + 6;
-            ctx.drawImage(itemTexture, itemPos, Main.getGamePanel().getHeight() - 64, 36, 36, Main.getGamePanel());
+            int itemPos = Main.getGamePanel().getWidth() / 2 - invWidth / 2 - 32 + 64 * slot;
+            ctx.drawImage(itemTexture, itemPos, invY, 48, 48, Main.getGamePanel());
         }
     }
 }
