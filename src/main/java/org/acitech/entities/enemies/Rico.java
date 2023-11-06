@@ -40,15 +40,18 @@ public class Rico extends Entity {
         for (Entity entity : GamePanel.entities) {
             if (!(entity instanceof Scratch)) continue;
 
-            // Gets the position and angle of the scratch
+            // Gets the position of the scratch
             Scratch scratch = (Scratch) entity;
             double dist = scratch.position.distance(this.position);
-            double rot = scratch.angle;
 
             // If the scratch makes contact with rico
+            // regain 1 mana todo
             // knock it back, lose 1hp, and start i-frames
             if (dist < 100) {
                 if (this.immunity == 0) {
+                    if (GamePanel.player.mana < GamePanel.player.maxMana) {
+                        GamePanel.player.mana += 1;
+                    }
                     this.velocity = new Vector2D(-20 * x, -20 * y);
                     this.health -= 1;
                     this.immunity = 10;
@@ -74,7 +77,7 @@ public class Rico extends Entity {
 
     @Override
     public void draw(Graphics2D ctx) {
-        BufferedImage texture = Main.getResources().getTexture("enemies/Rico/:" + "0");
+        BufferedImage texture;
 
         animationTick += 1;
         animationTick = animationTick % 24;
@@ -107,17 +110,6 @@ public class Rico extends Entity {
             texture = Main.getResources().getTexture("enemies/Rico/" + aniFrame + ":2");
         }
 
-//        ctx.setColor(Color.getHSBColor(1, 100, 200));
         ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
     }
-
-//    public BufferedImage werwer(BufferedImage image) {
-//        for (int x = 0; x < image.getWidth(); x++) {
-//            for (int y = 0; y < image.getHeight(); y++) {
-//                int e = image.getRGB(x, y);
-//                e += 10;
-//                image.setRGB(x, y, e);
-//            }
-//        }
-//        return image;
-    }
+}

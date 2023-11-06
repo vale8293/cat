@@ -17,7 +17,7 @@ abstract public class Entity {
         this.position = new Vector2D(0, 0);
         this.velocity = new Vector2D(0, 0);
         this.acceleration = new Vector2D(0, 0);
-        this.friction = 1;
+        this.friction = 0.9;
     }
 
     public void tickEntity(double delta) {
@@ -28,7 +28,7 @@ abstract public class Entity {
         this.velocity = this.velocity.add(this.acceleration);
         this.acceleration = new Vector2D(0, 0);
         this.velocity = this.velocity.scalarMultiply(this.friction);
-        this.position = this.position.add(this.velocity.scalarMultiply(delta)); // TODO: check if this is actually the place to use delta time
+        this.position = this.position.add(this.velocity.scalarMultiply(delta)); // TODO: check if this is actually the place to use delta time (it's not)
     }
 
     abstract protected void tick(double delta);

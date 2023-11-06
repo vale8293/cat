@@ -19,7 +19,8 @@ public class Player extends Entity {
     public int health = maxHealth;
     public int maxMana = 6;
     public int mana = maxMana;
-    public Inventory inventory = new Inventory(10);
+    public Inventory inventory1 = new Inventory(8);
+    public Inventory inventory2 = new Inventory(2);
     public Player() {
         this.friction = 0.9;
     }
@@ -39,10 +40,14 @@ public class Player extends Entity {
             this.acceleration = this.acceleration.add(new Vector2D(.5, 0));
         }
         if (KeyHandler.zDown) {
-            this.health -= 1;
+            if (health > 0) {
+                this.health -= 1;
+            }
         }
         if (KeyHandler.xDown) {
-            this.mana -= 1;
+            if (mana > 0) {
+                this.mana -= 1;
+            }
         }
 
         if (KeyHandler.mouseClicks.size() > 0) {

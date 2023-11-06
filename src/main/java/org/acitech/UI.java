@@ -1,6 +1,5 @@
 package org.acitech;
 
-import org.acitech.inventory.Inventory;
 import org.acitech.inventory.ItemStack;
 
 import java.awt.*;
@@ -72,16 +71,16 @@ public class UI {
     }
 
     public void drawInventory(Graphics2D ctx) {
-        int invX = Main.getGamePanel().getWidth() / 2 - 346;
-        int invY = Main.getGamePanel().getHeight() - 96;
-        int invWidth = 692;
+        int invWidth = 688;
         int invHeight = 64;
+        int invX = Main.getGamePanel().getWidth() / 2 - invWidth / 2;
+        int invY = Main.getGamePanel().getHeight() - 96;
 
         BufferedImage barTexture = Main.getResources().getTexture("ui/inv_bar_default");
         ctx.drawImage(barTexture, invX, invY, invWidth, invHeight, Main.getGamePanel());
 
-        for (int slot = 2; slot < GamePanel.player.inventory.getMaxSlots(); slot++) {
-            ItemStack item = GamePanel.player.inventory.getItem(slot);
+        for (int slot = 2; slot < GamePanel.player.inventory1.getMaxSlots(); slot++) {
+            ItemStack item = GamePanel.player.inventory1.getItem(slot);
             if (item == null) continue;
 
             BufferedImage itemTexture = item.getType().getTexture();
