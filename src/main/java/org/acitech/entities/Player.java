@@ -39,6 +39,8 @@ public class Player extends Entity {
         if (KeyHandler.dDown) {
             this.acceleration = this.acceleration.add(new Vector2D(.5, 0));
         }
+
+        // Testing code
         if (KeyHandler.zDown) {
             if (health > 0) {
                 this.health -= 1;
@@ -49,6 +51,16 @@ public class Player extends Entity {
                 this.mana -= 1;
             }
         }
+        if (KeyHandler.cDown) {
+            if (health < maxHealth) {
+                this.health += 1;
+            }
+        }
+        if (KeyHandler.vDown) {
+            if (mana < maxMana) {
+                this.mana += 1;
+            }
+        }
 
         if (KeyHandler.mouseClicks.size() > 0) {
             Clip clip = Main.getResources().getSound("player_scratch");
@@ -56,67 +68,66 @@ public class Player extends Entity {
             clip.loop(0);
             clip.start();
 
-            for (KeyHandler.Click click : KeyHandler.mouseClicks) {
-                if (scratchCooldown == 0) {
-                    double angle = Math.atan2(this.position.getY() - click.getY(), this.position.getX() - click.getX());
-                    Main.getGamePanel().addNewEntity(new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle));
-                    scratchCooldown = 20;
-                }
+            KeyHandler.Click click = KeyHandler.mouseClicks.get(0);
+
+            if (scratchCooldown == 0) {
+                double angle = Math.atan2(this.position.getY() - click.getY(), this.position.getX() - click.getX());
+                Main.getGamePanel().addNewEntity(new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle));
+                scratchCooldown = 20;
             }
         }
+
         if (scratchCooldown > 0) {
             scratchCooldown -= 1;
         }
     }
+        @Override
+        public void draw (Graphics2D ctx){
+            BufferedImage texture = Main.getResources().getTexture("cow");
 
-    @Override
-    public void draw(Graphics2D ctx) {
-        BufferedImage texture = Main.getResources().getTexture("cow");
+            animationTick += 1;
+            animationTick = animationTick % 24;
+            int aniFrame = animationTick / 4;
 
-        animationTick += 1;
-        animationTick = animationTick % 24;
-        int aniFrame = animationTick / 4;
+            double largest = 0;
+            String direction = null;
 
-        double largest = 0;
-        String direction = null;
-
-        // Check which direction is the largest
-        if (Math.abs(this.velocity.getX()) > largest) {
-            largest = Math.abs(this.velocity.getX());
-            direction = this.velocity.getX() > 0 ? "right" : "left";
-        }
-        if (Math.abs(this.velocity.getY()) > largest) {
-            largest = Math.abs(this.velocity.getY());
-            direction = this.velocity.getY() > 0 ? "down" : "up";
-        }
-
-        // If the player is moving enough, draw the sprite in the direction that movement is
-        if (largest > 0.5) {
-            switch (direction) {
-                case "up": {
-                    texture = Main.getResources().getTexture("player/running/" + aniFrame + ":3");
-                    break;
-                }
-                case "down": {
-                    texture = Main.getResources().getTexture("player/running/" + aniFrame + ":2");
-                    break;
-                }
-                case "left": {
-                    texture = Main.getResources().getTexture("player/running/" + aniFrame + ":0");
-                    break;
-                }
-                case "right": {
-                    texture = Main.getResources().getTexture("player/running/" + aniFrame + ":1");
-                    break;
-                }
-
+            // Check which direction is the largest
+            if (Math.abs(this.velocity.getX()) > largest) {
+                largest = Math.abs(this.velocity.getX());
+                direction = this.velocity.getX() > 0 ? "right" : "left";
             }
-        }
-        else {
-            // Play idle animation todo: based on direction
-            texture = Main.getResources().getTexture("player/idle/" + aniFrame / 3 + ":0");
-        }
+            if (Math.abs(this.velocity.getY()) > largest) {
+                largest = Math.abs(this.velocity.getY());
+                direction = this.velocity.getY() > 0 ? "down" : "up";
+            }
 
-        ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
+            // If the player is moving enough, draw the sprite in the direction that movement is
+            if (largest > 0.5) {
+                switch (direction) {
+                    case "up": {
+                        texture = Main.getResources().getTexture("player/running/" + aniFrame + ":3");
+                        break;
+                    }
+                    case "down": {
+                        texture = Main.getResources().getTexture("player/running/" + aniFrame + ":2");
+                        break;
+                    }
+                    case "left": {
+                        texture = Main.getResources().getTexture("player/running/" + aniFrame + ":0");
+                        break;
+                    }
+                    case "right": {
+                        texture = Main.getResources().getTexture("player/running/" + aniFrame + ":1");
+                        break;
+                    }
+
+                }
+            } else {
+                // Play idle animation todo: based on direction
+                texture = Main.getResources().getTexture("player/idle/" + aniFrame / 3 + ":0");
+            }
+
+            ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
+        }
     }
-}

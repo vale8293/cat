@@ -34,6 +34,11 @@ public class Rico extends Entity {
         double y = Math.sin(angle) * 0.5;
         if (this.position.distance(playerPos) < 400) {
             this.acceleration = new Vector2D(x, y);
+            if (this.position.distance(playerPos) < 100) {
+                GamePanel.player.health -= 1;
+                this.velocity = new Vector2D(-20 * x, -20 * y);
+                GamePanel.player.velocity = this.velocity.scalarMultiply(-1);
+            }
         }
 
         // Looks for any instances of a scratch
@@ -45,7 +50,7 @@ public class Rico extends Entity {
             double dist = scratch.position.distance(this.position);
 
             // If the scratch makes contact with rico
-            // regain 1 mana todo
+            // regain 1 mana
             // knock it back, lose 1hp, and start i-frames
             if (dist < 100) {
                 if (this.immunity == 0) {
