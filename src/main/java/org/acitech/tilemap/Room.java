@@ -1,6 +1,7 @@
 package org.acitech.tilemap;
 
 import org.acitech.Main;
+import org.spongepowered.noise.module.source.Simplex;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -12,13 +13,16 @@ public class Room {
     private final Tile[][] tilemap;
     private final int width;
     private final int height;
+    private final Simplex simplex;
 
     private final int tileSize = 64;
 
-    public Room(int width, int height) {
+    public Room(int width, int height, int seed) {
         this.tilemap = new Tile[width][height];
         this.width = width;
         this.height = height;
+        this.simplex = new Simplex();
+        this.simplex.setSeed(seed);
     }
 
     public void draw(Graphics2D ctx) {
@@ -30,6 +34,8 @@ public class Room {
             connCache.put(tile.getId(), new Connector[width][height][]);
         }
 
+        Random tuftsRng = new Random(this.getSimplex().seed() * 87832L);
+
         // Loop over the room's tilemap
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -39,6 +45,13 @@ public class Room {
                 if (tile != null) {
                     BufferedImage image = tile.getFullTexture();
                     ctx.drawImage(image, x * tileSize, y * tileSize, tileSize, tileSize, Main.getGamePanel());
+
+                    if (tile.getId().equals(Tile.grass.getId())) {
+                        if (this.getSimplex().get((double) x * 10, (double) y * 10, 200) > 0.8) {
+                            BufferedImage imageTufts = Main.getResources().getTexture("environment/grass_tufts/" + tuftsRng.nextInt(8) + ":0");
+                            ctx.drawImage(imageTufts, x * tileSize, y * tileSize, tileSize, tileSize, Main.getGamePanel());
+                        }
+                    }
                 }
 
                 // Loop through each connectable tile type
@@ -133,8 +146,15 @@ public class Room {
         tilemap[x][y] = tile;
     }
 
-    public void print(Object o) {
-        System.out.println(o);
+    public int getWidth() {
+        return width;
     }
 
+    public int getHeight() {
+        return height;
+    }
+
+    public Simplex getSimplex() {
+        return simplex;
+    }
 }
