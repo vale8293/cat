@@ -23,6 +23,7 @@ public class ResourceLoader {
                 loadSpriteSheet("enemies/Rico", "enemies/Rico.png", 32, 32) &&
                 loadSpriteSheet("effect/scratch", "effect/scratch.png", 32, 32) &&
                 loadSpriteSheet("environment/grass", "environment/grass.png", 32, 32) &&
+                loadSpriteSheet("environment/grass_tufts", "environment/grass_tufts.png", 32, 32) &&
                 loadSound("player_scratch", "player/scratch.wav") &&
                 loadSpriteSheet("ui/hearts", "ui/hearts.png", 18, 16) &&
                 loadSpriteSheet("ui/mana", "ui/mana.png", 13, 13) &&
