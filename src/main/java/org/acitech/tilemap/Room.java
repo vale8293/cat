@@ -47,7 +47,7 @@ public class Room {
                     ctx.drawImage(image, x * tileSize, y * tileSize, tileSize, tileSize, Main.getGamePanel());
 
                     if (tile.getId().equals(Tile.grass.getId())) {
-                        if (this.getSimplex().get((double) x * 10, (double) y * 10, 200) > 0.8) {
+                        if (tuftsRng.nextDouble() > 0.15) {
                             BufferedImage imageTufts = Main.getResources().getTexture("environment/grass_tufts/" + tuftsRng.nextInt(8) + ":0");
                             ctx.drawImage(imageTufts, x * tileSize, y * tileSize, tileSize, tileSize, Main.getGamePanel());
                         }
