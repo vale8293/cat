@@ -24,12 +24,11 @@ public class Water extends Item {
 
         if (gettingPickedUp) {
             System.out.println("I AM BEING PCIEKDKED UP");
-            int slot = GamePanel.player.inventory1.getEmptySlots().stream().findFirst().orElse(-1);
 
-            if (slot == -1) {
+            ItemStack remaining = GamePanel.player.inventory1.addItem(new ItemStack(ItemType.WATER, 1));
+
+            if (remaining == null) {
                 System.out.println("OOPS ITEM WENT INTO THE VOID");
-            } else {
-                GamePanel.player.inventory1.setItem(slot, new ItemStack(ItemType.WATER, 1));
             }
         }
     }

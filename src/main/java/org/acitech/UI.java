@@ -79,14 +79,19 @@ public class UI {
         BufferedImage barTexture = Main.getResources().getTexture("ui/inv_bar_default");
         ctx.drawImage(barTexture, invX, invY, invWidth, invHeight, Main.getGamePanel());
 
-        for (int slot = 2; slot < GamePanel.player.inventory1.getMaxSlots(); slot++) {
+        for (int slot = 0; slot < GamePanel.player.inventory1.getMaxSlots(); slot++) {
             ItemStack item = GamePanel.player.inventory1.getItem(slot);
             if (item == null) continue;
 
             BufferedImage itemTexture = item.getType().getTexture();
 
-            int itemPos = Main.getGamePanel().getWidth() / 2 - invWidth / 2 - 32 + 64 * slot;
+            int itemPos = Main.getGamePanel().getWidth() / 2 - invWidth / 2 + 32 + 64 * slot;
             ctx.drawImage(itemTexture, itemPos, invY, 48, 48, Main.getGamePanel());
+
+            int amount = item.getCount();
+            System.out.println(amount);
+            BufferedImage amountTexture = Main.getResources().getTexture("ui/numbers/" + amount + ":0"); // TODO: make items above 9 count properly
+            ctx.drawImage(amountTexture, itemPos, invY, 48, 48, Main.getGamePanel());
         }
     }
 }
