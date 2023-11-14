@@ -1,8 +1,8 @@
 package org.acitech.entities;
 
+import org.acitech.GamePanel;
 import org.acitech.KeyHandler;
 import org.acitech.Main;
-import org.acitech.inventory.Inventory;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import javax.sound.sampled.Clip;
@@ -12,15 +12,12 @@ import java.awt.image.BufferedImage;
 public class Player extends Entity {
 
     private int animationTick = 0;
-    private int scratchCooldown = 0;
     private int width = 160;
     private int height = 160;
     public int maxHealth = 6;
     public int health = maxHealth;
     public int maxMana = 6;
     public int mana = maxMana;
-    public Inventory inventory1 = new Inventory(8);
-    public Inventory inventory2 = new Inventory(2);
     public Player() {
         this.friction = 0.9;
     }
@@ -39,27 +36,11 @@ public class Player extends Entity {
         if (KeyHandler.dDown) {
             this.acceleration = this.acceleration.add(new Vector2D(.5, 0));
         }
-
-        // Testing code
         if (KeyHandler.zDown) {
-            if (health > 0) {
-                this.health -= 1;
-            }
+            this.health -= 1;
         }
         if (KeyHandler.xDown) {
-            if (mana > 0) {
-                this.mana -= 1;
-            }
-        }
-        if (KeyHandler.cDown) {
-            if (health < maxHealth) {
-                this.health += 1;
-            }
-        }
-        if (KeyHandler.vDown) {
-            if (mana < maxMana) {
-                this.mana += 1;
-            }
+            this.mana -= 1;
         }
 
         if (KeyHandler.mouseClicks.size() > 0) {
@@ -68,66 +49,65 @@ public class Player extends Entity {
             clip.loop(0);
             clip.start();
 
-            KeyHandler.Click click = KeyHandler.mouseClicks.get(0);
-
-            if (scratchCooldown == 0) {
+            for (KeyHandler.Click click : KeyHandler.mouseClicks) {
                 double angle = Math.atan2(this.position.getY() - click.getY(), this.position.getX() - click.getX());
-                Main.getGamePanel().addNewEntity(new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle));
-                scratchCooldown = 20;
-            }
-        }
+                Scratch scratch = new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle);
+                scratch.velocity = this.velocity;
 
-        if (scratchCooldown > 0) {
-            scratchCooldown -= 1;
+                Main.getGamePanel().addNewEntity(scratch);
+            }
         }
     }
-        @Override
-        public void draw (Graphics2D ctx){
-            BufferedImage texture = Main.getResources().getTexture("cow");
 
-            animationTick += 1;
-            animationTick = animationTick % 24;
-            int aniFrame = animationTick / 4;
+    @Override
+    public void draw(Graphics2D ctx) {
+        BufferedImage texture = Main.getResources().getTexture("cow");
 
-            double largest = 0;
-            String direction = null;
+        animationTick += 1;
+        animationTick = animationTick % 24;
+        int aniFrame = animationTick / 4;
 
-            // Check which direction is the largest
-            if (Math.abs(this.velocity.getX()) > largest) {
-                largest = Math.abs(this.velocity.getX());
-                direction = this.velocity.getX() > 0 ? "right" : "left";
-            }
-            if (Math.abs(this.velocity.getY()) > largest) {
-                largest = Math.abs(this.velocity.getY());
-                direction = this.velocity.getY() > 0 ? "down" : "up";
-            }
+        double largest = 0;
+        String direction = null;
 
-            // If the player is moving enough, draw the sprite in the direction that movement is
-            if (largest > 0.5) {
-                switch (direction) {
-                    case "up": {
-                        texture = Main.getResources().getTexture("player/running/" + aniFrame + ":3");
-                        break;
-                    }
-                    case "down": {
-                        texture = Main.getResources().getTexture("player/running/" + aniFrame + ":2");
-                        break;
-                    }
-                    case "left": {
-                        texture = Main.getResources().getTexture("player/running/" + aniFrame + ":0");
-                        break;
-                    }
-                    case "right": {
-                        texture = Main.getResources().getTexture("player/running/" + aniFrame + ":1");
-                        break;
-                    }
+        // Check which direction is the largest
+        if (Math.abs(this.velocity.getX()) > largest) {
+            largest = Math.abs(this.velocity.getX());
+            direction = this.velocity.getX() > 0 ? "right" : "left";
+        }
+        if (Math.abs(this.velocity.getY()) > largest) {
+            largest = Math.abs(this.velocity.getY());
+            direction = this.velocity.getY() > 0 ? "down" : "up";
+        }
 
+        // If the player is moving enough, draw the sprite in the direction that movement is
+        if (largest > 0.5) {
+            switch (direction) {
+                case "up": {
+                    texture = Main.getResources().getTexture("player/running/" + aniFrame + ":3");
+                    break;
                 }
-            } else {
-                // Play idle animation todo: based on direction
-                texture = Main.getResources().getTexture("player/idle/" + aniFrame / 3 + ":0");
+                case "down": {
+                    texture = Main.getResources().getTexture("player/running/" + aniFrame + ":2");
+                    break;
+                }
+                case "left": {
+                    texture = Main.getResources().getTexture("player/running/" + aniFrame + ":0");
+                    break;
+                }
+                case "right": {
+                    texture = Main.getResources().getTexture("player/running/" + aniFrame + ":1");
+                    break;
+                }
+
+            }
+        }
+
+        else {
+            // Play idle animation todo: based on direction
+            texture = Main.getResources().getTexture("player/idle/" + aniFrame / 3 + ":0");
             }
 
-            ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
-        }
+        ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
     }
+}

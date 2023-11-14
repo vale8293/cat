@@ -5,11 +5,13 @@ import org.acitech.entities.Entity;
 import org.acitech.entities.Player;
 import org.acitech.tilemap.Room;
 import org.acitech.tilemap.Tile;
+import org.spongepowered.noise.module.source.Simplex;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -25,7 +27,7 @@ public class GamePanel extends JPanel implements Runnable {
     public static Player player = new Player();
     public static UI ui = new UI();
     public static HashMap<String, Room> rooms = new HashMap<>();
-    public static String currentRoom = null;
+    public static String currentRoom = "default";
 
     public GamePanel() {
         // Configure the JPanel
@@ -42,16 +44,17 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void startGameThread() {
         // Create a room
-        currentRoom = "default";
-        Room room = new Room(10, 10);
-        for (int x = 0; x < 10; x++) {
-            for (int y = 0; y < 10; y++) {
-                if (Math.random() > 0.5) continue;
+        Room room = new Room(40, 40, new Random().nextInt());
+        rooms.put(currentRoom, room);
+
+        for (int x = 0; x < room.getWidth(); x++) {
+            for (int y = 0; y < room.getHeight(); y++) {
+                double noise = room.getSimplex().get((double) x / 10, (double) y / 10, 0);
+                if (noise > 1) continue;
 
                 room.setTile(x, y, Tile.grass);
             }
         }
-        rooms.put(currentRoom, room);
 
         // Create 10 enemies for no reason ¯\_(ツ)_/¯
 //        for (int i = 0; i < 10; i++) {
