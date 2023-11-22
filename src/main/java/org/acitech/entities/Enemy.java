@@ -2,7 +2,6 @@ package org.acitech.entities;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
-import org.acitech.entities.items.Water;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import java.awt.*;
@@ -13,10 +12,10 @@ public class Enemy extends Entity {
     private int animationTick = 0;
     private int width = 160;
     private int height = 160;
-    public int maxHealth = 6;
+    public int maxHealth = 1;
     public int health = maxHealth;
-    public int maxMana = 6;
-    public int mana = maxMana;
+    public double moveSpeed = 1;
+    public int aggroDistance = 300;
     public int immunity = 20;
 
     public Enemy(double startX, double startY) {
@@ -32,8 +31,14 @@ public class Enemy extends Entity {
         double angle = Math.atan2(playerPos.getY() - this.position.getY(), playerPos.getX() - this.position.getX());
         double x = Math.cos(angle) * 0.5;
         double y = Math.sin(angle) * 0.5;
-        if (this.position.distance(playerPos) < 400) {
+        if (this.position.distance(playerPos) < aggroDistance) {
             this.acceleration = new Vector2D(x, y);
+            this.acceleration = this.acceleration.scalarMultiply(moveSpeed);
+            if (this.position.distance(playerPos) < 100) {
+                GamePanel.player.health -= 1;
+                this.velocity = new Vector2D(-20 * x, -20 * y);
+                GamePanel.player.velocity = this.velocity.scalarMultiply(-1);
+            }
         }
 
         // Looks for any instances of a scratch
@@ -45,7 +50,7 @@ public class Enemy extends Entity {
             double dist = scratch.position.distance(this.position);
 
             // If the scratch makes contact with rico
-            // regain 1 mana todo
+            // regain 1 mana
             // knock it back, lose 1hp, and start i-frames
             if (dist < 100) {
                 if (this.immunity == 0) {
@@ -54,7 +59,7 @@ public class Enemy extends Entity {
                     }
                     this.velocity = new Vector2D(-20 * x, -20 * y);
                     this.health -= 1;
-                    this.immunity = 10;
+                    this.immunity = 20;
                 }
 
                 if (this.immunity > 0) {
@@ -66,11 +71,6 @@ public class Enemy extends Entity {
         // If rico dies, get rid of the rico, todo: play an animation
         if (this.health <= 0) {
             this.dispose();
-
-            // drop a water item todo: with the dead rico's velocity when applicable
-            Water water = new Water(this.position.getX(), this.position.getY());
-            water.velocity = this.velocity;
-            Main.getGamePanel().addNewEntity(water);
         }
 
     }

@@ -72,7 +72,7 @@ public class Rico extends Entity {
         if (this.health <= 0) {
             this.dispose();
 
-            // drop a water item todo: with the dead rico's velocity when applicable
+            // drop a water item
             Water water = new Water(this.position.getX(), this.position.getY());
             water.velocity = this.velocity;
             Main.getGamePanel().addNewEntity(water);
