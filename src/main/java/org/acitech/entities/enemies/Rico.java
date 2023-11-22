@@ -18,6 +18,7 @@ public class Rico extends Entity {
     public int maxHealth = 6;
     public int health = maxHealth;
     public int immunity = 20;
+    public int damageTimer = 0;
 
     public Rico(double startX, double startY) {
         this.position = new Vector2D(startX, startY);
@@ -36,6 +37,8 @@ public class Rico extends Entity {
             this.acceleration = new Vector2D(x, y);
         }
 
+        if (this.damageTimer > 0) this.damageTimer--; // Reduce damage timer
+
         // Looks for any instances of a scratch
         for (Entity entity : GamePanel.entities) {
             if (!(entity instanceof Scratch)) continue;
@@ -52,6 +55,7 @@ public class Rico extends Entity {
                     this.velocity = new Vector2D(-20 * x, -20 * y);
                     this.health -= 1;
                     this.immunity = 10;
+                    this.damageTimer = 5;
                 }
 
                 if (this.immunity > 0) {
@@ -69,7 +73,6 @@ public class Rico extends Entity {
             water.velocity = this.velocity;
             Main.getGamePanel().addNewEntity(water);
         }
-
     }
 
     @Override
@@ -107,17 +110,29 @@ public class Rico extends Entity {
             texture = Main.getResources().getTexture("enemies/Rico/" + aniFrame + ":2");
         }
 
-//        ctx.setColor(Color.getHSBColor(1, 100, 200));
         ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
+
+        if (this.damageTimer > 0) {
+            BufferedImage wow = tint(texture, 1, 0, 0, (float) this.damageTimer / 5 * 0.6f);
+            ctx.drawImage(wow, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
+        }
     }
 
-//    public BufferedImage werwer(BufferedImage image) {
-//        for (int x = 0; x < image.getWidth(); x++) {
-//            for (int y = 0; y < image.getHeight(); y++) {
-//                int e = image.getRGB(x, y);
-//                e += 10;
-//                image.setRGB(x, y, e);
-//            }
-//        }
-//        return image;
+    public static BufferedImage tint(BufferedImage sprite, float red, float green, float blue, float alpha) {
+        BufferedImage maskImg = new BufferedImage(sprite.getWidth(), sprite.getHeight(), BufferedImage.TRANSLUCENT);
+        int rgb = new Color(red, green, blue, alpha).getRGB();
+
+        for (int i = 0; i < sprite.getWidth(); i++) {
+            for (int j = 0; j < sprite.getHeight(); j++) {
+                int color = sprite.getRGB(i, j);
+
+                if (color != 0) {
+                    maskImg.setRGB(i, j, rgb);
+                }
+            }
+        }
+
+        return maskImg;
     }
+
+}
