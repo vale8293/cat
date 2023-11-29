@@ -12,7 +12,7 @@ abstract public class Entity {
     protected double friction;
     protected boolean disposed = false;
 
-    protected Entity() {
+    public Entity() {
         // Initialize the variables
         this.position = new Vector2D(0, 0);
         this.velocity = new Vector2D(0, 0);

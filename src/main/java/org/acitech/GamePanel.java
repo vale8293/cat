@@ -1,11 +1,10 @@
 package org.acitech;
 
-import org.acitech.entities.enemies.Rico;
 import org.acitech.entities.Entity;
 import org.acitech.entities.Player;
+import org.acitech.entities.enemies.Rico;
 import org.acitech.tilemap.Room;
 import org.acitech.tilemap.Tile;
-import org.spongepowered.noise.module.source.Simplex;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +14,7 @@ import java.util.Random;
 
 public class GamePanel extends JPanel implements Runnable {
 
-    final int screenWidth = 800;
+    final int screenWidth = 1920;
     final int screenHeight = 600;
     final int fps = 60;
     private ArrayList<Entity> newEntities = new ArrayList<Entity>();
@@ -63,7 +62,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         // Create 1 Rico for reason ¯\_(ツ)_/¯
         for (int i = 0; i < 10; i++) {
-            addNewEntity(new Rico(Math.random() * screenWidth, Math.random() * screenHeight));
+            addNewEntity(new Rico(Math.random() * screenWidth + 400, Math.random() * screenHeight));
         }
 
         // Create 10 items for no reason ¯\_(ツ)_/¯

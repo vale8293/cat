@@ -1,6 +1,8 @@
 package org.acitech.inventory;
 
 import org.acitech.Main;
+import org.acitech.entities.Item;
+import org.acitech.entities.items.Water;
 
 import java.awt.image.BufferedImage;
 
@@ -46,5 +48,16 @@ public enum ItemType {
 
     public boolean isThrowable() {
         return throwable;
+    }
+
+    public static Item createEntity(ItemType type, double x, double y) {
+        switch (type) {
+            case WATER -> {
+                return new Water(x, y);
+            }
+            default -> {
+                return null;
+            }
+        }
     }
 }
