@@ -10,7 +10,12 @@ public class Main {
     public static void main(String[] args) {
         // Load the resource loader
         resources = new ResourceLoader();
-        resources.load();
+        boolean resourcesLoaded = resources.load();
+
+        if (!resourcesLoaded) {
+            System.out.println("Failed to load some resources");
+            return;
+        }
 
         // Create a JFrame window
         JFrame window = new JFrame();

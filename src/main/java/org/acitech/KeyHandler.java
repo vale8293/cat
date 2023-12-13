@@ -14,6 +14,9 @@ public class KeyHandler implements KeyListener, MouseListener {
     public static boolean dDown = false;
     public static boolean zDown = false;
     public static boolean xDown = false;
+    public static boolean cDown = false;
+    public static boolean vDown = false;
+    public static boolean rDown = false;
     public static boolean mousePressed = false;
     public static ArrayList<Click> mouseClicks = new ArrayList<>();
 
@@ -43,6 +46,15 @@ public class KeyHandler implements KeyListener, MouseListener {
             case KeyEvent.VK_X -> {
                 xDown = true;
             }
+            case KeyEvent.VK_C -> {
+                cDown = true;
+            }
+            case KeyEvent.VK_V -> {
+                vDown = true;
+            }
+            case KeyEvent.VK_R -> {
+                rDown = true;
+            }
         }
     }
 
@@ -68,6 +80,15 @@ public class KeyHandler implements KeyListener, MouseListener {
             }
             case KeyEvent.VK_X -> {
                 xDown = false;
+            }
+            case KeyEvent.VK_C -> {
+                cDown = false;
+            }
+            case KeyEvent.VK_V -> {
+                vDown = false;
+            }
+            case KeyEvent.VK_R -> {
+                rDown = false;
             }
         }
     }

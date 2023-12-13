@@ -1,11 +1,11 @@
 package org.acitech;
 
-import org.acitech.entities.enemies.Rico;
 import org.acitech.entities.Entity;
+import org.acitech.entities.Item;
 import org.acitech.entities.Player;
+import org.acitech.entities.enemies.Rico;
 import org.acitech.tilemap.Room;
 import org.acitech.tilemap.Tile;
-import org.spongepowered.noise.module.source.Simplex;
 
 import javax.swing.*;
 import java.awt.*;
@@ -62,8 +62,8 @@ public class GamePanel extends JPanel implements Runnable {
 //        }
 
         // Create 1 Rico for reason ¯\_(ツ)_/¯
-        for (int i = 0; i < 25; i++) {
-            addNewEntity(new Rico(Math.random() * screenWidth, Math.random() * screenHeight));
+        for (int i = 0; i < 10; i++) {
+            addNewEntity(new Rico(Math.random() * screenWidth + 400, Math.random() * screenHeight));
         }
 
         // Create 10 items for no reason ¯\_(ツ)_/¯
@@ -108,6 +108,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update(double delta) {
         ArrayList<Entity> disposedEntities = new ArrayList<Entity>();
+        ArrayList<Item> pickupItems = new ArrayList<Item>();
 
         // Add newly created entities
         entities.addAll(newEntities);
@@ -121,14 +122,27 @@ public class GamePanel extends JPanel implements Runnable {
             if (entity.isDisposed()) {
                 disposedEntities.add(entity);
             }
+
+            // Check if the entity is an item and is getting picked up
+            if (entity instanceof Item itemEntity) {
+                if (itemEntity.isGettingPickedUp()) {
+                    pickupItems.add(itemEntity);
+                }
+            }
         }
 
         // Tick the player
         player.tickEntity(delta);
 
-        // Loop through each disposed entity and remove them
+        // Pick up items
+        ArrayList<Item> disposedItems = player.pickupItems(pickupItems);
+
+        // Loop through each disposed entity/item and remove them
         for (Entity entity : disposedEntities) {
             entities.remove(entity);
+        }
+        for (Item item : disposedItems) {
+            entities.remove(item);
         }
 
         // Clear the list of mouse clicks

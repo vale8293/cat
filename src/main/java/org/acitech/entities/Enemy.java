@@ -1,38 +1,158 @@
 package org.acitech.entities;
 
 import org.acitech.GamePanel;
+import org.acitech.Main;
+import org.acitech.inventory.ItemStack;
+import org.acitech.inventory.ItemType;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class Enemy extends Entity {
 
-    private int width = 32;
-    private int height = 32;
+    private final String enemyName;
+    public ArrayList<ItemType> itemPool = new ArrayList<>();
+    private int animationTick = 0;
+    protected int width = 160;
+    protected int height = 160;
+    public int maxHealth = 1;
+    public int health = maxHealth;
+    public int maxMana = 0;
+    public int mana = maxMana;
+    public int damage = 1;
+    public int defense = 0;
+    public double moveSpeed = 1;
+    public int aggroDistance = 300;
+    public int immunity = 20;
+    public int damageTimer;
 
-    public Enemy(double startX, double startY) {
+    public Enemy(double startX, double startY, String enemyName) {
         this.position = new Vector2D(startX, startY);
         this.friction = 0.9;
+        this.enemyName = enemyName;
     }
 
     @Override
     protected void tick(double delta) {
         Vector2D playerPos = GamePanel.player.position;
+        if (this.damageTimer > 0) this.damageTimer--; // Reduce damage timer
 
         // Gets the angle between the player and the enemy
         double angle = Math.atan2(playerPos.getY() - this.position.getY(), playerPos.getX() - this.position.getX());
         double x = Math.cos(angle) * 0.5;
         double y = Math.sin(angle) * 0.5;
-        if (this.position.distance(playerPos) < 112) {
-            x *= -1;
-            y *= -1;
+        if (this.position.distance(playerPos) < aggroDistance) {
+            this.acceleration = new Vector2D(x, y);
+            this.acceleration = this.acceleration.scalarMultiply(moveSpeed);
+            if (this.position.distance(playerPos) < (int) this.width/2 ||
+                    this.position.distance(playerPos) < (int) this.height/2) {
+                GamePanel.player.health -= Math.max(this.damage - GamePanel.player.meleeDefense, 0);
+                this.velocity = new Vector2D(-20 * x, -20 * y);
+                GamePanel.player.velocity = this.velocity.scalarMultiply(-1);
+            }
         }
-        this.acceleration = new Vector2D(x, y);
+
+        // Looks for any instances of a scratch
+        for (Entity entity : GamePanel.entities) {
+            if (!(entity instanceof Scratch scratch)) continue;
+
+            // Gets the position of the scratch
+            double dist = scratch.position.distance(this.position);
+
+            // If the scratch makes contact with the enemy
+            // regain 1 mana
+            // knock it back, lose 1hp, and start i-frames
+            if (dist < 100) {
+                if (this.immunity == 0) {
+                    if (GamePanel.player.mana < GamePanel.player.maxMana) {
+                        GamePanel.player.mana += 1;
+                    }
+                    this.velocity = new Vector2D(-20 * x, -20 * y);
+                    this.health -= Math.max(GamePanel.player.scratchDamage - this.defense, 0);
+                    this.immunity = 20;
+                    this.damageTimer = 20;
+                }
+
+                if (this.immunity > 0) {
+                    this.immunity -= 1;
+                }
+            }
+        }
+
+        // If rico dies, get rid of the rico, todo: play an animation
+        if (this.health <= 0) {
+            this.dispose();
+
+            // cause there do be stuff in the item pool
+            if (itemPool.size() > 0) {
+                int rngIndex = new Random().nextInt(itemPool.size());
+                ItemType droppedItemType = itemPool.get(rngIndex);
+
+                // spawn entity based.
+                Item item = new Item(this.position.getX(), this.position.getY(), new ItemStack(ItemType.WATER, 1));
+
+                item.velocity = this.velocity;
+                Main.getGamePanel().addNewEntity(item);
+            }
+        }
     }
 
     @Override
     public void draw(Graphics2D ctx) {
-        ctx.setColor(Color.red);
-        ctx.fillRect((int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height);
+        BufferedImage texture;
+
+        animationTick += 1;
+        animationTick = animationTick % 24;
+        int aniFrame = animationTick / 4;
+
+        double largest = 0;
+        String direction = null;
+
+        // Check which direction is the largest
+        if (Math.abs(this.velocity.getX()) > largest) {
+            largest = Math.abs(this.velocity.getX());
+            direction = this.velocity.getX() > 0 ? "right" : "left";
+        }
+
+        // If the enemy is moving enough, draw the sprite in the direction that movement is
+        if (largest > 0.5) {
+            if (direction.equals("right")) {
+                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":1");
+            }
+            else {
+                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":0");
+            }
+        }
+        else {
+            texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":2");
+        }
+
+        ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
+
+
+        if (this.damageTimer > 0) {
+            BufferedImage wow = tint(texture, 1, 0, 0, (float) this.damageTimer / 20 * 0.6f);
+            ctx.drawImage(wow, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
+        }
+    }
+
+    public static BufferedImage tint(BufferedImage sprite, float red, float green, float blue, float alpha) {
+        BufferedImage maskImg = new BufferedImage(sprite.getWidth(), sprite.getHeight(), BufferedImage.TRANSLUCENT);
+        int rgb = new Color(red, green, blue, alpha).getRGB();
+
+        for (int i = 0; i < sprite.getWidth(); i++) {
+            for (int j = 0; j < sprite.getHeight(); j++) {
+                int color = sprite.getRGB(i, j);
+
+                if (color != 0) {
+                    maskImg.setRGB(i, j, rgb);
+                }
+            }
+        }
+
+        return maskImg;
     }
 }

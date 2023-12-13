@@ -17,7 +17,7 @@ public class ResourceLoader {
         return loadTexture("cow", "cow.png") &&
                 loadTexture("scratch", "effect/scratch.png") &&
                 loadTexture("ui/inv_bar_default", "ui/inv_bar_default.png") &&
-                loadTexture("items/water_Material", "items/water_Material.png") &&
+                loadTexture("items/water_material", "items/water_material.png") &&
                 loadSpriteSheet("player/running", "player/running.png", 32, 32) &&
                 loadSpriteSheet("player/idle", "player/idle.png", 32, 32) &&
                 loadSpriteSheet("enemies/Rico", "enemies/Rico.png", 32, 32) &&
@@ -27,7 +27,7 @@ public class ResourceLoader {
                 loadSound("player_scratch", "player/scratch.wav") &&
                 loadSpriteSheet("ui/hearts", "ui/hearts.png", 18, 16) &&
                 loadSpriteSheet("ui/mana", "ui/mana.png", 13, 13) &&
-                loadSpriteSheet("ui/numbers", "ui/numbers.png", 3, 5);
+                loadSpriteSheet("ui/numbers", "ui/numbers.png", 5, 5);
     }
 
     public boolean loadTexture(String key, String path) {
@@ -49,7 +49,10 @@ public class ResourceLoader {
         BufferedImage sheet = textures.get(key);
         int sheetWidth = sheet.getWidth();
         int sheetHeight = sheet.getHeight();
-        if (sheetWidth % width != 0 || sheetHeight % height != 0) return false;
+        if (sheetWidth % width != 0 || sheetHeight % height != 0) {
+            System.out.println("\"" + key + "\" sprite sheet is improperly sized");
+            return false;
+        }
 
         int rows = sheetWidth / width;
         int cols = sheetHeight / height;
@@ -65,7 +68,10 @@ public class ResourceLoader {
 
     public boolean loadSound(String key, String path) {
         InputStream is = getClass().getResourceAsStream("/sounds/" + path);
-        if (is == null) return false;
+        if (is == null) {
+            System.out.println("Failed to load sound \"" + key + "\"");
+            return false;
+        }
         soundMap.put(key, "/sounds/" + path);
         return true;
     }
