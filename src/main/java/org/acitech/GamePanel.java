@@ -14,7 +14,7 @@ import java.util.Random;
 
 public class GamePanel extends JPanel implements Runnable {
 
-    final int screenWidth = 1920;
+    final int screenWidth = 800;
     final int screenHeight = 600;
     final int fps = 60;
     private ArrayList<Entity> newEntities = new ArrayList<Entity>();
