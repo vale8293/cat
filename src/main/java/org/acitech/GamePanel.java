@@ -1,6 +1,7 @@
 package org.acitech;
 
 import org.acitech.entities.Entity;
+import org.acitech.entities.Item;
 import org.acitech.entities.Player;
 import org.acitech.entities.enemies.Rico;
 import org.acitech.tilemap.Room;
@@ -107,6 +108,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update(double delta) {
         ArrayList<Entity> disposedEntities = new ArrayList<Entity>();
+        ArrayList<Item> pickupItems = new ArrayList<Item>();
 
         // Add newly created entities
         entities.addAll(newEntities);
@@ -120,14 +122,27 @@ public class GamePanel extends JPanel implements Runnable {
             if (entity.isDisposed()) {
                 disposedEntities.add(entity);
             }
+
+            // Check if the entity is an item and is getting picked up
+            if (entity instanceof Item itemEntity) {
+                if (itemEntity.isGettingPickedUp()) {
+                    pickupItems.add(itemEntity);
+                }
+            }
         }
 
         // Tick the player
         player.tickEntity(delta);
 
-        // Loop through each disposed entity and remove them
+        // Pick up items
+        ArrayList<Item> disposedItems = player.pickupItems(pickupItems);
+
+        // Loop through each disposed entity/item and remove them
         for (Entity entity : disposedEntities) {
             entities.remove(entity);
+        }
+        for (Item item : disposedItems) {
+            entities.remove(item);
         }
 
         // Clear the list of mouse clicks

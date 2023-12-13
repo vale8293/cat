@@ -1,13 +1,17 @@
 package org.acitech.entities;
 
+import org.acitech.GamePanel;
 import org.acitech.KeyHandler;
 import org.acitech.Main;
 import org.acitech.inventory.Inventory;
+import org.acitech.inventory.ItemStack;
+import org.acitech.inventory.ItemType;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class Player extends Entity {
 
@@ -107,12 +111,25 @@ public class Player extends Entity {
 
             }
         }
-
         else {
             // Play idle animation todo: based on direction
             texture = Main.getResources().getTexture("player/idle/" + aniFrame / 3 + ":0");
-            }
+        }
 
         ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
+    }
+
+    // TODO: comment me
+    public ArrayList<Item> pickupItems(ArrayList<Item> items) {
+        for (Item item : items) {
+            ItemStack remaining = GamePanel.player.inventory1.addItem(item.getItemStack());
+
+            if (remaining != null) {
+                item.setItemStack(remaining);
+                items.remove(item);
+            }
+        }
+
+        return items;
     }
 }

@@ -2,6 +2,7 @@ package org.acitech.entities;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.inventory.ItemStack;
 import org.acitech.inventory.ItemType;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
@@ -91,8 +92,7 @@ public class Enemy extends Entity {
                 ItemType droppedItemType = itemPool.get(rngIndex);
 
                 // spawn entity based.
-                Item item = ItemType.createEntity(droppedItemType, this.position.getX(), this.position.getY());
-                assert item != null; // drat
+                Item item = new Item(this.position.getX(), this.position.getY(), new ItemStack(ItemType.WATER, 1));
 
                 item.velocity = this.velocity;
                 Main.getGamePanel().addNewEntity(item);
