@@ -21,6 +21,8 @@ public class Enemy extends Entity {
     public int health = maxHealth;
     public int maxMana = 0;
     public int mana = maxMana;
+    public int damage = 1;
+    public int defense = 0;
     public double moveSpeed = 1;
     public int aggroDistance = 300;
     public int immunity = 20;
@@ -44,8 +46,9 @@ public class Enemy extends Entity {
         if (this.position.distance(playerPos) < aggroDistance) {
             this.acceleration = new Vector2D(x, y);
             this.acceleration = this.acceleration.scalarMultiply(moveSpeed);
-            if (this.position.distance(playerPos) < 100) {
-                GamePanel.player.health -= 1;
+            if (this.position.distance(playerPos) < (int) this.width/2 ||
+                    this.position.distance(playerPos) < (int) this.height/2) {
+                GamePanel.player.health -= Math.max(this.damage - GamePanel.player.meleeDefense, 0);
                 this.velocity = new Vector2D(-20 * x, -20 * y);
                 GamePanel.player.velocity = this.velocity.scalarMultiply(-1);
             }
@@ -67,7 +70,7 @@ public class Enemy extends Entity {
                         GamePanel.player.mana += 1;
                     }
                     this.velocity = new Vector2D(-20 * x, -20 * y);
-                    this.health -= 1;
+                    this.health -= Math.max(GamePanel.player.scratchDamage - this.defense, 0);
                     this.immunity = 20;
                     this.damageTimer = 20;
                 }

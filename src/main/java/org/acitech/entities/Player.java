@@ -18,6 +18,9 @@ public class Player extends Entity {
     public int health = maxHealth;
     public int maxMana = 6;
     public int mana = maxMana;
+    public int scratchDamage = 1;
+    public int meleeDefense = 0;
+    public int magicDefense = 0;
     public Inventory inventory1 = new Inventory(8);
     public Inventory inventory2 = new Inventory(2);
     public Player() {
