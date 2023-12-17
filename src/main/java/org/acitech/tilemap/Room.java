@@ -52,6 +52,13 @@ public class Room {
                             ctx.drawImage(imageTufts, x * tileSize, y * tileSize, tileSize, tileSize, Main.getGamePanel());
                         }
                     }
+
+                    if (tile.getId().equals(Tile.dirt.getId())) {
+                        if (tuftsRng.nextDouble() > 0.15) {
+                            BufferedImage imageTufts = Main.getResources().getTexture("environment/pebbles/" + tuftsRng.nextInt(4) + ":0");
+                            ctx.drawImage(imageTufts, x * tileSize, y * tileSize, tileSize, tileSize, Main.getGamePanel());
+                        }
+                    }
                 }
 
                 // Loop through each connectable tile type

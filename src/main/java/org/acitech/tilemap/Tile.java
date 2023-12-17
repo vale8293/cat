@@ -9,6 +9,7 @@ public class Tile {
 
     // Define the static tiles
     public static Tile grass = new Tile("grass", "environment/grass", true);
+    public static Tile dirt = new Tile("dirt", "environment/dirt", false);
 
     public static final List<Tile> TILE_LIST = List.of(grass);
 

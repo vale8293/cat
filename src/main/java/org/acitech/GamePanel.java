@@ -50,9 +50,11 @@ public class GamePanel extends JPanel implements Runnable {
         for (int x = 0; x < room.getWidth(); x++) {
             for (int y = 0; y < room.getHeight(); y++) {
                 double noise = room.getSimplex().get((double) x / 10, (double) y / 10, 0);
-                if (noise > 1) continue;
-
-                room.setTile(x, y, Tile.grass);
+                if (noise > 1) {
+                    room.setTile(x, y, Tile.dirt);
+                } else {
+                    room.setTile(x, y, Tile.grass);
+                }
             }
         }
 
