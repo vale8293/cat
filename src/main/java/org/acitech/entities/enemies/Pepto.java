@@ -7,16 +7,16 @@ import org.acitech.inventory.ItemType;
 
 import java.awt.*;
 
-public class Rico extends Enemy {
+public class Pepto extends Enemy {
 
-    public Rico(double startX, double startY) {
-        super(startX, startY, "Rico");
+    public Pepto(double startX, double startY) {
+        super(startX, startY, "Pepto");
 
         this.width = 160;
         this.height = 160;
-        this.maxHealth = 5;
+        this.maxHealth = 3;
         this.health = maxHealth;
-        this.aggroDistance = 400;
+        this.aggroDistance = 600;
         this.itemPool.add(ItemType.WATER);
     }
 

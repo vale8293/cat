@@ -21,6 +21,7 @@ public class ResourceLoader {
                 loadSpriteSheet("player/running", "player/running.png", 32, 32) &&
                 loadSpriteSheet("player/idle", "player/idle.png", 32, 32) &&
                 loadSpriteSheet("enemies/Rico", "enemies/Rico.png", 32, 32) &&
+                loadSpriteSheet("enemies/Pepto", "enemies/Pepto.png", 32, 32) &&
                 loadSpriteSheet("effect/scratch", "effect/scratch.png", 32, 32) &&
                 loadSpriteSheet("environment/grass", "environment/grass.png", 32, 32) &&
                 loadSpriteSheet("environment/grass_tufts", "environment/grass_tufts.png", 32, 32) &&

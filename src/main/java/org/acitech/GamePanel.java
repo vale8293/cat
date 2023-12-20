@@ -2,7 +2,7 @@ package org.acitech;
 
 import org.acitech.entities.Entity;
 import org.acitech.entities.Player;
-import org.acitech.entities.enemies.Rico;
+import org.acitech.entities.enemies.Pepto;
 import org.acitech.tilemap.Room;
 import org.acitech.tilemap.Tile;
 
@@ -60,9 +60,9 @@ public class GamePanel extends JPanel implements Runnable {
 //            addNewEntity(new Enemy(Math.random() * screenWidth, Math.random() * screenHeight));
 //        }
 
-        // Create 1 Rico for reason ¯\_(ツ)_/¯
+        // Create test enemies for no reason ¯\_(ツ)_/¯
         for (int i = 0; i < 10; i++) {
-            addNewEntity(new Rico(Math.random() * screenWidth + 400, Math.random() * screenHeight));
+            addNewEntity(new Pepto(Math.random() * screenWidth + 400, Math.random() * screenHeight));
         }
 
         // Create 10 items for no reason ¯\_(ツ)_/¯
