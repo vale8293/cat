@@ -31,6 +31,10 @@ public class Player extends Entity {
 
     @Override
     protected void tick(double delta) {
+        if (this.damageTimer > 0) {
+            this.damageTimer--;
+        }
+
         if (KeyHandler.wDown) {
             this.acceleration = this.acceleration.add(new Vector2D(0, -.5));
         }

@@ -47,8 +47,8 @@ public class Enemy extends Entity {
         if (this.position.distance(playerPos) < aggroDistance) {
             this.acceleration = new Vector2D(x, y);
             this.acceleration = this.acceleration.scalarMultiply(moveSpeed);
-            if (this.position.distance(playerPos) < (int) this.width/2 ||
-                    this.position.distance(playerPos) < (int) this.height/2) {
+            if (this.position.distance(playerPos) < (int) (this.width/2) ||
+                    this.position.distance(playerPos) < (int) (this.height/2)) {
                 if (GamePanel.player.damageTimer == 0) {
                     GamePanel.player.health -= Math.max(this.damage - GamePanel.player.meleeDefense, 0);
                     GamePanel.player.damageTimer = immunity;
@@ -109,50 +109,54 @@ public class Enemy extends Entity {
         BufferedImage texture;
 
         animationTick += 1;
-        animationTick = animationTick % 6 * aniLength;
-        int aniFrame = animationTick / aniLength;
+
+        animationTick = animationTick % (aniLength * aniLength);
+        int aniFrame = animationTick / (aniLength);
 
         double largest = 0;
-        String direction = null;
+        String directionX = "left";
+        String directionY = "up";
 
         // Check which direction is the largest
         if (Math.abs(this.velocity.getX()) > largest) {
             largest = Math.abs(this.velocity.getX());
-            direction = this.velocity.getX() > 0 ? "right" : "left";
+            directionX = this.velocity.getX() > 0 ? "right" : "left";
         }
 
         // Check which direction is the largest
         if (Math.abs(this.velocity.getY()) > largest) {
             largest = Math.abs(this.velocity.getY());
-            direction = this.velocity.getY() > 0 ? "up" : "down";
+            directionY = this.velocity.getY() > 0 ? "up" : "down";
         }
 
         // If the enemy is moving enough, draw the sprite in the direction that movement is
         if (largest > 0.5) {
 
-            // Checks horizontal movement
-            if (direction.equals("left")) {
-                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":0");
-            }
-            else {
-                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":1");
-            }
-
             // Checks vertical movement
-            if (direction.equals("up")) {
+            if (directionY.equals("down")) {
                 texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":2");
             }
             else {
                 texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":3");
             }
+
+            // Checks horizontal movement
+            if (directionX.equals("left")) {
+                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":0");
+            }
+            else {
+                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":1");
+            }
         }
 
         // Because speed is too low, must be idle, checks direction
-        else if (direction.equals("left")){
-            texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":4");
-        }
         else {
-            texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":5");
+            if (directionX.equals("left")) {
+                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":4");
+            }
+            else {
+                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":5");
+            }
         }
 
         ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
