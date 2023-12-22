@@ -1,5 +1,6 @@
 package org.acitech.entities;
 
+import org.acitech.GamePanel;
 import org.acitech.Main;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
@@ -42,7 +43,7 @@ public class Scratch extends Entity {
 
         AffineTransform oldXForm = ctx.getTransform();
 
-        ctx.translate(this.originPosition.getX(), this.originPosition.getY());
+        ctx.translate(this.originPosition.getX() - (int) GamePanel.camera.getX(), this.originPosition.getY() - (int) GamePanel.camera.getY());
         ctx.rotate(this.angle - Math.PI / 2);
         ctx.drawImage(texture, -width / 2, -this.distance - height / 2, width, height, Main.getGamePanel());
 

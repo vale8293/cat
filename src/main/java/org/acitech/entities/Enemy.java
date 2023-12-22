@@ -130,12 +130,11 @@ public class Enemy extends Entity {
             texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":2");
         }
 
-        ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
-
+        ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
 
         if (this.damageTimer > 0) {
             BufferedImage wow = tint(texture, 1, 0, 0, (float) this.damageTimer / 20 * 0.6f);
-            ctx.drawImage(wow, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
+            ctx.drawImage(wow, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
         }
     }
 

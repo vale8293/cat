@@ -45,7 +45,7 @@ public class Item extends Entity {
     @Override
     public void draw(Graphics2D ctx) {
         BufferedImage texture = this.itemStack.getType().getTexture();
-        ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
+        ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
     }
 
     public boolean isGettingPickedUp() {

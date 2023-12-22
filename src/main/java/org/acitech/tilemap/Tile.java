@@ -21,6 +21,8 @@ public class Tile {
         return TILE_LIST.stream().filter(Tile::isConnected).toList();
     }
 
+    public static final int tileSize = 64;
+
     // Tile constructor
     private final String id;
     private final String textureKey;

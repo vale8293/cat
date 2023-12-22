@@ -6,6 +6,7 @@ import org.acitech.entities.Player;
 import org.acitech.entities.enemies.Rico;
 import org.acitech.tilemap.Room;
 import org.acitech.tilemap.Tile;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +26,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public static ArrayList<Entity> entities = new ArrayList<Entity>();
     public static Player player = new Player();
+    public static Vector2D camera = new Vector2D(0, 0);
     public static UI ui = new UI();
     public static HashMap<String, Room> rooms = new HashMap<>();
     public static String currentRoom = "default";
@@ -167,6 +169,24 @@ public class GamePanel extends JPanel implements Runnable {
         player.draw(ctx);
         ui.draw(ctx);
 
+        // Update the camera position
+        updateCamera();
+
         ctx.dispose();
+    }
+
+    private void updateCamera() {
+        double followSpeed = 0.2;
+        double offsetX = (player.position.getX() + Tile.tileSize / 2d - this.getWidth() / 2d - camera.getX()) * followSpeed;
+        double offsetY = (player.position.getY() + Tile.tileSize / 2d - this.getHeight() / 2d - camera.getY()) * followSpeed;
+
+        camera = new Vector2D(camera.getX() + offsetX, camera.getY() + offsetY);
+    }
+
+    public Vector2D getCameraCenter() {
+        return new Vector2D(
+                player.position.getX() - player.width / 2d - camera.getX(),
+                player.position.getY() - player.height / 2d - camera.getY()
+        );
     }
 }

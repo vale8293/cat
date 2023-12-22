@@ -1,5 +1,6 @@
 package org.acitech.tilemap;
 
+import org.acitech.GamePanel;
 import org.acitech.Main;
 import org.spongepowered.noise.module.source.Simplex;
 
@@ -14,8 +15,6 @@ public class Room {
     private final int width;
     private final int height;
     private final Simplex simplex;
-
-    private final int tileSize = 64;
 
     public Room(int width, int height, int seed) {
         this.tilemap = new Tile[width][height];
@@ -44,19 +43,19 @@ public class Room {
                 // If the tile is defined, draw it
                 if (tile != null) {
                     BufferedImage image = tile.getFullTexture();
-                    ctx.drawImage(image, x * tileSize, y * tileSize, tileSize, tileSize, Main.getGamePanel());
+                    ctx.drawImage(image, x * Tile.tileSize - (int) GamePanel.camera.getX(), y * Tile.tileSize - (int) GamePanel.camera.getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
 
                     if (tile.getId().equals(Tile.grass.getId())) {
                         if (tuftsRng.nextDouble() > 0.15) {
                             BufferedImage imageTufts = Main.getResources().getTexture("environment/grass_tufts/" + tuftsRng.nextInt(8) + ":0");
-                            ctx.drawImage(imageTufts, x * tileSize, y * tileSize, tileSize, tileSize, Main.getGamePanel());
+                            ctx.drawImage(imageTufts, x * Tile.tileSize - (int) GamePanel.camera.getX(), y * Tile.tileSize - (int) GamePanel.camera.getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
                         }
                     }
 
                     if (tile.getId().equals(Tile.dirt.getId())) {
                         if (tuftsRng.nextDouble() > 0.15) {
                             BufferedImage imageTufts = Main.getResources().getTexture("environment/pebbles/" + tuftsRng.nextInt(4) + ":0");
-                            ctx.drawImage(imageTufts, x * tileSize, y * tileSize, tileSize, tileSize, Main.getGamePanel());
+                            ctx.drawImage(imageTufts, x * Tile.tileSize - (int) GamePanel.camera.getX(), y * Tile.tileSize - (int) GamePanel.camera.getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
                         }
                     }
                 }
@@ -125,7 +124,7 @@ public class Room {
 
                     for (Connector connector : connectors) {
                         BufferedImage image = connTile.getTexture(connector);
-                        ctx.drawImage(image, x * tileSize, y * tileSize, tileSize, tileSize, Main.getGamePanel());
+                        ctx.drawImage(image, x * Tile.tileSize - (int) GamePanel.camera.getX(), y * Tile.tileSize - (int) GamePanel.camera.getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
                     }
                 }
             }

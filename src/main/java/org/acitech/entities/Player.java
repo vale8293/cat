@@ -16,8 +16,8 @@ import java.util.ArrayList;
 public class Player extends Entity {
 
     private int animationTick = 0;
-    private int width = 160;
-    private int height = 160;
+    public int width = 160;
+    public int height = 160;
     public int maxHealth = 6;
     public int health = maxHealth;
     public int maxMana = 6;
@@ -59,7 +59,7 @@ public class Player extends Entity {
             clip.start();
 
             for (KeyHandler.Click click : KeyHandler.mouseClicks) {
-                double angle = Math.atan2(this.position.getY() - click.getY(), this.position.getX() - click.getX());
+                double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
                 Scratch scratch = new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle);
                 scratch.velocity = this.velocity;
 
@@ -116,7 +116,7 @@ public class Player extends Entity {
             texture = Main.getResources().getTexture("player/idle/" + aniFrame / 3 + ":0");
         }
 
-        ctx.drawImage(texture, (int) this.position.getX() - width / 2, (int) this.position.getY() - height / 2, width, height, Main.getGamePanel());
+        ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
     }
 
     // TODO: comment me
