@@ -18,6 +18,8 @@ public class ResourceLoader {
                 loadTexture("scratch", "effect/scratch.png") &&
                 loadTexture("ui/inv_bar_default", "ui/inv_bar_default.png") &&
                 loadTexture("items/water_material", "items/water_material.png") &&
+                loadTexture("items/feather_material", "items/feather_material.png") &&
+                loadTexture("items/string_material", "items/string_material.png") &&
                 loadSpriteSheet("player/running", "player/running.png", 32, 32) &&
                 loadSpriteSheet("player/idle", "player/idle.png", 32, 32) &&
                 loadSpriteSheet("enemies/Rico", "enemies/Rico.png", 32, 32) &&
