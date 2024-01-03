@@ -48,8 +48,8 @@ public class Enemy extends Entity {
         if (this.position.distance(playerPos) < aggroDistance) {
             this.acceleration = new Vector2D(x, y);
             this.acceleration = this.acceleration.scalarMultiply(moveSpeed);
-            if (this.position.distance(playerPos) < (int) (this.width/2) ||
-                    this.position.distance(playerPos) < (int) (this.height/2)) {
+            if (this.position.distance(playerPos) < ((double) this.width /2) ||
+                    this.position.distance(playerPos) < ((double) this.height /2)) {
                 if (GamePanel.player.damageTimer == 0) {
                     GamePanel.player.health -= Math.max(this.damage - GamePanel.player.meleeDefense, 0);
                     GamePanel.player.damageTimer = immunity;
@@ -96,7 +96,7 @@ public class Enemy extends Entity {
                 ItemType droppedItemType = itemPool.get(rngIndex);
 
                 // spawn entity based.
-                Item item = new Item(this.position.getX(), this.position.getY(), new ItemStack(ItemType.WATER, 1));
+                Item item = new Item(this.position.getX(), this.position.getY(), new ItemStack(droppedItemType, 1));
 
                 item.velocity = this.velocity;
                 Main.getGamePanel().addNewEntity(item);

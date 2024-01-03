@@ -8,6 +8,7 @@ public enum ItemType {
     WATER(8, "items/water_material", 1, true),
     STRING(16, "items/water_material", 1, false),
     BONE(4, "items/water_material", 1, true),
+    FEATHER(8, "items/feather_material", 1, true),
     POTION_INST_HEALTH(1, "cow", 2, false),
     POTION_INST_MANA(1, "cow", 2, false),
     POTION_ATTACK_UP(1, "cow", 2, false),

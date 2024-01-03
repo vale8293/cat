@@ -1,9 +1,6 @@
 package org.acitech.entities.enemies;
 
-import org.acitech.Main;
 import org.acitech.entities.Enemy;
-import org.acitech.entities.Item;
-import org.acitech.inventory.ItemStack;
 import org.acitech.inventory.ItemType;
 
 import java.awt.*;
@@ -20,20 +17,12 @@ public class Pepto extends Enemy {
         this.health = maxHealth;
         this.moveSpeed = 0.8;
         this.aggroDistance = 400;
-        // this.itemPool.add(ItemType.WATER);
+        this.itemPool.add(ItemType.FEATHER);
     }
 
     @Override
     protected void tick(double delta) {
         super.tick(delta);
-
-        // If pepto dies, get rid of the pepto, todo: play an animation
-        if (this.health <= 0) {
-            // drop a water item
-            Item water = new Item(this.position.getX(), this.position.getY(), new ItemStack(ItemType.WATER, 1));
-            water.velocity = this.velocity;
-            Main.getGamePanel().addNewEntity(water);
-        }
     }
 
     @Override
