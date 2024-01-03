@@ -2,7 +2,9 @@ package org.acitech.entities.enemies;
 
 import org.acitech.Main;
 import org.acitech.entities.Enemy;
-import org.acitech.entities.items.Water;
+import org.acitech.entities.Item;
+import org.acitech.inventory.ItemStack;
+import org.acitech.inventory.ItemType;
 
 import java.awt.*;
 
@@ -28,7 +30,7 @@ public class Pepto extends Enemy {
         // If pepto dies, get rid of the pepto, todo: play an animation
         if (this.health <= 0) {
             // drop a water item
-            Water water = new Water(this.position.getX(), this.position.getY());
+            Item water = new Item(this.position.getX(), this.position.getY(), new ItemStack(ItemType.WATER, 1));
             water.velocity = this.velocity;
             Main.getGamePanel().addNewEntity(water);
         }
