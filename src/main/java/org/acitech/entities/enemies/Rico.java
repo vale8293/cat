@@ -15,9 +15,10 @@ public class Rico extends Enemy {
 
         this.width = 160;
         this.height = 160;
-        this.maxHealth = 3;
+        this.maxHealth = 5;
         this.health = maxHealth;
         this.aggroDistance = 400;
+        this.aniLength = 6;
         this.itemPool.add(ItemType.WATER);
     }
 }

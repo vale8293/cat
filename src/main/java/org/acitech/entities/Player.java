@@ -25,6 +25,8 @@ public class Player extends Entity {
     public int scratchDamage = 1;
     public int meleeDefense = 0;
     public int magicDefense = 0;
+    public int immunity = 30;
+    public int damageTimer = 0;
     public Inventory inventory1 = new Inventory(8);
     public Inventory inventory2 = new Inventory(2);
     public Player() {
@@ -33,6 +35,10 @@ public class Player extends Entity {
 
     @Override
     protected void tick(double delta) {
+        if (this.damageTimer > 0) {
+            this.damageTimer--;
+        }
+
         if (KeyHandler.wDown) {
             this.acceleration = this.acceleration.add(new Vector2D(0, -.5));
         }
