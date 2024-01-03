@@ -17,6 +17,7 @@ public class Enemy extends Entity {
     public ArrayList<ItemType> itemPool = new ArrayList<>();
     private int animationTick = 0;
     public int aniLength = 4;
+    public int aniFrameDuration = 4;
     protected int width = 160;
     protected int height = 160;
     public int maxHealth = 1;
@@ -96,7 +97,7 @@ public class Enemy extends Entity {
                 ItemType droppedItemType = itemPool.get(rngIndex);
 
                 // spawn entity based.
-                Item item = new Item(this.position.getX(), this.position.getY(), new ItemStack(ItemType.WATER, 1));
+                Item item = new Item(this.position.getX(), this.position.getY(), new ItemStack(droppedItemType, 1));
 
                 item.velocity = this.velocity;
                 Main.getGamePanel().addNewEntity(item);
@@ -110,8 +111,8 @@ public class Enemy extends Entity {
 
         animationTick += 1;
 
-        animationTick = animationTick % (aniLength * aniLength);
-        int aniFrame = animationTick / (aniLength);
+        animationTick = animationTick % (aniLength * aniFrameDuration);
+        int aniFrame = animationTick / (aniFrameDuration);
 
         double largest = 0;
         String directionX = "left";

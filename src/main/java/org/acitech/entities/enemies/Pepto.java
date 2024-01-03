@@ -14,6 +14,7 @@ public class Pepto extends Enemy {
         super(startX, startY, "Pepto");
 
         this.aniLength = 3;
+        this.aniFrameDuration = 8;
         this.width = 160;
         this.height = 160;
         this.maxHealth = 3;

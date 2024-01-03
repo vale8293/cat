@@ -9,6 +9,10 @@ public class ItemStack {
         this.type = type;
         this.count = Math.min(this.type.getStackSize(), amount);
     }
+    public ItemStack(ItemType type) {
+        this.type = type;
+        this.count = 1;
+    }
 
     public ItemType getType() {
         return type;
