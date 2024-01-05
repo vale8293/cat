@@ -27,6 +27,7 @@ public class Enemy extends Entity {
     public int damage = 1;
     public int defense = 0;
     public double moveSpeed = 1;
+    public int xpDrop = 1;
     public int aggroDistance = 300;
     public int immunity = 20;
     public int damageTimer;
