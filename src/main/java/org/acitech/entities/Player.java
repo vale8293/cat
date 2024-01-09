@@ -5,7 +5,6 @@ import org.acitech.KeyHandler;
 import org.acitech.Main;
 import org.acitech.inventory.Inventory;
 import org.acitech.inventory.ItemStack;
-import org.acitech.inventory.ItemType;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import javax.sound.sampled.Clip;
@@ -22,6 +21,7 @@ public class Player extends Entity {
     public int health = maxHealth;
     public int maxMana = 6;
     public int mana = maxMana;
+    public int xpCount = 0;
     public int scratchDamage = 1;
     public int meleeDefense = 0;
     public int magicDefense = 0;

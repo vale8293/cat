@@ -88,7 +88,7 @@ public class Enemy extends Entity {
             }
         }
 
-        // If rico dies, get rid of the enemy, todo: play an animation
+        // If the enemy dies, get rid of it, todo: play an animation
         if (this.health <= 0) {
             this.dispose();
 
@@ -97,11 +97,14 @@ public class Enemy extends Entity {
                 int rngIndex = new Random().nextInt(itemPool.size());
                 ItemType droppedItemType = itemPool.get(rngIndex);
 
-                // spawn entity based.
+                // Spawn the item and xp of the enemy based on the pool and drop count
                 Item item = new Item(this.position.getX(), this.position.getY(), new ItemStack(droppedItemType, 1));
+                Experience experience = new Experience(this.position.getX(), this.position.getY(), this.xpDrop);
 
                 item.velocity = this.velocity;
+                experience.velocity = this.velocity;
                 Main.getGamePanel().addNewEntity(item);
+                Main.getGamePanel().addNewEntity(experience);
             }
         }
     }
@@ -110,8 +113,8 @@ public class Enemy extends Entity {
     public void draw(Graphics2D ctx) {
         BufferedImage texture;
 
+        // Increments the frame of the animation
         animationTick += 1;
-
         animationTick = animationTick % (aniLength * aniFrameDuration);
         int aniFrame = animationTick / (aniFrameDuration);
 

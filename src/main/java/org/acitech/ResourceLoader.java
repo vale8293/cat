@@ -20,6 +20,7 @@ public class ResourceLoader {
                 loadTexture("items/water_material", "items/water_material.png") &&
                 loadTexture("items/feather_material", "items/feather_material.png") &&
                 loadTexture("items/string_material", "items/string_material.png") &&
+                loadTexture("items/experience", "items/experience_placeholder_size_frame.png") &&
                 loadSpriteSheet("player/running", "player/running.png", 32, 32) &&
                 loadSpriteSheet("player/idle", "player/idle.png", 32, 32) &&
                 loadSpriteSheet("enemies/Rico", "enemies/Rico.png", 32, 32) &&

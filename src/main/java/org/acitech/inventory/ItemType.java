@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 
 public enum ItemType {
     WATER(8, "items/water_material", 1, true),
-    STRING(16, "items/water_material", 1, false),
+    STRING(16, "items/string_material", 1, false),
     BONE(4, "items/water_material", 1, true),
     FEATHER(8, "items/feather_material", 1, true),
     POTION_INST_HEALTH(1, "cow", 2, false),
@@ -29,12 +29,15 @@ public enum ItemType {
     // inv 2 (Gold Notches, Potions or Spells)
     // inv 3 maybe (Anything, backpack sorta vibe)
     private final int defaultInvNum;
+    // Whether an item will be thrown when used or not
+//    private final int quantity;
 
-    ItemType(int stackSize, String textureKey, int defaultInvNum, boolean throwable) {
+    ItemType(int stackSize, String textureKey, int defaultInvNum, /*int quantity, */boolean throwable) {
         this.stackSize = stackSize;
         this.textureKey = textureKey;
-        this.throwable = throwable;
         this.defaultInvNum = defaultInvNum;
+        //this.quantity = quantity;
+        this.throwable = throwable;
     }
 
     public int getStackSize() {
