@@ -111,23 +111,10 @@ public class Player extends Entity {
         // If the player is moving enough, draw the sprite in the direction that movement is
         if (largest > 0.5) {
             switch (direction) {
-                case "up": {
-                    texture = Main.getResources().getTexture("player/running/" + aniFrame + ":3");
-                    break;
-                }
-                case "down": {
-                    texture = Main.getResources().getTexture("player/running/" + aniFrame + ":2");
-                    break;
-                }
-                case "left": {
-                    texture = Main.getResources().getTexture("player/running/" + aniFrame + ":0");
-                    break;
-                }
-                case "right": {
-                    texture = Main.getResources().getTexture("player/running/" + aniFrame + ":1");
-                    break;
-                }
-
+                case "up" -> texture = Main.getResources().getTexture("player/running/" + aniFrame + ":3");
+                case "down" -> texture = Main.getResources().getTexture("player/running/" + aniFrame + ":2");
+                case "right" -> texture = Main.getResources().getTexture("player/running/" + aniFrame + ":1");
+                case "left" -> texture = Main.getResources().getTexture("player/running/" + aniFrame + ":0");
             }
         }
         else {

@@ -12,8 +12,8 @@ public class Experience extends Entity {
     private int animationTick = 0;
     public int aniLength = 4;
     public int aniFrameDuration = 3;
-    protected int width = 360;
-    protected int height = 360;
+    protected int width = 36;
+    protected int height = 36;
     public double moveSpeed = 2;
     public int xpDrop;
 
@@ -26,6 +26,8 @@ public class Experience extends Entity {
     @Override
     protected void tick(double delta) {
         Vector2D playerPos = GamePanel.player.position;
+        System.out.println("I am an experience entity");
+        System.out.println(GamePanel.player.xpCount);
 
         // Gets the angle between the player and the XP Orb
         double angle = Math.atan2(playerPos.getY() - this.position.getY(), playerPos.getX() - this.position.getX());
@@ -33,10 +35,10 @@ public class Experience extends Entity {
         double y = Math.sin(angle) * 0.5;
         this.acceleration = new Vector2D(x, y);
         this.acceleration = this.acceleration.scalarMultiply(moveSpeed);
-        if (this.position.distance(playerPos) < ((double) this.width /2) ||
-                this.position.distance(playerPos) < ((double) this.height /2)) {
+        if (this.position.distance(playerPos) < ((double) this.width) ||
+                this.position.distance(playerPos) < ((double) this.height)) {
             GamePanel.player.xpCount += this.xpDrop;
-            //this.dispose();
+            this.dispose();
         }
     }
 

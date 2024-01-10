@@ -77,7 +77,7 @@ public class Enemy extends Entity {
                     if (GamePanel.player.mana < GamePanel.player.maxMana) {
                         GamePanel.player.mana += 1;
                     }
-                    this.velocity = new Vector2D(-20 * x, -20 * y);
+                    this.velocity = new Vector2D(this.kbMult * -x, this.kbMult * -y);
                     this.health -= Math.max(GamePanel.player.scratchDamage - this.defense, 0);
                     this.damageTimer = immunity;
                 }
