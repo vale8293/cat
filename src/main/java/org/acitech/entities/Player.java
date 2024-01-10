@@ -18,15 +18,18 @@ public class Player extends Entity {
     public int width = 160;
     public int height = 160;
     public int maxHealth = 6;
-    public int health = maxHealth;
+    public int health = maxHealth; // Can be increased in gameplay
     public int maxMana = 6;
-    public int mana = maxMana;
-    public int xpCount = 0;
-    public int scratchDamage = 1;
-    public int meleeDefense = 0;
-    public int magicDefense = 0;
+    public int mana = maxMana; // Can be increased in gameplay
+    public int xpCount = 0; // Can be increased in gameplay
+    public int scratchDamage = 1; // Can be increased in gameplay
+    public int scratchCooldown = 20; // Can be increased in gameplay
+    public int scratchTimer = scratchCooldown;
+    public int meleeDefense = 0; // Can be increased in gameplay
+    public int magicDefense = 0; // Can be increased in gameplay
+    public int kbMult = 20;
     public int immunity = 30;
-    public int damageTimer = 0;
+    public int damageTimer;
     public Inventory inventory1 = new Inventory(8);
     public Inventory inventory2 = new Inventory(2);
     public Player() {
@@ -34,11 +37,18 @@ public class Player extends Entity {
     }
 
     @Override
+    //Do this stuff every frame
     protected void tick(double delta) {
+
+        // Decrements cooldowns
         if (this.damageTimer > 0) {
             this.damageTimer--;
         }
+        if (this.scratchTimer > 0) {
+            this.scratchTimer--;
+        }
 
+        // Checks all the possible keys
         if (KeyHandler.wDown) {
             this.acceleration = this.acceleration.add(new Vector2D(0, -.5));
         }
@@ -58,6 +68,7 @@ public class Player extends Entity {
             this.mana -= 1;
         }
 
+        // Checks for mouse input
         if (KeyHandler.mouseClicks.size() > 0) {
             Clip clip = Main.getResources().getSound("player_scratch");
             clip.setFramePosition(0);
@@ -65,11 +76,13 @@ public class Player extends Entity {
             clip.start();
 
             for (KeyHandler.Click click : KeyHandler.mouseClicks) {
-                double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
-                Scratch scratch = new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle);
-                scratch.velocity = this.velocity;
-
-                Main.getGamePanel().addNewEntity(scratch);
+                if (this.scratchTimer == 0) {
+                    double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
+                    Scratch scratch = new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle);
+                    scratch.velocity = this.velocity;
+                    Main.getGamePanel().addNewEntity(scratch);
+                    this.scratchTimer = scratchCooldown;
+                }
             }
         }
     }

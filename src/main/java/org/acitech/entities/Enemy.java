@@ -27,6 +27,7 @@ public class Enemy extends Entity {
     public int damage = 1;
     public int defense = 0;
     public double moveSpeed = 1;
+    public int kbMult = 20;
     public int xpDrop = 1;
     public int aggroDistance = 300;
     public int immunity = 20;
@@ -54,10 +55,10 @@ public class Enemy extends Entity {
                     this.position.distance(playerPos) < ((double) this.height /2)) {
                 if (GamePanel.player.damageTimer == 0) {
                     GamePanel.player.health -= Math.max(this.damage - GamePanel.player.meleeDefense, 0);
-                    GamePanel.player.damageTimer = immunity;
+                    GamePanel.player.damageTimer = GamePanel.player.immunity;
                 }
-                this.velocity = new Vector2D(-20 * x, -20 * y);
-                GamePanel.player.velocity = this.velocity.scalarMultiply(-1);
+                this.velocity = new Vector2D(this.kbMult * -x, this.kbMult * -y);
+                GamePanel.player.velocity = this.velocity.scalarMultiply((double) -GamePanel.player.kbMult /this.kbMult);
             }
         }
 
@@ -72,14 +73,13 @@ public class Enemy extends Entity {
             // regain 1 mana
             // knock it back, lose 1hp, and start i-frames
             if (dist < 100) {
-                if (this.immunity == 0) {
+                if (this.damageTimer == 0) {
                     if (GamePanel.player.mana < GamePanel.player.maxMana) {
                         GamePanel.player.mana += 1;
                     }
                     this.velocity = new Vector2D(-20 * x, -20 * y);
                     this.health -= Math.max(GamePanel.player.scratchDamage - this.defense, 0);
-                    this.immunity = 20;
-                    this.damageTimer = 20;
+                    this.damageTimer = immunity;
                 }
 
                 if (this.immunity > 0) {

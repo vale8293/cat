@@ -18,6 +18,7 @@ public class Pepto extends Enemy {
         this.health = maxHealth;
         this.moveSpeed = 0.8;
         this.aggroDistance = 400;
+        this.kbMult = 30;
         this.xpDrop = 3;
         this.itemPool.add(ItemType.FEATHER);
     }

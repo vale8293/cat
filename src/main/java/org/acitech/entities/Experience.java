@@ -12,8 +12,8 @@ public class Experience extends Entity {
     private int animationTick = 0;
     public int aniLength = 4;
     public int aniFrameDuration = 3;
-    protected int width = 36;
-    protected int height = 36;
+    protected int width = 360;
+    protected int height = 360;
     public double moveSpeed = 2;
     public int xpDrop;
 
@@ -36,7 +36,7 @@ public class Experience extends Entity {
         if (this.position.distance(playerPos) < ((double) this.width /2) ||
                 this.position.distance(playerPos) < ((double) this.height /2)) {
             GamePanel.player.xpCount += this.xpDrop;
-            this.dispose();
+            //this.dispose();
         }
     }
 
