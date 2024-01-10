@@ -15,6 +15,8 @@ import java.util.ArrayList;
 public class Player extends Entity {
 
     private int animationTick = 0;
+    public int aniLength = 6;
+    public int aniFrameDuration = 4;
     public int width = 160;
     public int height = 160;
     public int maxHealth = 6;
@@ -91,12 +93,13 @@ public class Player extends Entity {
     public void draw(Graphics2D ctx) {
         BufferedImage texture = Main.getResources().getTexture("cow");
 
+        // Increments the frame of the animation
         animationTick += 1;
-        animationTick = animationTick % 24;
-        int aniFrame = animationTick / 4;
+        animationTick = animationTick % (aniLength * aniFrameDuration);
+        int aniFrame = animationTick / (aniFrameDuration);
 
         double largest = 0;
-        String direction = null;
+        String direction = "right";
 
         // Check which direction is the largest
         if (Math.abs(this.velocity.getX()) > largest) {
@@ -118,8 +121,11 @@ public class Player extends Entity {
             }
         }
         else {
-            // Play idle animation todo: based on direction
-            texture = Main.getResources().getTexture("player/idle/" + aniFrame / 3 + ":0");
+            if (direction.equals("left")) {
+                texture = Main.getResources().getTexture("player/idle/" + aniFrame / 3 + ":0");
+            } else {
+                texture = Main.getResources().getTexture("player/idle/" + aniFrame / 3 + ":1");
+            }
         }
 
         ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
