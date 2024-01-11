@@ -10,10 +10,10 @@ import java.awt.image.BufferedImage;
 public class Experience extends Entity {
 
     private int animationTick = 0;
-    public int aniLength = 4;
+    public int aniLength = 6;
     public int aniFrameDuration = 3;
-    protected int width = 36;
-    protected int height = 36;
+    protected int width = 48;
+    protected int height = 48;
     public double moveSpeed = 2;
     public int xpDrop;
 
@@ -26,8 +26,6 @@ public class Experience extends Entity {
     @Override
     protected void tick(double delta) {
         Vector2D playerPos = GamePanel.player.position;
-        System.out.println("I am an experience entity");
-        System.out.println(GamePanel.player.xpCount);
 
         // Gets the angle between the player and the XP Orb
         double angle = Math.atan2(playerPos.getY() - this.position.getY(), playerPos.getX() - this.position.getX());
