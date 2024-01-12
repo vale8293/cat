@@ -29,6 +29,8 @@ public class Enemy extends Entity {
     public double moveSpeed = 1;
     public int kbMult = 20;
     public int xpDrop = 1;
+    public int xpValue = 1;
+    public int xpScatter = 10;
     public int aggroDistance = 300;
     public int immunity = 20;
     public int damageTimer;
@@ -92,19 +94,26 @@ public class Enemy extends Entity {
         if (this.health <= 0) {
             this.dispose();
 
+            if (this.xpDrop > 0) {
+                for (int i = 0; i < xpDrop; i++) {
+                    int rngX = new Random().nextInt(xpScatter);
+                    int rngY = new Random().nextInt(xpScatter);
+                    Experience experience = new Experience(this.position.getX(), this.position.getY(), this.xpValue);
+                    experience.velocity = this.velocity.add(2, new Vector2D(rngX, rngY));
+                    Main.getGamePanel().addNewEntity(experience);
+                }
+            }
+
+
             // cause there do be stuff in the item pool
             if (itemPool.size() > 0) {
                 int rngIndex = new Random().nextInt(itemPool.size());
                 ItemType droppedItemType = itemPool.get(rngIndex);
 
-                // Spawn the item and xp of the enemy based on the pool and drop count
+                // Spawn the item of the enemy based on the pool
                 Item item = new Item(this.position.getX(), this.position.getY(), new ItemStack(droppedItemType, 1));
-                Experience experience = new Experience(this.position.getX(), this.position.getY(), this.xpDrop);
-
                 item.velocity = this.velocity;
-                experience.velocity = this.velocity;
                 Main.getGamePanel().addNewEntity(item);
-                Main.getGamePanel().addNewEntity(experience);
             }
         }
     }

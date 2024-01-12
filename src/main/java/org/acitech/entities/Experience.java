@@ -11,15 +11,15 @@ public class Experience extends Entity {
 
     private int animationTick = 0;
     public int aniLength = 6;
-    public int aniFrameDuration = 3;
+    public int aniFrameDuration = 6;
     protected int width = 48;
     protected int height = 48;
     public double moveSpeed = 2;
-    public int xpDrop;
+    public int xpValue;
 
-    public Experience(double startX, double startY, int xpDrop) {
+    public Experience(double startX, double startY, int xpValue) {
         this.position = new Vector2D(startX, startY);
-        this.xpDrop = xpDrop;
+        this.xpValue = xpValue;
         this.friction = 0.9;
     }
 
@@ -35,7 +35,7 @@ public class Experience extends Entity {
         this.acceleration = this.acceleration.scalarMultiply(moveSpeed);
         if (this.position.distance(playerPos) < ((double) this.width) ||
                 this.position.distance(playerPos) < ((double) this.height)) {
-            GamePanel.player.xpCount += this.xpDrop;
+            GamePanel.player.xpCount += 1;
             this.dispose();
         }
     }
@@ -49,9 +49,7 @@ public class Experience extends Entity {
         animationTick = animationTick % (aniLength * aniFrameDuration);
         int aniFrame = animationTick / (aniFrameDuration);
 
-        int xpSize = 0;
-
-        texture = Main.getResources().getTexture("items/experience/" + aniFrame + ":" + xpSize);
+        texture = Main.getResources().getTexture("items/experience/" + aniFrame + ":0");
         ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
     }
 }
