@@ -67,24 +67,14 @@ public class GamePanel extends JPanel implements Runnable {
 //        }
 
         // Create test enemies for no reason ¯\_(ツ)_/¯
-        for (int i = 0; i < 5; i++) {
-            addNewEntity(new Rico(Math.random() * screenWidth + 400, Math.random() * screenHeight));
-        }
+//        for (int i = 0; i < 5; i++) {
+//            addNewEntity(new Rico(Math.random() * screenWidth + 400, Math.random() * screenHeight));
+//        }
 
         // Create test enemies for no reason ¯\_(ツ)_/¯
         for (int i = 0; i < 5; i++) {
             addNewEntity(new Pepto(Math.random() * screenWidth + 400, Math.random() * screenHeight));
         }
-
-        // Create 10 items for no reason ¯\_(ツ)_/¯
-//        for (int i = 0; i < 10; i++) {
-//            addNewEntity(new Item(Math.random() * screenWidth, Math.random() * screenHeight));
-//        }
-
-        // Create 10 Water for no reason ¯\_(ツ)_/¯
-//        for (int i = 0; i < 10; i++) {
-//            addNewEntity(new Water(Math.random() * screenWidth, Math.random() * screenHeight));
-//        }
 
         // Create and start the game loop thread
         gameThread = new Thread(this);

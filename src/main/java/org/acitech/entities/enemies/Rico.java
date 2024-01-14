@@ -18,6 +18,8 @@ public class Rico extends Enemy {
         this.maxHealth = 5;
         this.health = maxHealth;
         this.aggroDistance = 400;
+
+        // Rewards
         this.xpDrop = 5;
 
         // Item Pool (Water: 1/1)

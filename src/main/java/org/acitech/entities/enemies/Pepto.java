@@ -22,6 +22,8 @@ public class Pepto extends Enemy {
         this.moveSpeed = 0.8;
         this.kbMult = 30;
         this.aggroDistance = 400;
+
+        // Rewards
         this.xpDrop = 3;
 
         // Item Pool (Feather: 1/1)

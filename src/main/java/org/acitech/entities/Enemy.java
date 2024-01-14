@@ -25,6 +25,7 @@ public class Enemy extends Entity {
     protected int height = 160;
 
     // Stats
+        // Combat
     public int maxHealth = 1;
     public int health = maxHealth;
     public int maxMana = 0;
@@ -34,12 +35,16 @@ public class Enemy extends Entity {
     public int defense = 0;
     public double moveSpeed = 1;
     public int kbMult = 20;
-    public int xpDrop = 1;
-    public int xpValue = 1;
-    public int xpScatter = 10;
     public int aggroDistance = 300;
     public int immunity = 20;
     public int damageTimer;
+
+        // Rewards
+    public int xpDrop = 1;
+    public int xpValue = 1;
+    public int xpScatter = 100;
+    public int itemDrop = 1;
+    public int itemScatter = 50;
 
     public Enemy(double startX, double startY, String enemyName) {
         this.position = new Vector2D(startX, startY);
@@ -107,27 +112,37 @@ public class Enemy extends Entity {
 
             // Drops XP based on the streak
             if (this.xpDrop > 0) {
-                for (int i = 0; i < Math.ceil((xpDrop - 1) * (1 + GamePanel.player.currentStreak / 10.0)); i++) {
-                    int rngX = new Random().nextInt(xpScatter);
-                    int rngY = new Random().nextInt(xpScatter);
+                for (int i = 0; i < Math.ceil((xpDrop - 1) * (2 * (0.5 + GamePanel.player.currentStreak / 10.0))); i++) {
+
+                    // Gets some random X & Y velocities to add to the drop velocity to scatter XP
+                    double rngX = new Random().nextInt(xpScatter);
+                    double rngY = new Random().nextInt(xpScatter);
+
+                    // Drops the XP with the random velocities added
                     Experience experience = new Experience(this.position.getX(), this.position.getY(), this.xpValue);
-                    experience.velocity = this.velocity.add(2, new Vector2D(rngX, rngY));
+                    experience.velocity = this.velocity.add(2, new Vector2D(rngX / 10, rngY / 10));
                     Main.getGamePanel().addNewEntity(experience);
                 }
             }
-            
+
             // Increments the streak
             GamePanel.player.currentStreak += 1;
 
             // cause there do be stuff in the item pool
             if (!itemPool.isEmpty()) {
-                int rngIndex = new Random().nextInt(itemPool.size());
-                ItemType droppedItemType = itemPool.get(rngIndex);
+                for (int i = 0; i < itemDrop; i++) {
 
-                // Spawn the item of the enemy based on the pool
-                Item item = new Item(this.position.getX(), this.position.getY(), new ItemStack(droppedItemType, 1));
-                item.velocity = this.velocity;
-                Main.getGamePanel().addNewEntity(item);
+                    // Get a random number to get an item from the pool + X & Y velocities to add
+                    double rngX = new Random().nextInt(itemScatter);
+                    double rngY = new Random().nextInt(itemScatter);
+                    int rngIndex = new Random().nextInt(itemPool.size());
+                    ItemType droppedItemType = itemPool.get(rngIndex);
+
+                    // Spawn the item of the enemy based on the pool
+                    Item item = new Item(this.position.getX(), this.position.getY(), new ItemStack(droppedItemType, 1));
+                    item.velocity = this.velocity.add(2, new Vector2D(rngX / 10, rngY / 10));
+                    Main.getGamePanel().addNewEntity(item);
+                }
             }
         }
     }

@@ -52,7 +52,6 @@ public class Player extends Entity {
     @Override
     // Do this stuff every frame
     protected void tick(double delta) {
-        System.out.println(this.currentStreak);
 
         // Decrements cooldowns
         if (this.damageTimer > 0) {

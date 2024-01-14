@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Inventory {
 
-    private ItemStack[] slots;
-    private final int maxSlots;
+    public ItemStack[] slots;
+    public int maxSlots;
 
     public Inventory(int maxSlots) {
         this.maxSlots = maxSlots;

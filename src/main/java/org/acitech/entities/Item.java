@@ -2,6 +2,7 @@ package org.acitech.entities;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.inventory.Inventory;
 import org.acitech.inventory.ItemStack;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
