@@ -14,34 +14,41 @@ import java.util.ArrayList;
 
 public class Player extends Entity {
 
+    // Animation & Visuals
     private int animationTick = 0;
     public int aniLength = 6;
     public int aniFrameDuration = 4;
     public int width = 160;
     public int height = 160;
-    public int maxHealth = 6;
-    public int health = maxHealth; // Can be increased in gameplay
-    public int maxMana = 6;
-    public int mana = maxMana; // Can be increased in gameplay
-    public int xpCount = 0; // Can be increased in gameplay
-    public int scratchDamage = 1; // Can be increased in gameplay
-    public int scratchCooldown = 20; // Can be increased in gameplay
+
+    // Stats
+        // UI
+    public int maxHealth = 6; // Can be changed in gameplay
+    public int health = maxHealth; // Can be changed in gameplay
+    public int maxMana = 6; // Can be changed in gameplay
+    public int mana = maxMana; // Can be changed in gameplay
+    public int xpCount = 0; // Can be changed in gameplay
+
+        // Combat & Movement
+    public int scratchDamage = 1; // Can be changed in gameplay
+    public int scratchCooldown = 20; // Can be changed in gameplay
     public int scratchTimer = scratchCooldown;
-    public int meleeDefense = 0; // Can be increased in gameplay
-    public int magicDefense = 0; // Can be increased in gameplay
-    public int kbMult = 20;
-    public int immunity = 30;
+    public int meleeDefense = 0; // Can be changed in gameplay
+    public int magicDefense = 0; // Can be changed in gameplay
+    public int kbMult = 20; // Can be changed in gameplay
+    public int immunity = 30; // Can be changed in gameplay
     public int damageTimer;
-    public Inventory inventory1 = new Inventory(8);
-    public Inventory inventory2 = new Inventory(2);
     public Player() {
         this.friction = 0.9;
     }
 
+    // Inventory
+    public Inventory inventory1 = new Inventory(8);
+    public Inventory inventory2 = new Inventory(2);
+
     @Override
-    //Do this stuff every frame
+    // Do this stuff every frame
     protected void tick(double delta) {
-        System.out.println(this.xpCount);
 
         // Decrements cooldowns
         if (this.damageTimer > 0) {
@@ -64,26 +71,32 @@ public class Player extends Entity {
         if (KeyHandler.dDown) {
             this.acceleration = this.acceleration.add(new Vector2D(.5, 0));
         }
+
+        // Placeholders for testing
         if (KeyHandler.zDown) {
-            this.health -= 1;
+            if (this.health > 0) {
+                this.health -= 1;
+            }
         }
         if (KeyHandler.xDown) {
-            this.mana -= 1;
+            if (this.mana > 0) {
+                this.mana -= 1;
+            }
         }
 
         // Checks for mouse input
-        if (KeyHandler.mouseClicks.size() > 0) {
-            Clip clip = Main.getResources().getSound("player_scratch");
-            clip.setFramePosition(0);
-            clip.loop(0);
-            clip.start();
+        if (!KeyHandler.mouseClicks.isEmpty()) {
 
+            // Checks for clicks (Scratch)
             for (KeyHandler.Click click : KeyHandler.mouseClicks) {
                 if (this.scratchTimer == 0) {
                     double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
                     Scratch scratch = new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle);
-                    scratch.velocity = this.velocity;
+                    Clip clip = Main.getResources().getSound("player_scratch");
+                    clip.setFramePosition(0);
+                    clip.loop(0);
                     Main.getGamePanel().addNewEntity(scratch);
+                    clip.start();
                     this.scratchTimer = scratchCooldown;
                 }
             }
@@ -91,6 +104,7 @@ public class Player extends Entity {
     }
 
     @Override
+    // Handles graphics
     public void draw(Graphics2D ctx) {
         BufferedImage texture = Main.getResources().getTexture("cow");
 
@@ -102,7 +116,7 @@ public class Player extends Entity {
         double largest = 0;
         String direction = "right";
 
-        // Check which direction is the largest
+        // Check which direction has the largest speed
         if (Math.abs(this.velocity.getX()) > largest) {
             largest = Math.abs(this.velocity.getX());
             direction = this.velocity.getX() > 0 ? "right" : "left";
@@ -121,6 +135,8 @@ public class Player extends Entity {
                 case "left" -> texture = Main.getResources().getTexture("player/running/" + aniFrame + ":0");
             }
         }
+
+        // Idle animation
         else {
             if (direction.equals("left")) {
                 texture = Main.getResources().getTexture("player/idle/" + aniFrame / 3 + ":0");

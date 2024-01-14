@@ -13,13 +13,18 @@ import java.util.Random;
 
 public class Enemy extends Entity {
 
+    // Identifiers
     private final String enemyName;
     public ArrayList<ItemType> itemPool = new ArrayList<>();
+
+    // Animation & Visuals
     private int animationTick = 0;
-    public int aniLength = 4;
-    public int aniFrameDuration = 4;
+    public int aniLength = 1;
+    public int aniFrameDuration = 1;
     protected int width = 160;
     protected int height = 160;
+
+    // Stats
     public int maxHealth = 1;
     public int health = maxHealth;
     public int maxMana = 0;
@@ -42,6 +47,7 @@ public class Enemy extends Entity {
     }
 
     @Override
+    // Do this stuff every frame
     protected void tick(double delta) {
         Vector2D playerPos = GamePanel.player.position;
         if (this.damageTimer > 0) this.damageTimer--; // Reduce damage timer
@@ -83,14 +89,10 @@ public class Enemy extends Entity {
                     this.health -= Math.max(GamePanel.player.scratchDamage - this.defense, 0);
                     this.damageTimer = immunity;
                 }
-
-                if (this.immunity > 0) {
-                    this.immunity -= 1;
-                }
             }
         }
 
-        // If the enemy dies, get rid of it, todo: play an animation
+        // If the enemy dies, get rid of it, todo: play an animation (probably some kinda particle explosion)
         if (this.health <= 0) {
             this.dispose();
 
@@ -104,9 +106,8 @@ public class Enemy extends Entity {
                 }
             }
 
-
             // cause there do be stuff in the item pool
-            if (itemPool.size() > 0) {
+            if (!itemPool.isEmpty()) {
                 int rngIndex = new Random().nextInt(itemPool.size());
                 ItemType droppedItemType = itemPool.get(rngIndex);
 
@@ -119,8 +120,9 @@ public class Enemy extends Entity {
     }
 
     @Override
+    // Handles graphics
     public void draw(Graphics2D ctx) {
-        BufferedImage texture;
+        BufferedImage texture = Main.getResources().getTexture("cow");
 
         // Increments the frame of the animation
         animationTick += 1;
@@ -128,59 +130,47 @@ public class Enemy extends Entity {
         int aniFrame = animationTick / (aniFrameDuration);
 
         double largest = 0;
-        String directionX = "left";
-        String directionY = "up";
+        String direction = "right";
 
-        // Check which direction is the largest
+        // Check which direction has the largest speed
         if (Math.abs(this.velocity.getX()) > largest) {
             largest = Math.abs(this.velocity.getX());
-            directionX = this.velocity.getX() > 0 ? "right" : "left";
+            direction = this.velocity.getX() > 0 ? "right" : "left";
         }
-
-        // Check which direction is the largest
         if (Math.abs(this.velocity.getY()) > largest) {
             largest = Math.abs(this.velocity.getY());
-            directionY = this.velocity.getY() > 0 ? "up" : "down";
+            direction = this.velocity.getY() > 0 ? "down" : "up";
         }
 
         // If the enemy is moving enough, draw the sprite in the direction that movement is
         if (largest > 0.5) {
-
-            // Checks vertical movement
-            if (directionY.equals("down")) {
-                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":2");
-            }
-            else {
-                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":3");
-            }
-
-            // Checks horizontal movement
-            if (directionX.equals("left")) {
-                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":0");
-            }
-            else {
-                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":1");
+            switch (direction) {
+                case "left" -> texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":" + 0);
+                case "right" -> texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":" + 1);
+                case "up" -> texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":" + 2);
+                case "down" -> texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":" + 3);
             }
         }
 
-        // Because speed is too low, must be idle, checks direction
+        // Idle animation
         else {
-            if (directionX.equals("left")) {
-                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":4");
-            }
-            else {
-                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":5");
+            if (direction.equals("left")) {
+                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":" + 4);
+            } else {
+                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":" + 5);
             }
         }
 
         ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
 
+        // If an enemy gets hit, tint it red and have it fade until its immunity frames run out
         if (this.damageTimer > 0) {
-            BufferedImage wow = tint(texture, 1, 0, 0, (float) this.damageTimer / 20 * 0.6f);
+            BufferedImage wow = tint(texture, 1, 0, 0, ((float) this.damageTimer / this.immunity * 0.8f) / 2);
             ctx.drawImage(wow, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
         }
     }
 
+    // Configures the tint used above
     public static BufferedImage tint(BufferedImage sprite, float red, float green, float blue, float alpha) {
         BufferedImage maskImg = new BufferedImage(sprite.getWidth(), sprite.getHeight(), BufferedImage.TRANSLUCENT);
         int rgb = new Color(red, green, blue, alpha).getRGB();

@@ -8,14 +8,19 @@ public class Rico extends Enemy {
     public Rico(double startX, double startY) {
         super(startX, startY, "Rico");
 
+        // Animation & Visuals
+        this.aniLength = 6;
+        this.aniFrameDuration = 6;
         this.width = 160;
         this.height = 160;
+
+        // Stats
         this.maxHealth = 5;
         this.health = maxHealth;
         this.aggroDistance = 400;
         this.xpDrop = 5;
-        this.aniLength = 6;
-        this.aniFrameDuration = 6;
+
+        // Item Pool (Water: 1/1)
         this.itemPool.add(ItemType.WATER);
     }
 }

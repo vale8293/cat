@@ -29,6 +29,7 @@ public class Scratch extends Entity {
     }
 
     @Override
+    // Do this stuff every frame
     protected void tick(double delta) {
         animationTick += 1;
 
