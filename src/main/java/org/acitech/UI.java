@@ -89,8 +89,8 @@ public class UI {
             int itemPos = Main.getGamePanel().getWidth() / 2 - invWidth / 2 + 32 + 64 * slot;
             ctx.drawImage(itemTexture, itemPos, invY + 4, 48, 48, Main.getGamePanel());
 
-            int amount = item.getCount();
-            BufferedImage amountTexture = Main.getResources().getTexture("ui/numbers/" + amount + ":0"); // TODO: make items above 9 count properly
+            int itemCount = item.getCount();
+            BufferedImage amountTexture = Main.getResources().getTexture("ui/numbers/" + itemCount + ":0"); // TODO: make items above 9 count properly
             ctx.drawImage(amountTexture, itemPos + 24, invY + 24 + 4, 24, 24, Main.getGamePanel());
         }
     }
@@ -101,7 +101,14 @@ public class UI {
         int streakX = Main.getGamePanel().getWidth() / 2 - streakWidth / 2;
         int streakY = Main.getGamePanel().getHeight() - 180;
 
-        BufferedImage streakTexture = Main.getResources().getTexture("ui/streak_bar/" + (3 - GamePanel.player.streakTimer / 60) + ":0");
+        BufferedImage streakTexture = Main.getResources().getTexture("ui/streak_bar/" + ((3 - (GamePanel.player.streakTimer + 59) / 60)) + ":0");
         ctx.drawImage(streakTexture, streakX, streakY, streakWidth, streakHeight, Main.getGamePanel());
+
+        int streakCount = GamePanel.player.currentStreak;
+        BufferedImage amountTextureOnes = Main.getResources().getTexture("ui/numbers/" + streakCount % 10 + ":0"); // TODO: make items above 9 count properly
+        ctx.drawImage(amountTextureOnes, streakX + 112, streakY, 20, 20, Main.getGamePanel());
+
+        BufferedImage amountTextureTens = Main.getResources().getTexture("ui/numbers/" + (streakCount / 10) % 10 + ":0"); // TODO: make items above 9 count properly
+        ctx.drawImage(amountTextureTens, streakX + 96, streakY, 20, 20, Main.getGamePanel());
     }
 }

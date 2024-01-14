@@ -30,6 +30,7 @@ public class Enemy extends Entity {
     public int maxMana = 0;
     public int mana = maxMana;
     public int damage = 1;
+    public String damageElement = "None";
     public int defense = 0;
     public double moveSpeed = 1;
     public int kbMult = 20;
@@ -56,17 +57,24 @@ public class Enemy extends Entity {
         double angle = Math.atan2(playerPos.getY() - this.position.getY(), playerPos.getX() - this.position.getX());
         double x = Math.cos(angle) * 0.5;
         double y = Math.sin(angle) * 0.5;
+
+        // If the enemy is close enough to the player, start its aggro ai
         if (this.position.distance(playerPos) < aggroDistance) {
             this.acceleration = new Vector2D(x, y);
             this.acceleration = this.acceleration.scalarMultiply(moveSpeed);
+
+            // If the enemy makes contact with th player
             if (this.position.distance(playerPos) < ((double) this.width /2) ||
                     this.position.distance(playerPos) < ((double) this.height /2)) {
+
+                // Deal damage w/ elemental effect (none by default)
                 if (GamePanel.player.damageTimer == 0) {
-                    GamePanel.player.health -= Math.max(this.damage - GamePanel.player.meleeDefense, 0);
-                    GamePanel.player.damageTimer = GamePanel.player.immunity;
+                    GamePanel.player.damageTaken(this.damage, this.damageElement);
                 }
+
+                // Knock back the enemy and player
                 this.velocity = new Vector2D(this.kbMult * -x, this.kbMult * -y);
-                GamePanel.player.velocity = this.velocity.scalarMultiply((double) -GamePanel.player.kbMult /this.kbMult);
+                GamePanel.player.velocity = this.velocity.scalarMultiply((double) -GamePanel.player.kbMult / this.kbMult);
             }
         }
 
@@ -97,12 +105,9 @@ public class Enemy extends Entity {
         if (this.health <= 0) {
             this.dispose();
 
-            // Increments the streak
-            GamePanel.player.currentStreak += 1;
-
             // Drops XP based on the streak
             if (this.xpDrop > 0) {
-                for (int i = 0; i < Math.ceil(xpDrop * (1 + GamePanel.player.currentStreak / 20.0)); i++) {
+                for (int i = 0; i < Math.ceil((xpDrop - 1) * (1 + GamePanel.player.currentStreak / 10.0)); i++) {
                     int rngX = new Random().nextInt(xpScatter);
                     int rngY = new Random().nextInt(xpScatter);
                     Experience experience = new Experience(this.position.getX(), this.position.getY(), this.xpValue);
@@ -110,6 +115,9 @@ public class Enemy extends Entity {
                     Main.getGamePanel().addNewEntity(experience);
                 }
             }
+            
+            // Increments the streak
+            GamePanel.player.currentStreak += 1;
 
             // cause there do be stuff in the item pool
             if (!itemPool.isEmpty()) {

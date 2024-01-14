@@ -29,7 +29,7 @@ public class Player extends Entity {
     public int mana = maxMana; // Can be changed in gameplay
     public int xpCount = 0; // Can be changed in gameplay
     public int currentStreak = 0;
-    public int streakTimerMax = 240;
+    public int streakTimerMax = 180;
     public int streakTimer = 0;
 
         // Combat & Movement
@@ -53,7 +53,6 @@ public class Player extends Entity {
     // Do this stuff every frame
     protected void tick(double delta) {
         System.out.println(this.currentStreak);
-        System.out.println(this.xpCount);
 
         // Decrements cooldowns
         if (this.damageTimer > 0) {
@@ -113,6 +112,13 @@ public class Player extends Entity {
                 }
             }
         }
+    }
+
+    public void damageTaken(int damage, String element) {
+        this.health -= Math.max(damage - this.meleeDefense, 0);
+        this.damageTimer = this.immunity;
+        this.streakTimer = 0;
+        this.currentStreak = 0;
     }
 
     @Override
