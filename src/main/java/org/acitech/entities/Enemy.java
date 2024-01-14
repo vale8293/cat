@@ -79,7 +79,7 @@ public class Enemy extends Entity {
 
             // If the scratch makes contact with the enemy
             // regain 1 mana
-            // knock it back, lose 1hp, and start i-frames
+            // knock it back, lose 1hp, and start i-frames, extend streak
             if (dist < 100) {
                 if (this.damageTimer == 0) {
                     if (GamePanel.player.mana < GamePanel.player.maxMana) {
@@ -88,6 +88,7 @@ public class Enemy extends Entity {
                     this.velocity = new Vector2D(this.kbMult * -x, this.kbMult * -y);
                     this.health -= Math.max(GamePanel.player.scratchDamage - this.defense, 0);
                     this.damageTimer = immunity;
+                    GamePanel.player.streakTimer = GamePanel.player.streakTimerMax;
                 }
             }
         }
@@ -96,8 +97,12 @@ public class Enemy extends Entity {
         if (this.health <= 0) {
             this.dispose();
 
+            // Increments the streak
+            GamePanel.player.currentStreak += 1;
+
+            // Drops XP based on the streak
             if (this.xpDrop > 0) {
-                for (int i = 0; i < xpDrop; i++) {
+                for (int i = 0; i < Math.ceil(xpDrop * (1 + GamePanel.player.currentStreak / 20.0)); i++) {
                     int rngX = new Random().nextInt(xpScatter);
                     int rngY = new Random().nextInt(xpScatter);
                     Experience experience = new Experience(this.position.getX(), this.position.getY(), this.xpValue);

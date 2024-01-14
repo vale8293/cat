@@ -11,6 +11,7 @@ public class UI {
         drawHealth(ctx);
         drawMana(ctx);
         drawInventory(ctx);
+        drawStreak(ctx);
     }
 
     public void drawHealth(Graphics2D ctx) {
@@ -92,5 +93,15 @@ public class UI {
             BufferedImage amountTexture = Main.getResources().getTexture("ui/numbers/" + amount + ":0"); // TODO: make items above 9 count properly
             ctx.drawImage(amountTexture, itemPos + 24, invY + 24 + 4, 24, 24, Main.getGamePanel());
         }
+    }
+
+    public void drawStreak(Graphics2D ctx) {
+        int streakWidth = 128;
+        int streakHeight = 64;
+        int streakX = Main.getGamePanel().getWidth() / 2 - streakWidth / 2;
+        int streakY = Main.getGamePanel().getHeight() - 180;
+
+        BufferedImage streakTexture = Main.getResources().getTexture("ui/streak_bar/" + (3 - GamePanel.player.streakTimer / 60) + ":0");
+        ctx.drawImage(streakTexture, streakX, streakY, streakWidth, streakHeight, Main.getGamePanel());
     }
 }

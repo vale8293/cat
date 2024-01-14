@@ -28,6 +28,9 @@ public class Player extends Entity {
     public int maxMana = 6; // Can be changed in gameplay
     public int mana = maxMana; // Can be changed in gameplay
     public int xpCount = 0; // Can be changed in gameplay
+    public int currentStreak = 0;
+    public int streakTimerMax = 240;
+    public int streakTimer = 0;
 
         // Combat & Movement
     public int scratchDamage = 1; // Can be changed in gameplay
@@ -49,6 +52,8 @@ public class Player extends Entity {
     @Override
     // Do this stuff every frame
     protected void tick(double delta) {
+        System.out.println(this.currentStreak);
+        System.out.println(this.xpCount);
 
         // Decrements cooldowns
         if (this.damageTimer > 0) {
@@ -56,6 +61,13 @@ public class Player extends Entity {
         }
         if (this.scratchTimer > 0) {
             this.scratchTimer--;
+        }
+        if (this.streakTimer > 0) {
+            this.streakTimer--;
+        }
+
+        if (this.streakTimer == 0) {
+            this.currentStreak = 0;
         }
 
         // Checks all the possible keys
