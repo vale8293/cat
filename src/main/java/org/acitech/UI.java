@@ -13,6 +13,7 @@ public class UI {
         drawMana(ctx);
         drawInventory(ctx);
         drawStreak(ctx);
+        drawXP(ctx);
     }
 
     // Handles the graphics for the health bar
@@ -128,5 +129,25 @@ public class UI {
 
         BufferedImage amountTextureTens = Main.getResources().getTexture("ui/numbers/" + (streakCount / 10) % 10 + ":0");
         ctx.drawImage(amountTextureTens, streakX + 96, streakY, 20, 20, Main.getGamePanel());
+    }
+
+    // Placeholder: Counts XP in-game (should be polished and repurposed)
+    public void drawXP(Graphics2D ctx) {
+
+        int xpX = 0;
+        int xpY = Main.getGamePanel().getHeight() - 25;
+
+        int xpCount = GamePanel.player.xpCount;
+        BufferedImage amountTextureOnes = Main.getResources().getTexture("ui/numbers/" + xpCount % 10 + ":0");
+        ctx.drawImage(amountTextureOnes, xpX + 48, xpY, 20, 20, Main.getGamePanel());
+
+        BufferedImage amountTextureTens = Main.getResources().getTexture("ui/numbers/" + (xpCount / 10) % 10 + ":0");
+        ctx.drawImage(amountTextureTens, xpX + 32, xpY, 20, 20, Main.getGamePanel());
+
+        BufferedImage amountTextureHunds = Main.getResources().getTexture("ui/numbers/" + (xpCount / 100) % 10 + ":0");
+        ctx.drawImage(amountTextureHunds, xpX + 16, xpY, 20, 20, Main.getGamePanel());
+
+        BufferedImage amountTextureThous = Main.getResources().getTexture("ui/numbers/" + (xpCount / 1000) % 10 + ":0");
+        ctx.drawImage(amountTextureThous, xpX, xpY, 20, 20, Main.getGamePanel());
     }
 }

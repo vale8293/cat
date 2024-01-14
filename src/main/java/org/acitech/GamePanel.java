@@ -67,12 +67,12 @@ public class GamePanel extends JPanel implements Runnable {
 //        }
 
         // Create test enemies for no reason ¯\_(ツ)_/¯
-//        for (int i = 0; i < 5; i++) {
-//            addNewEntity(new Rico(Math.random() * screenWidth + 400, Math.random() * screenHeight));
-//        }
+        for (int i = 0; i < 100; i++) {
+            addNewEntity(new Rico(Math.random() * screenWidth + 400, Math.random() * screenHeight));
+        }
 
         // Create test enemies for no reason ¯\_(ツ)_/¯
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 100; i++) {
             addNewEntity(new Pepto(Math.random() * screenWidth + 400, Math.random() * screenHeight));
         }
 

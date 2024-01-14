@@ -41,6 +41,7 @@ public class Player extends Entity {
     public int kbMult = 20; // Can be changed in gameplay
     public int immunity = 30; // Can be changed in gameplay
     public int damageTimer;
+    public boolean bufferInput = false;
     public Player() {
         this.friction = 0.9;
     }
