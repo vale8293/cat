@@ -7,12 +7,16 @@ import java.awt.image.BufferedImage;
 
 public class UI {
 
+    // Draws all UI elements
     public void draw(Graphics2D ctx) {
         drawHealth(ctx);
         drawMana(ctx);
         drawInventory(ctx);
+        drawStreak(ctx);
+        drawXP(ctx);
     }
 
+    // Handles the graphics for the health bar
     public void drawHealth(Graphics2D ctx) {
         int x = 0;
         int cobalt = GamePanel.player.health; // thanks cobalt :)
@@ -20,21 +24,30 @@ public class UI {
         for (int i = 0; i < GamePanel.player.maxHealth / 2; i++) {
             BufferedImage texture;
 
+            // Draws a full heart for every 2 health you have
             if (cobalt >= 2) {
                 texture = Main.getResources().getTexture("ui/hearts/0:0"); // full
                 cobalt -= 2;
-            } else if (cobalt == 1) {
+            }
+
+            // Draws a half heart for every 1 health aside from the 2s (should be 1 or 0)
+            else if (cobalt == 1) {
                 texture = Main.getResources().getTexture("ui/hearts/1:0"); // half
                 cobalt--;
-            } else {
+            }
+
+            // Draws empty hearts for all health remaining in the max that isn't in the current
+            else {
                 texture = Main.getResources().getTexture("ui/hearts/2:0"); // empty
             }
 
+            // Draws hearts rightward with small gaps between
             ctx.drawImage(texture, x + 16, 16, 72, 64, Main.getGamePanel());
             x += texture.getWidth() * 4 + 4;
         }
     }
 
+    // Handles the mana star(s), functions the same as HP
     public void drawMana(Graphics2D ctx) {
         int x = 0;
         int cobalt = GamePanel.player.mana; // thanks cobalt :)
@@ -64,12 +77,13 @@ public class UI {
                 texture = Main.getResources().getTexture("ui/mana/6:0"); // empty
             }
 
+            // Draws stars rightward with small gaps between
             ctx.drawImage(texture, x + 16, 84, 52, 52, Main.getGamePanel());
-
             x += texture.getWidth() * 4 + 4;
         }
     }
 
+    // Handles the inventory bar and items (might be rewritten)
     public void drawInventory(Graphics2D ctx) {
         int invWidth = 688;
         int invHeight = 64;
@@ -88,9 +102,52 @@ public class UI {
             int itemPos = Main.getGamePanel().getWidth() / 2 - invWidth / 2 + 32 + 64 * slot;
             ctx.drawImage(itemTexture, itemPos, invY + 4, 48, 48, Main.getGamePanel());
 
-            int amount = item.getCount();
-            BufferedImage amountTexture = Main.getResources().getTexture("ui/numbers/" + amount + ":0"); // TODO: make items above 9 count properly
-            ctx.drawImage(amountTexture, itemPos + 24, invY + 24 + 4, 24, 24, Main.getGamePanel());
+            int itemCount = item.getCount();
+            BufferedImage amountTextureOnes = Main.getResources().getTexture("ui/numbers/" + itemCount % 10 + ":0");
+            ctx.drawImage(amountTextureOnes, itemPos + 32, invY + 40, 20, 20, Main.getGamePanel());
+
+            if (itemCount / 10 > 0) {
+                BufferedImage amountTextureTens = Main.getResources().getTexture("ui/numbers/" + (itemCount / 10) % 10 + ":0");
+                ctx.drawImage(amountTextureTens, itemPos + 16, invY + 40, 20, 20, Main.getGamePanel());
+            }
+
         }
+    }
+
+    public void drawStreak(Graphics2D ctx) {
+        int streakWidth = 128;
+        int streakHeight = 64;
+        int streakX = Main.getGamePanel().getWidth() / 2 - streakWidth / 2;
+        int streakY = Main.getGamePanel().getHeight() - 180;
+
+        BufferedImage streakTexture = Main.getResources().getTexture("ui/streak_bar/" + ((3 - (GamePanel.player.streakTimer + 59) / 60)) + ":0");
+        ctx.drawImage(streakTexture, streakX, streakY, streakWidth, streakHeight, Main.getGamePanel());
+
+        int streakCount = GamePanel.player.currentStreak;
+        BufferedImage amountTextureOnes = Main.getResources().getTexture("ui/numbers/" + streakCount % 10 + ":0");
+        ctx.drawImage(amountTextureOnes, streakX + 112, streakY, 20, 20, Main.getGamePanel());
+
+        BufferedImage amountTextureTens = Main.getResources().getTexture("ui/numbers/" + (streakCount / 10) % 10 + ":0");
+        ctx.drawImage(amountTextureTens, streakX + 96, streakY, 20, 20, Main.getGamePanel());
+    }
+
+    // Placeholder: Counts XP in-game (should be polished and repurposed)
+    public void drawXP(Graphics2D ctx) {
+
+        int xpX = 0;
+        int xpY = Main.getGamePanel().getHeight() - 25;
+
+        int xpCount = GamePanel.player.xpCount;
+        BufferedImage amountTextureOnes = Main.getResources().getTexture("ui/numbers/" + xpCount % 10 + ":0");
+        ctx.drawImage(amountTextureOnes, xpX + 48, xpY, 20, 20, Main.getGamePanel());
+
+        BufferedImage amountTextureTens = Main.getResources().getTexture("ui/numbers/" + (xpCount / 10) % 10 + ":0");
+        ctx.drawImage(amountTextureTens, xpX + 32, xpY, 20, 20, Main.getGamePanel());
+
+        BufferedImage amountTextureHunds = Main.getResources().getTexture("ui/numbers/" + (xpCount / 100) % 10 + ":0");
+        ctx.drawImage(amountTextureHunds, xpX + 16, xpY, 20, 20, Main.getGamePanel());
+
+        BufferedImage amountTextureThous = Main.getResources().getTexture("ui/numbers/" + (xpCount / 1000) % 10 + ":0");
+        ctx.drawImage(amountTextureThous, xpX, xpY, 20, 20, Main.getGamePanel());
     }
 }

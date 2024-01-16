@@ -5,7 +5,6 @@ import org.acitech.KeyHandler;
 import org.acitech.Main;
 import org.acitech.inventory.Inventory;
 import org.acitech.inventory.ItemStack;
-import org.acitech.inventory.ItemType;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import javax.sound.sampled.Clip;
@@ -15,30 +14,62 @@ import java.util.ArrayList;
 
 public class Player extends Entity {
 
+    // Animation & Visuals
     private int animationTick = 0;
+    public int aniLength = 6;
+    public int aniFrameDuration = 4;
     public int width = 160;
     public int height = 160;
-    public int maxHealth = 6;
-    public int health = maxHealth;
-    public int maxMana = 6;
-    public int mana = maxMana;
-    public int scratchDamage = 1;
-    public int meleeDefense = 0;
-    public int magicDefense = 0;
-    public int immunity = 30;
-    public int damageTimer = 0;
-    public Inventory inventory1 = new Inventory(8);
-    public Inventory inventory2 = new Inventory(2);
+
+    // Stats
+        // UI
+    public int maxHealth = 6; // Can be changed in gameplay
+    public int health = maxHealth; // Can be changed in gameplay
+    public int maxMana = 6; // Can be changed in gameplay
+    public int mana = maxMana; // Can be changed in gameplay
+    public int xpCount = 0; // Can be changed in gameplay
+    public int currentStreak = 0;
+    public int streakTimerMax = 180;
+    public int streakTimer = 0;
+
+        // Combat & Movement
+    public int scratchDamage = 1; // Can be changed in gameplay
+    public int scratchCooldown = 20; // Can be changed in gameplay
+    public int scratchTimer = scratchCooldown;
+    public int meleeDefense = 0; // Can be changed in gameplay
+    public int magicDefense = 0; // Can be changed in gameplay
+    public int kbMult = 20; // Can be changed in gameplay
+    public int immunity = 30; // Can be changed in gameplay
+    public int damageTimer;
+    public boolean bufferInput = false;
     public Player() {
         this.friction = 0.9;
     }
 
+    // Inventory
+    public Inventory inventory1 = new Inventory(8);
+    public Inventory inventory2 = new Inventory(2);
+
     @Override
+    // Do this stuff every frame
     protected void tick(double delta) {
+
+        // Decrements cooldowns
         if (this.damageTimer > 0) {
             this.damageTimer--;
         }
+        if (this.scratchTimer > 0) {
+            this.scratchTimer--;
+        }
+        if (this.streakTimer > 0) {
+            this.streakTimer--;
+        }
 
+        if (this.streakTimer == 0) {
+            this.currentStreak = 0;
+        }
+
+        // Checks all the possible keys
         if (KeyHandler.wDown) {
             this.acceleration = this.acceleration.add(new Vector2D(0, -.5));
         }
@@ -51,41 +82,59 @@ public class Player extends Entity {
         if (KeyHandler.dDown) {
             this.acceleration = this.acceleration.add(new Vector2D(.5, 0));
         }
+
+        // Placeholders for testing
         if (KeyHandler.zDown) {
-            this.health -= 1;
+            if (this.health > 0) {
+                this.health -= 1;
+            }
         }
         if (KeyHandler.xDown) {
-            this.mana -= 1;
+            if (this.mana > 0) {
+                this.mana -= 1;
+            }
         }
 
-        if (KeyHandler.mouseClicks.size() > 0) {
-            Clip clip = Main.getResources().getSound("player_scratch");
-            clip.setFramePosition(0);
-            clip.loop(0);
-            clip.start();
+        // Checks for mouse input
+        if (!KeyHandler.mouseClicks.isEmpty()) {
 
+            // Checks for clicks (Scratch)
             for (KeyHandler.Click click : KeyHandler.mouseClicks) {
-                double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
-                Scratch scratch = new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle);
-                scratch.velocity = this.velocity;
-
-                Main.getGamePanel().addNewEntity(scratch);
+                if (this.scratchTimer == 0) {
+                    double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
+                    Scratch scratch = new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle);
+                    Clip clip = Main.getResources().getSound("player_scratch");
+                    clip.setFramePosition(0);
+                    clip.loop(0);
+                    Main.getGamePanel().addNewEntity(scratch);
+                    clip.start();
+                    this.scratchTimer = scratchCooldown;
+                }
             }
         }
     }
 
+    public void damageTaken(int damage, String element) {
+        this.health -= Math.max(damage - this.meleeDefense, 0);
+        this.damageTimer = this.immunity;
+        this.streakTimer = 0;
+        this.currentStreak = 0;
+    }
+
     @Override
+    // Handles graphics
     public void draw(Graphics2D ctx) {
         BufferedImage texture = Main.getResources().getTexture("cow");
 
+        // Increments the frame of the animation
         animationTick += 1;
-        animationTick = animationTick % 24;
-        int aniFrame = animationTick / 4;
+        animationTick = animationTick % (aniLength * aniFrameDuration);
+        int aniFrame = animationTick / (aniFrameDuration);
 
         double largest = 0;
-        String direction = null;
+        String direction = "right";
 
-        // Check which direction is the largest
+        // Check which direction has the largest speed
         if (Math.abs(this.velocity.getX()) > largest) {
             largest = Math.abs(this.velocity.getX());
             direction = this.velocity.getX() > 0 ? "right" : "left";
@@ -98,28 +147,20 @@ public class Player extends Entity {
         // If the player is moving enough, draw the sprite in the direction that movement is
         if (largest > 0.5) {
             switch (direction) {
-                case "up": {
-                    texture = Main.getResources().getTexture("player/running/" + aniFrame + ":3");
-                    break;
-                }
-                case "down": {
-                    texture = Main.getResources().getTexture("player/running/" + aniFrame + ":2");
-                    break;
-                }
-                case "left": {
-                    texture = Main.getResources().getTexture("player/running/" + aniFrame + ":0");
-                    break;
-                }
-                case "right": {
-                    texture = Main.getResources().getTexture("player/running/" + aniFrame + ":1");
-                    break;
-                }
-
+                case "up" -> texture = Main.getResources().getTexture("player/running/" + aniFrame + ":3");
+                case "down" -> texture = Main.getResources().getTexture("player/running/" + aniFrame + ":2");
+                case "right" -> texture = Main.getResources().getTexture("player/running/" + aniFrame + ":1");
+                case "left" -> texture = Main.getResources().getTexture("player/running/" + aniFrame + ":0");
             }
         }
+
+        // Idle animation
         else {
-            // Play idle animation todo: based on direction
-            texture = Main.getResources().getTexture("player/idle/" + aniFrame / 3 + ":0");
+            if (direction.equals("left")) {
+                texture = Main.getResources().getTexture("player/idle/" + aniFrame / 3 + ":0");
+            } else {
+                texture = Main.getResources().getTexture("player/idle/" + aniFrame / 3 + ":1");
+            }
         }
 
         ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());

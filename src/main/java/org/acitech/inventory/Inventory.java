@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Inventory {
 
-    private ItemStack[] slots;
-    private final int maxSlots;
+    public ItemStack[] slots;
+    public int maxSlots;
 
     public Inventory(int maxSlots) {
         this.maxSlots = maxSlots;
@@ -41,9 +41,7 @@ public class Inventory {
         return emptySlots;
     }
 
-    /**
-     * Gets all the slots that are a specific item type
-     */
+    // Gets all the slots that are a specific item type
     public ArrayList<Integer> getSlotsWithType(ItemType type) {
         ArrayList<Integer> typeSlots = new ArrayList<>();
 
@@ -56,9 +54,8 @@ public class Inventory {
         return typeSlots;
     }
 
-    /**
-     * Dynamically added an item into the inventory
-     */
+
+    // Dynamically adds an item into the inventory
     public ItemStack addItem(ItemStack item) {
         ItemType itemType = item.getType();
         ArrayList<Integer> slots = this.getSlotsWithType(itemType); // Get all the slots that share the same item type as the given item

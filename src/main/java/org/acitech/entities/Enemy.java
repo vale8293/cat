@@ -13,23 +13,38 @@ import java.util.Random;
 
 public class Enemy extends Entity {
 
+    // Identifiers
     private final String enemyName;
     public ArrayList<ItemType> itemPool = new ArrayList<>();
+
+    // Animation & Visuals
     private int animationTick = 0;
-    public int aniLength = 4;
-    public int aniFrameDuration = 4;
+    public int aniLength = 1;
+    public int aniFrameDuration = 1;
     protected int width = 160;
     protected int height = 160;
+
+    // Stats
+        // Combat
     public int maxHealth = 1;
     public int health = maxHealth;
     public int maxMana = 0;
     public int mana = maxMana;
     public int damage = 1;
+    public String damageElement = "None";
     public int defense = 0;
     public double moveSpeed = 1;
+    public int kbMult = 20;
     public int aggroDistance = 300;
     public int immunity = 20;
     public int damageTimer;
+
+        // Rewards
+    public int xpDrop = 1;
+    public int xpValue = 1;
+    public int xpScatter = 100;
+    public int itemDrop = 1;
+    public int itemScatter = 50;
 
     public Enemy(double startX, double startY, String enemyName) {
         this.position = new Vector2D(startX, startY);
@@ -38,6 +53,7 @@ public class Enemy extends Entity {
     }
 
     @Override
+    // Do this stuff every frame
     protected void tick(double delta) {
         Vector2D playerPos = GamePanel.player.position;
         if (this.damageTimer > 0) this.damageTimer--; // Reduce damage timer
@@ -46,17 +62,24 @@ public class Enemy extends Entity {
         double angle = Math.atan2(playerPos.getY() - this.position.getY(), playerPos.getX() - this.position.getX());
         double x = Math.cos(angle) * 0.5;
         double y = Math.sin(angle) * 0.5;
+
+        // If the enemy is close enough to the player, start its aggro ai
         if (this.position.distance(playerPos) < aggroDistance) {
             this.acceleration = new Vector2D(x, y);
             this.acceleration = this.acceleration.scalarMultiply(moveSpeed);
+
+            // If the enemy makes contact with th player
             if (this.position.distance(playerPos) < ((double) this.width /2) ||
                     this.position.distance(playerPos) < ((double) this.height /2)) {
+
+                // Deal damage w/ elemental effect (none by default)
                 if (GamePanel.player.damageTimer == 0) {
-                    GamePanel.player.health -= Math.max(this.damage - GamePanel.player.meleeDefense, 0);
-                    GamePanel.player.damageTimer = immunity;
+                    GamePanel.player.damageTaken(this.damage, this.damageElement);
                 }
-                this.velocity = new Vector2D(-20 * x, -20 * y);
-                GamePanel.player.velocity = this.velocity.scalarMultiply(-1);
+
+                // Knock back the enemy and player
+                this.velocity = new Vector2D(this.kbMult * -x, this.kbMult * -y);
+                GamePanel.player.velocity = this.velocity.scalarMultiply((double) -GamePanel.player.kbMult / this.kbMult);
             }
         }
 
@@ -69,105 +92,113 @@ public class Enemy extends Entity {
 
             // If the scratch makes contact with the enemy
             // regain 1 mana
-            // knock it back, lose 1hp, and start i-frames
+            // knock it back, lose 1hp, and start i-frames, extend streak
             if (dist < 100) {
-                if (this.immunity == 0) {
+                if (this.damageTimer == 0) {
                     if (GamePanel.player.mana < GamePanel.player.maxMana) {
                         GamePanel.player.mana += 1;
                     }
-                    this.velocity = new Vector2D(-20 * x, -20 * y);
+                    this.velocity = new Vector2D(this.kbMult * -x, this.kbMult * -y);
                     this.health -= Math.max(GamePanel.player.scratchDamage - this.defense, 0);
-                    this.immunity = 20;
-                    this.damageTimer = 20;
-                }
-
-                if (this.immunity > 0) {
-                    this.immunity -= 1;
+                    this.damageTimer = immunity;
+                    GamePanel.player.streakTimer = GamePanel.player.streakTimerMax;
                 }
             }
         }
 
-        // If rico dies, get rid of the enemy, todo: play an animation
+        // If the enemy dies, get rid of it, todo: play an animation (probably some kinda particle explosion)
         if (this.health <= 0) {
             this.dispose();
 
+            // Drops XP based on the streak
+            if (this.xpDrop > 0) {
+                for (int i = 0; i < Math.ceil((xpDrop - 1) * (2 * (0.5 + GamePanel.player.currentStreak / 10.0))); i++) {
+
+                    // Gets some random X & Y velocities to add to the drop velocity to scatter XP
+                    double rngX = new Random().nextInt(xpScatter);
+                    double rngY = new Random().nextInt(xpScatter);
+
+                    // Drops the XP with the random velocities added
+                    Experience experience = new Experience(this.position.getX(), this.position.getY(), this.xpValue);
+                    experience.velocity = this.velocity.add(2, new Vector2D(rngX / 10, rngY / 10));
+                    Main.getGamePanel().addNewEntity(experience);
+                }
+            }
+
+            // Increments the streak
+            GamePanel.player.currentStreak += 1;
+
             // cause there do be stuff in the item pool
-            if (itemPool.size() > 0) {
-                int rngIndex = new Random().nextInt(itemPool.size());
-                ItemType droppedItemType = itemPool.get(rngIndex);
+            if (!itemPool.isEmpty()) {
+                for (int i = 0; i < itemDrop; i++) {
 
-                // spawn entity based.
-                Item item = new Item(this.position.getX(), this.position.getY(), new ItemStack(droppedItemType, 1));
+                    // Get a random number to get an item from the pool + X & Y velocities to add
+                    double rngX = new Random().nextInt(itemScatter);
+                    double rngY = new Random().nextInt(itemScatter);
+                    int rngIndex = new Random().nextInt(itemPool.size());
+                    ItemType droppedItemType = itemPool.get(rngIndex);
 
-                item.velocity = this.velocity;
-                Main.getGamePanel().addNewEntity(item);
+                    // Spawn the item of the enemy based on the pool
+                    Item item = new Item(this.position.getX(), this.position.getY(), new ItemStack(droppedItemType, 1));
+                    item.velocity = this.velocity.add(2, new Vector2D(rngX / 10, rngY / 10));
+                    Main.getGamePanel().addNewEntity(item);
+                }
             }
         }
     }
 
     @Override
+    // Handles graphics
     public void draw(Graphics2D ctx) {
-        BufferedImage texture;
+        BufferedImage texture = Main.getResources().getTexture("cow");
 
+        // Increments the frame of the animation
         animationTick += 1;
-
         animationTick = animationTick % (aniLength * aniFrameDuration);
         int aniFrame = animationTick / (aniFrameDuration);
 
         double largest = 0;
-        String directionX = "left";
-        String directionY = "up";
+        String direction = "right";
 
-        // Check which direction is the largest
+        // Check which direction has the largest speed
         if (Math.abs(this.velocity.getX()) > largest) {
             largest = Math.abs(this.velocity.getX());
-            directionX = this.velocity.getX() > 0 ? "right" : "left";
+            direction = this.velocity.getX() > 0 ? "right" : "left";
         }
-
-        // Check which direction is the largest
         if (Math.abs(this.velocity.getY()) > largest) {
             largest = Math.abs(this.velocity.getY());
-            directionY = this.velocity.getY() > 0 ? "up" : "down";
+            direction = this.velocity.getY() > 0 ? "down" : "up";
         }
 
         // If the enemy is moving enough, draw the sprite in the direction that movement is
         if (largest > 0.5) {
-
-            // Checks vertical movement
-            if (directionY.equals("down")) {
-                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":2");
-            }
-            else {
-                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":3");
-            }
-
-            // Checks horizontal movement
-            if (directionX.equals("left")) {
-                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":0");
-            }
-            else {
-                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":1");
+            switch (direction) {
+                case "left" -> texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":" + 0);
+                case "right" -> texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":" + 1);
+                case "up" -> texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":" + 2);
+                case "down" -> texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":" + 3);
             }
         }
 
-        // Because speed is too low, must be idle, checks direction
+        // Idle animation
         else {
-            if (directionX.equals("left")) {
-                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":4");
-            }
-            else {
-                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":5");
+            if (direction.equals("left")) {
+                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":" + 4);
+            } else {
+                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":" + 5);
             }
         }
 
         ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
 
+        // If an enemy gets hit, tint it red and have it fade until its immunity frames run out
         if (this.damageTimer > 0) {
-            BufferedImage wow = tint(texture, 1, 0, 0, (float) this.damageTimer / 20 * 0.6f);
+            BufferedImage wow = tint(texture, 1, 0, 0, ((float) this.damageTimer / this.immunity * 0.8f) / 2);
             ctx.drawImage(wow, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
         }
     }
 
+    // Configures the tint used above
     public static BufferedImage tint(BufferedImage sprite, float red, float green, float blue, float alpha) {
         BufferedImage maskImg = new BufferedImage(sprite.getWidth(), sprite.getHeight(), BufferedImage.TRANSLUCENT);
         int rgb = new Color(red, green, blue, alpha).getRGB();

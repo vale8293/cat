@@ -13,9 +13,9 @@ public class Scratch extends Entity {
     public final double angle;
     private final Vector2D originPosition;
     private final int distance;
-    private int animationTick = 0;
     private int width = 64;
     private int height = 64;
+    private int animationTick = 0;
 
     public Scratch(int originX, int originY, int distance, double rot) {
         this.originPosition = new Vector2D(originX, originY);
@@ -29,6 +29,7 @@ public class Scratch extends Entity {
     }
 
     @Override
+    // Do this stuff every frame
     protected void tick(double delta) {
         animationTick += 1;
 
