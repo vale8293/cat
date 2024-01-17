@@ -34,6 +34,9 @@ abstract public class Entity {
     abstract protected void tick(double delta);
     abstract public void draw(Graphics2D ctx);
 
+    /**
+     * Marks the entity up for disposal
+     */
     public void dispose() {
         this.disposed = true;
     }

@@ -77,6 +77,10 @@ public class Inventory {
 
                 itemSlot.setCount(newCount);
                 item.setCount(overflowCount);
+
+//                if (overflowCount == 0) { // TODO: finish me
+//                    return null;
+//                }
             } else { // The current iterated slot is an empty one
                 this.slots[slot] = item;
                 return null;

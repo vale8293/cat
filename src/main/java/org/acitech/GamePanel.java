@@ -125,7 +125,7 @@ public class GamePanel extends JPanel implements Runnable {
 
             // Check if the entity is an item and is getting picked up
             if (entity instanceof Item itemEntity) {
-                if (itemEntity.isGettingPickedUp()) {
+                if (itemEntity.isInPickupRange()) {
                     pickupItems.add(itemEntity);
                 }
             }
@@ -134,15 +134,16 @@ public class GamePanel extends JPanel implements Runnable {
         // Tick the player
         player.tickEntity(delta);
 
-        // Pick up items
-        ArrayList<Item> disposedItems = player.pickupItems(pickupItems);
+        // Pick up items and make them disappear
+        ArrayList<Item> itemsPickedUp = player.pickupItems(pickupItems);
+
+        for (Item item : itemsPickedUp) {
+            item.disappear();
+        }
 
         // Loop through each disposed entity/item and remove them
         for (Entity entity : disposedEntities) {
             entities.remove(entity);
-        }
-        for (Item item : disposedItems) {
-            entities.remove(item);
         }
 
         // Clear the list of mouse clicks

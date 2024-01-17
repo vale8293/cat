@@ -11,6 +11,7 @@ import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Player extends Entity {
 
@@ -166,9 +167,12 @@ public class Player extends Entity {
         ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
     }
 
-    // TODO: comment me
+    /**
+     * Loops through a list of items to be added to the players inventory
+     * @return List of items that have been picked up
+     */
     public ArrayList<Item> pickupItems(ArrayList<Item> items) {
-        for (Item item : items) {
+        for (Item item : new ArrayList<>(items)) {
             ItemStack remaining = GamePanel.player.inventory1.addItem(item.getItemStack());
 
             if (remaining != null) {
