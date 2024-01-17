@@ -50,6 +50,9 @@ public class Player extends Entity {
     public Inventory inventory1 = new Inventory(8);
     public Inventory inventory2 = new Inventory(2);
 
+    // Load important assets
+    Clip sndScratch = Main.getResources().getSound("player_scratch");
+
     @Override
     // Do this stuff every frame
     protected void tick(double delta) {
@@ -103,11 +106,10 @@ public class Player extends Entity {
                 if (this.scratchTimer == 0) {
                     double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
                     Scratch scratch = new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle);
-                    Clip clip = Main.getResources().getSound("player_scratch");
-                    clip.setFramePosition(0);
-                    clip.loop(0);
+                    sndScratch.setFramePosition(0);
+                    sndScratch.loop(0);
                     Main.getGamePanel().addNewEntity(scratch);
-                    clip.start();
+                    sndScratch.start();
                     this.scratchTimer = scratchCooldown;
                 }
             }
