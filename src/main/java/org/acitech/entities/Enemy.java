@@ -69,7 +69,7 @@ public class Enemy extends Entity {
             this.acceleration = this.acceleration.multiply(moveSpeed);
 
             // If the enemy makes contact with th player
-            if (this.position.distance(playerPos) < Math.max(this.width, this.height)) {
+            if (this.position.distance(playerPos) < Math.max(this.width / 2, this.height / 2)) {
                 // Deal damage w/ elemental effect (none by default)
                 if (GamePanel.player.damageTimer == 0) {
                     GamePanel.player.damageTaken(this.damage, this.damageElement);

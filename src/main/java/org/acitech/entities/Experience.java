@@ -34,7 +34,7 @@ public class Experience extends Entity {
         double y = Math.sin(angle) * 0.5;
         this.acceleration.add(new Vector2d(x, y).multiply(moveSpeed));
 
-        if (this.position.distance(playerPos) < Math.max(this.width, this.height)) {
+        if (this.position.distance(playerPos) < Math.max(this.width / 2, this.height / 2)) {
             GamePanel.player.xpCount += 1;
             this.dispose();
         }
