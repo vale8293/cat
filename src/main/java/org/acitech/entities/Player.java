@@ -5,7 +5,7 @@ import org.acitech.KeyHandler;
 import org.acitech.Main;
 import org.acitech.inventory.Inventory;
 import org.acitech.inventory.ItemStack;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.acitech.utils.Vector2d;
 
 import javax.sound.sampled.Clip;
 import java.awt.*;
@@ -72,16 +72,16 @@ public class Player extends Entity {
 
         // Checks all the possible keys
         if (KeyHandler.wDown) {
-            this.acceleration = this.acceleration.add(new Vector2D(0, -.5));
+            this.acceleration = this.acceleration.add(new Vector2d(0, -.5));
         }
         if (KeyHandler.aDown) {
-            this.acceleration = this.acceleration.add(new Vector2D(-.5, 0));
+            this.acceleration = this.acceleration.add(new Vector2d(-.5, 0));
         }
         if (KeyHandler.sDown) {
-            this.acceleration = this.acceleration.add(new Vector2D(0, .5));
+            this.acceleration = this.acceleration.add(new Vector2d(0, .5));
         }
         if (KeyHandler.dDown) {
-            this.acceleration = this.acceleration.add(new Vector2D(.5, 0));
+            this.acceleration = this.acceleration.add(new Vector2d(.5, 0));
         }
 
         // Placeholders for testing
