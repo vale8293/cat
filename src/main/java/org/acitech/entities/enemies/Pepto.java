@@ -6,7 +6,7 @@ import org.acitech.inventory.ItemType;
 public class Pepto extends Enemy {
 
     public Pepto(double startX, double startY) {
-        super(startX, startY, "Pepto");
+        super(startX, startY, "Pepto", "Fighter");
 
         // Animation & Visuals
         this.aniLength = 3;
@@ -26,5 +26,10 @@ public class Pepto extends Enemy {
 
         // Item Pool (Feather: 1/1)
         this.itemPool.add(ItemType.FEATHER);
+    }
+
+    @Override
+    protected void scratchHandler() {
+
     }
 }

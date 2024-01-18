@@ -6,7 +6,7 @@ import org.acitech.inventory.ItemType;
 public class Rico extends Enemy {
 
     public Rico(double startX, double startY) {
-        super(startX, startY, "Rico");
+        super(startX, startY, "Rico", "Fighter");
 
         // Animation & Visuals
         this.aniLength = 6;
@@ -24,5 +24,10 @@ public class Rico extends Enemy {
 
         // Item Pool (Water: 1/1)
         this.itemPool.add(ItemType.WATER);
+    }
+
+    @Override
+    protected void scratchHandler() {
+
     }
 }

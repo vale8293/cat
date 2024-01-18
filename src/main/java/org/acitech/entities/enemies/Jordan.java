@@ -6,7 +6,7 @@ import org.acitech.inventory.ItemType;
 public class Jordan extends Enemy {
 
     public Jordan(double startX, double startY) {
-        super(startX, startY, "Jordan");
+        super(startX, startY, "Jordan", "Skitter");
 
         // Animation & Visuals
         this.aniLength = 5;
@@ -26,6 +26,11 @@ public class Jordan extends Enemy {
 
         // Item Pool (PLACEHOLDER String: 1/1)
         this.itemPool.add(ItemType.STRING);
+    }
+
+    @Override
+    protected void scratchHandler() {
+
     }
 
     // Changes AI to flee after being attacked
