@@ -2,7 +2,7 @@ package org.acitech.entities;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.acitech.utils.Vector2d;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -18,7 +18,7 @@ public class Experience extends Entity {
     public int xpValue;
 
     public Experience(double startX, double startY, int xpValue) {
-        this.position = new Vector2D(startX, startY);
+        this.position = new Vector2d(startX, startY);
         this.xpValue = xpValue;
         this.friction = 0.9;
     }
@@ -26,16 +26,15 @@ public class Experience extends Entity {
     @Override
     // Do this stuff every frame
     protected void tick(double delta) {
-        Vector2D playerPos = GamePanel.player.position;
+        Vector2d playerPos = GamePanel.player.position;
 
         // Gets the angle between the player and the XP Orb
         double angle = Math.atan2(playerPos.getY() - this.position.getY(), playerPos.getX() - this.position.getX());
         double x = Math.cos(angle) * 0.5;
         double y = Math.sin(angle) * 0.5;
-        this.acceleration = new Vector2D(x, y);
-        this.acceleration = this.acceleration.scalarMultiply(moveSpeed);
-        if (this.position.distance(playerPos) < ((double) this.width) ||
-                this.position.distance(playerPos) < ((double) this.height)) {
+        this.acceleration.add(new Vector2d(x, y).multiply(moveSpeed));
+
+        if (this.position.distance(playerPos) < Math.max(this.width, this.height)) {
             GamePanel.player.xpCount += 1;
             this.dispose();
         }

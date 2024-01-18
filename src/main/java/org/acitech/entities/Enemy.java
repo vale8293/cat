@@ -4,7 +4,7 @@ import org.acitech.GamePanel;
 import org.acitech.Main;
 import org.acitech.inventory.ItemStack;
 import org.acitech.inventory.ItemType;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.acitech.utils.Vector2d;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -39,15 +39,15 @@ public class Enemy extends Entity {
     public int immunity = 20;
     public int damageTimer;
 
-        // Rewards
+    // Rewards
     public int xpDrop = 1;
     public int xpValue = 1;
-    public int xpScatter = 100;
+    public int xpScatter = 10;
     public int itemDrop = 1;
-    public int itemScatter = 50;
+    public int itemScatter = 5;
 
     public Enemy(double startX, double startY, String enemyName) {
-        this.position = new Vector2D(startX, startY);
+        this.position = new Vector2d(startX, startY);
         this.friction = 0.9;
         this.enemyName = enemyName;
     }
@@ -55,7 +55,7 @@ public class Enemy extends Entity {
     @Override
     // Do this stuff every frame
     protected void tick(double delta) {
-        Vector2D playerPos = GamePanel.player.position;
+        Vector2d playerPos = GamePanel.player.position;
         if (this.damageTimer > 0) this.damageTimer--; // Reduce damage timer
 
         // Gets the angle between the player and the enemy
@@ -65,21 +65,19 @@ public class Enemy extends Entity {
 
         // If the enemy is close enough to the player, start its aggro ai
         if (this.position.distance(playerPos) < aggroDistance) {
-            this.acceleration = new Vector2D(x, y);
-            this.acceleration = this.acceleration.scalarMultiply(moveSpeed);
+            this.acceleration = new Vector2d(x, y);
+            this.acceleration = this.acceleration.multiply(moveSpeed);
 
             // If the enemy makes contact with th player
-            if (this.position.distance(playerPos) < ((double) this.width /2) ||
-                    this.position.distance(playerPos) < ((double) this.height /2)) {
-
+            if (this.position.distance(playerPos) < Math.max(this.width, this.height)) {
                 // Deal damage w/ elemental effect (none by default)
                 if (GamePanel.player.damageTimer == 0) {
                     GamePanel.player.damageTaken(this.damage, this.damageElement);
                 }
 
                 // Knock back the enemy and player
-                this.velocity = new Vector2D(this.kbMult * -x, this.kbMult * -y);
-                GamePanel.player.velocity = this.velocity.scalarMultiply((double) -GamePanel.player.kbMult / this.kbMult);
+                this.velocity.set(this.kbMult * -x, this.kbMult * -y);
+                GamePanel.player.velocity = this.velocity.copy().multiply((double) -GamePanel.player.kbMult / this.kbMult);
             }
         }
 
@@ -98,7 +96,7 @@ public class Enemy extends Entity {
                     if (GamePanel.player.mana < GamePanel.player.maxMana) {
                         GamePanel.player.mana += 1;
                     }
-                    this.velocity = new Vector2D(this.kbMult * -x, this.kbMult * -y);
+                    this.velocity = new Vector2d(this.kbMult * -x, this.kbMult * -y);
                     this.health -= Math.max(GamePanel.player.scratchDamage - this.defense, 0);
                     this.damageTimer = immunity;
                     GamePanel.player.streakTimer = GamePanel.player.streakTimerMax;
@@ -115,12 +113,12 @@ public class Enemy extends Entity {
                 for (int i = 0; i < Math.ceil((xpDrop - 1) * (2 * (0.5 + GamePanel.player.currentStreak / 10.0))); i++) {
 
                     // Gets some random X & Y velocities to add to the drop velocity to scatter XP
-                    double rngX = new Random().nextInt(xpScatter);
-                    double rngY = new Random().nextInt(xpScatter);
+                    double rngX = new Random().nextDouble(-xpScatter, xpScatter);
+                    double rngY = new Random().nextDouble(-xpScatter, xpScatter);
 
                     // Drops the XP with the random velocities added
                     Experience experience = new Experience(this.position.getX(), this.position.getY(), this.xpValue);
-                    experience.velocity = this.velocity.add(2, new Vector2D(rngX / 10, rngY / 10));
+                    experience.velocity.set(rngX, rngY);
                     Main.getGamePanel().addNewEntity(experience);
                 }
             }
@@ -133,14 +131,14 @@ public class Enemy extends Entity {
                 for (int i = 0; i < itemDrop; i++) {
 
                     // Get a random number to get an item from the pool + X & Y velocities to add
-                    double rngX = new Random().nextInt(itemScatter);
-                    double rngY = new Random().nextInt(itemScatter);
+                    double rngX = new Random().nextDouble(-itemScatter, itemScatter);
+                    double rngY = new Random().nextDouble(-itemScatter, itemScatter);
                     int rngIndex = new Random().nextInt(itemPool.size());
                     ItemType droppedItemType = itemPool.get(rngIndex);
 
                     // Spawn the item of the enemy based on the pool
                     Item item = new Item(this.position.getX(), this.position.getY(), new ItemStack(droppedItemType, 1));
-                    item.velocity = this.velocity.add(2, new Vector2D(rngX / 10, rngY / 10));
+                    item.velocity.set(rngX, rngY);
                     Main.getGamePanel().addNewEntity(item);
                 }
             }

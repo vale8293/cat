@@ -3,7 +3,7 @@ package org.acitech.entities;
 import org.acitech.GamePanel;
 import org.acitech.Main;
 import org.acitech.inventory.ItemStack;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.acitech.utils.Vector2d;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -13,12 +13,13 @@ public class Item extends Entity {
     private int width = 36;
     private int height = 36;
     public int pickupImmunity = 20;
-    private boolean isDisapearing = false;
+    public double moveSpeed = 0.75;
+    private boolean isDisappearing = false;
     private boolean inPickupRange = false;
     private ItemStack itemStack;
 
     public Item(double startX, double startY, ItemStack itemStack) {
-        this.position = new Vector2D(startX, startY);
+        this.position = new Vector2d(startX, startY);
         this.friction = 0.95;
         this.itemStack = itemStack;
     }
@@ -26,7 +27,7 @@ public class Item extends Entity {
     @Override
     // Do this stuff every frame
     protected void tick(double delta) {
-        Vector2D playerPos = GamePanel.player.position;
+        Vector2d playerPos = GamePanel.player.position;
         if (this.pickupImmunity > 0) {
             this.pickupImmunity--;
         }
@@ -39,7 +40,7 @@ public class Item extends Entity {
         if (this.pickupImmunity == 0) {
             // Sucks up the item if it's close enough to the player
             if (this.position.distance(playerPos) < 100) {
-                this.acceleration = new Vector2D(x, y);
+                this.acceleration.add(new Vector2d(x, y).multiply(moveSpeed));
 
                 this.inPickupRange = true;
             } else {
@@ -48,7 +49,7 @@ public class Item extends Entity {
         }
 
         // If the entity is disappearing, decrease its size and dispose it
-        if (this.isDisapearing) {
+        if (this.isDisappearing) {
             this.height = (int) (this.height * 0.85);
             this.width = (int) (this.width * 0.85);
 
@@ -73,7 +74,7 @@ public class Item extends Entity {
      * Marks the entity up for disappearing
      */
     public void disappear() {
-        this.isDisapearing = true;
+        this.isDisappearing = true;
     }
 
     public ItemStack getItemStack() {
