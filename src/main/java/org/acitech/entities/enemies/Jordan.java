@@ -18,7 +18,7 @@ public class Jordan extends Enemy {
         this.maxHealth = 3;
         this.health = maxHealth;
         this.moveSpeed = 1.3;
-        this.kbMult = 25;
+        this.kbMult = 20;
         this.aggroDistance = 500;
 
         // Rewards
@@ -32,11 +32,4 @@ public class Jordan extends Enemy {
     protected void scratchHandler() {
 
     }
-
-    // Changes AI to flee after being attacked
-//    @Override
-//    protected void tick(double delta) {
-//        super.tick(delta);
-//    }
-//
 }

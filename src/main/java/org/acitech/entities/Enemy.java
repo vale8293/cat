@@ -74,7 +74,7 @@ abstract public class Enemy extends Entity {
             skitterAI(x, y, playerPos);
         }
 
-        boolean gotScratched = scratchCheck(x, y); // Move into AIs
+        // boolean gotScratched = scratchCheck(x, y); // Move into AIs
         deathCheck();
 
     }
@@ -104,14 +104,17 @@ abstract public class Enemy extends Entity {
 
     // Defines basic AI for enemies like Jordan
     protected void skitterAI(double x, double y, Vector2D playerPos) {
+        // Declares AI Specific variables
+        boolean gotScratched = scratchCheck(x, y);
+
         // If the enemy is close enough to the player, start Skitter AI
         if (this.position.distance(playerPos) < aggroDistance) {
             this.acceleration = new Vector2D(x, y);
             this.acceleration = this.acceleration.scalarMultiply(moveSpeed);
 
             // If the enemy makes contact with the player
-            if (this.position.distance(playerPos) < ((double) this.width /2) ||
-                    this.position.distance(playerPos) < ((double) this.height /2)) {
+            if (this.position.distance(playerPos) < ((double) this.width / 2) ||
+                    this.position.distance(playerPos) < ((double) this.height / 2)) {
 
                 // Deal damage w/ elemental effect (none by default)
                 if (GamePanel.player.damageTimer == 0) {
@@ -122,8 +125,6 @@ abstract public class Enemy extends Entity {
                 this.velocity = new Vector2D(this.kbMult * -x, this.kbMult * -y);
                 GamePanel.player.velocity = this.velocity.scalarMultiply((double) -GamePanel.player.kbMult / this.kbMult);
             }
-
-            if (gotScratched);
         }
     }
 
