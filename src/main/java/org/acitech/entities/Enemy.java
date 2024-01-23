@@ -2,6 +2,7 @@ package org.acitech.entities;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.entities.ai.EntityAI;
 import org.acitech.inventory.ItemStack;
 import org.acitech.inventory.ItemType;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
@@ -15,7 +16,7 @@ abstract public class Enemy extends Entity {
 
     // Identifiers
     private final String enemyName;
-    private final String enemyAI;
+    private final EntityAI enemyAI;
     public ArrayList<ItemType> itemPool = new ArrayList<>();
 
     // Animation & Visuals
@@ -47,7 +48,7 @@ abstract public class Enemy extends Entity {
     public int itemDrop = 1;
     public int itemScatter = 50;
 
-    public Enemy(double startX, double startY, String enemyName, String enemyAI) {
+    public Enemy(double startX, double startY, String enemyName, EntityAI enemyAI) {
         this.position = new Vector2D(startX, startY);
         this.friction = 0.9;
         this.enemyName = enemyName;
