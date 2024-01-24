@@ -1,22 +1,22 @@
 package org.acitech.entities;
 
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.acitech.utils.Vector2d;
 
 import java.awt.*;
 
 abstract public class Entity {
 
-    public Vector2D position;
-    public Vector2D velocity;
-    public Vector2D acceleration;
+    public Vector2d position;
+    public Vector2d velocity;
+    public Vector2d acceleration;
     protected double friction;
     protected boolean disposed = false;
 
     public Entity() {
         // Initialize the variables
-        this.position = new Vector2D(0, 0);
-        this.velocity = new Vector2D(0, 0);
-        this.acceleration = new Vector2D(0, 0);
+        this.position = new Vector2d(0, 0);
+        this.velocity = new Vector2d(0, 0);
+        this.acceleration = new Vector2d(0, 0);
         this.friction = 0.9;
     }
 
@@ -25,17 +25,18 @@ abstract public class Entity {
         this.tick(delta);
 
         // Calculate the updated velocity and new position
-        // TODO: check if this is actually the place to use delta time
-        this.velocity = this.velocity.add(this.acceleration.scalarMultiply(delta));
-        this.acceleration = new Vector2D(0, 0);
-        this.velocity = this.velocity.add(this.acceleration.scalarMultiply(delta));
-        this.velocity = this.velocity.scalarMultiply(this.friction);
-        this.position = this.position.add(this.velocity);
+        this.velocity = this.velocity.add(this.acceleration);
+        this.acceleration = new Vector2d(0, 0);
+        this.velocity = this.velocity.multiply(this.friction);
+        this.position = this.position.add(this.velocity.multiply(delta)); // TODO: check if this is actually the place to use delta time (it's not)
     }
 
     abstract protected void tick(double delta);
     abstract public void draw(Graphics2D ctx);
 
+    /**
+     * Marks the entity up for disposal
+     */
     public void dispose() {
         this.disposed = true;
     }

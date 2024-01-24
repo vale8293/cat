@@ -5,12 +5,13 @@ import org.acitech.KeyHandler;
 import org.acitech.Main;
 import org.acitech.inventory.Inventory;
 import org.acitech.inventory.ItemStack;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.acitech.utils.Vector2d;
 
 import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Player extends Entity {
 
@@ -74,16 +75,16 @@ public class Player extends Entity {
 
         // Checks all the possible keys
         if (KeyHandler.wDown) {
-            this.acceleration = this.acceleration.add(new Vector2D(0, -.5));
+            this.acceleration = this.acceleration.add(new Vector2d(0, -.5));
         }
         if (KeyHandler.aDown) {
-            this.acceleration = this.acceleration.add(new Vector2D(-.5, 0));
+            this.acceleration = this.acceleration.add(new Vector2d(-.5, 0));
         }
         if (KeyHandler.sDown) {
-            this.acceleration = this.acceleration.add(new Vector2D(0, .5));
+            this.acceleration = this.acceleration.add(new Vector2d(0, .5));
         }
         if (KeyHandler.dDown) {
-            this.acceleration = this.acceleration.add(new Vector2D(.5, 0));
+            this.acceleration = this.acceleration.add(new Vector2d(.5, 0));
         }
 
         // Placeholders for testing
@@ -168,9 +169,12 @@ public class Player extends Entity {
         ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
     }
 
-    // TODO: comment me
+    /**
+     * Loops through a list of items to be added to the players inventory
+     * @return List of items that have been picked up
+     */
     public ArrayList<Item> pickupItems(ArrayList<Item> items) {
-        for (Item item : items) {
+        for (Item item : new ArrayList<>(items)) {
             ItemStack remaining = GamePanel.player.inventory1.addItem(item.getItemStack());
 
             if (remaining != null) {
