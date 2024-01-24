@@ -25,9 +25,4 @@ public class Rico extends Enemy {
         // Item Pool (Water: 1/1)
         this.itemPool.add(ItemType.WATER);
     }
-
-    @Override
-    protected void scratchHandler() {
-
-    }
 }

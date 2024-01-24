@@ -27,9 +27,4 @@ public class Pepto extends Enemy {
         // Item Pool (Feather: 1/1)
         this.itemPool.add(ItemType.FEATHER);
     }
-
-    @Override
-    protected void scratchHandler() {
-
-    }
 }

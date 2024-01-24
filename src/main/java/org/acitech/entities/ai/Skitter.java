@@ -2,15 +2,16 @@ package org.acitech.entities.ai;
 
 import org.acitech.GamePanel;
 import org.acitech.entities.Enemy;
+import org.acitech.entities.Entity;
+import org.acitech.entities.Scratch;
 import org.acitech.utils.Vector2d;
 
-public class Fighter extends EnemyAI {
-
-    public Fighter(Enemy enemy) {
+public class Skitter extends EnemyAI {
+    public Skitter(Enemy enemy) {
         super(enemy);
     }
 
-    // Defines basic AI for enemies like Rico and Pepto
+    // Defines basic AI for enemies like Jordan
     @Override
     public void execute(double delta) {
         Vector2d playerPos = GamePanel.player.position;
@@ -23,13 +24,15 @@ public class Fighter extends EnemyAI {
         // Declares AI Specific variables
         boolean gotScratched = scratchCheck(x, y);
 
-        // If the enemy is close enough to the player, start Fighter AI
+        // If the enemy is close enough to the player, start Skitter AI
         if (this.enemy.position.distance(playerPos) < this.enemy.aggroDistance) {
-            this.enemy.acceleration = new Vector2d(x, y);
-            this.enemy.acceleration = this.enemy.acceleration.multiply(this.enemy.moveSpeed);
+            this.enemy.acceleration.set(x, y);
+            this.enemy.acceleration.multiply(this.enemy.moveSpeed);
 
-            // If the enemy makes contact with th player
-            if (this.enemy.position.distance(playerPos) < Math.max(this.enemy.width / 2, this.enemy.height / 2)) {
+            // If the enemy makes contact with the player
+            if (this.enemy.position.distance(playerPos) < ((double) this.enemy.width / 2) ||
+                    this.enemy.position.distance(playerPos) < ((double) this.enemy.height / 2)) {
+
                 // Deal damage w/ elemental effect (none by default)
                 if (GamePanel.player.damageTimer == 0) {
                     GamePanel.player.damageTaken(this.enemy.damage, this.enemy.damageElement);

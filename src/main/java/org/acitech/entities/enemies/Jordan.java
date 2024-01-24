@@ -27,9 +27,4 @@ public class Jordan extends Enemy {
         // Item Pool (PLACEHOLDER String: 1/1)
         this.itemPool.add(ItemType.STRING);
     }
-
-    @Override
-    protected void scratchHandler() {
-
-    }
 }

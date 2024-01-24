@@ -2,7 +2,9 @@ package org.acitech.entities;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
-import org.acitech.entities.ai.EntityAI;
+import org.acitech.entities.ai.EnemyAI;
+import org.acitech.entities.ai.Fighter;
+import org.acitech.entities.ai.Skitter;
 import org.acitech.inventory.ItemStack;
 import org.acitech.inventory.ItemType;
 import org.acitech.utils.Vector2d;
@@ -16,15 +18,15 @@ abstract public class Enemy extends Entity {
 
     // Identifiers
     private final String enemyName;
-    private final EntityAI enemyAI;
+    private EnemyAI enemyAI = null;
     public ArrayList<ItemType> itemPool = new ArrayList<>();
 
     // Animation & Visuals
     private int animationTick = 0;
     public int aniLength = 1;
     public int aniFrameDuration = 1;
-    protected int width = 160;
-    protected int height = 160;
+    public int width = 160;
+    public int height = 160;
 
     // Stats
         // Combat
@@ -48,118 +50,30 @@ abstract public class Enemy extends Entity {
     public int itemDrop = 1;
     public int itemScatter = 5;
 
-    public Enemy(double startX, double startY, String enemyName) {
+    public Enemy(double startX, double startY, String enemyName, String ai) {
         this.position = new Vector2d(startX, startY);
         this.friction = 0.9;
         this.enemyName = enemyName;
-        this.enemyAI = enemyAI;
-    }
 
-    protected abstract void scratchHandler();
+        switch (ai.toLowerCase()) {
+            case "fighter" -> this.enemyAI = new Fighter(this);
+            case "skitter" -> this.enemyAI = new Skitter(this);
+            default -> this.enemyAI = null;
+        }
+    }
 
     @Override
     // Do this stuff every frame
     protected void tick(double delta) {
-        Vector2d playerPos = GamePanel.player.position;
         if (this.damageTimer > 0) this.damageTimer--; // Reduce damage timer
 
-        // Gets the angle between the player and the enemy
-        double angle = Math.atan2(playerPos.getY() - this.position.getY(), playerPos.getX() - this.position.getX());
-        double x = Math.cos(angle) * 0.5;
-        double y = Math.sin(angle) * 0.5;
-
-        if (this.enemyAI.equals("Fighter")) {
-            fighterAI(x, y, playerPos);
-        }
-        else if (this.enemyAI.equals("Skitter")) {
-            skitterAI(x, y, playerPos);
+        if (this.enemyAI != null) {
+            this.enemyAI.execute(delta);
         }
 
         // boolean gotScratched = scratchCheck(x, y); // Move into AIs
         deathCheck();
 
-    }
-
-    // Defines basic AI for enemies like Rico and Pepto
-    protected void fighterAI(double x, double y, Vector2D playerPos) {
-        // If the enemy is close enough to the player, start Fighter AI
-        if (this.position.distance(playerPos) < aggroDistance) {
-            this.acceleration = new Vector2d(x, y);
-            this.acceleration = this.acceleration.multiply(moveSpeed);
-
-            // If the enemy makes contact with th player
-            if (this.position.distance(playerPos) < Math.max(this.width / 2, this.height / 2)) {
-                // Deal damage w/ elemental effect (none by default)
-                if (GamePanel.player.damageTimer == 0) {
-                    GamePanel.player.damageTaken(this.damage, this.damageElement);
-                }
-
-                // Knock back the enemy and player
-                this.velocity.set(this.kbMult * -x, this.kbMult * -y);
-                GamePanel.player.velocity = this.velocity.copy().multiply((double) -GamePanel.player.kbMult / this.kbMult);
-            }
-        }
-    }
-
-    // Defines basic AI for enemies like Jordan
-    protected void skitterAI(double x, double y, Vector2D playerPos) {
-        // Declares AI Specific variables
-        boolean gotScratched = scratchCheck(x, y);
-
-        // If the enemy is close enough to the player, start Skitter AI
-        if (this.position.distance(playerPos) < aggroDistance) {
-            this.acceleration = new Vector2D(x, y);
-            this.acceleration = this.acceleration.scalarMultiply(moveSpeed);
-
-            // If the enemy makes contact with the player
-            if (this.position.distance(playerPos) < ((double) this.width / 2) ||
-                    this.position.distance(playerPos) < ((double) this.height / 2)) {
-
-                // Deal damage w/ elemental effect (none by default)
-                if (GamePanel.player.damageTimer == 0) {
-                    GamePanel.player.damageTaken(this.damage, this.damageElement);
-                }
-
-                // Knock back the enemy and player
-                this.velocity = new Vector2D(this.kbMult * -x, this.kbMult * -y);
-                GamePanel.player.velocity = this.velocity.scalarMultiply((double) -GamePanel.player.kbMult / this.kbMult);
-            }
-        }
-    }
-
-    // Defines basic AI for when the player scratches an enemy
-    protected boolean scratchCheck(double x, double y) {
-        boolean gotScratched = false;
-
-        // Looks for any instances of a scratch
-        for (Entity entity : GamePanel.entities) {
-            if (!(entity instanceof Scratch scratch)) continue;
-
-            // Gets the position of the scratch
-            double dist = scratch.position.distance(this.position);
-
-            // If the scratch makes contact with the enemy
-            // regain 1 mana
-            // knock it back, lose 1hp, and start i-frames, extend streak
-            if (dist < 100) {
-                gotScratched = true;
-
-                if (this.damageTimer == 0) {
-                    if (GamePanel.player.mana < GamePanel.player.maxMana) {
-                        GamePanel.player.mana += 1;
-                    }
-                    this.velocity = new Vector2d(this.kbMult * -x, this.kbMult * -y);
-                    this.health -= Math.max(GamePanel.player.scratchDamage - this.defense, 0);
-                    this.damageTimer = immunity;
-                    GamePanel.player.streakTimer = GamePanel.player.streakTimerMax;
-                }
-            }
-        }
-
-        if (gotScratched) { // If the enemy got scratched, Trigger a scratch event
-            this.scratchHandler();
-        }
-        return gotScratched;
     }
 
     // Defines basic AI for if an enemy dies
