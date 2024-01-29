@@ -5,7 +5,6 @@ import org.acitech.entities.Enemy;
 import org.acitech.utils.Vector2d;
 
 public class Fighter extends EnemyAI {
-
     public Fighter(Enemy enemy) {
         super(enemy);
     }
@@ -25,10 +24,10 @@ public class Fighter extends EnemyAI {
 
         // If the enemy is close enough to the player, start Fighter AI
         if (this.enemy.position.distance(playerPos) < this.enemy.aggroDistance) {
-            this.enemy.acceleration = new Vector2d(x, y);
-            this.enemy.acceleration = this.enemy.acceleration.multiply(this.enemy.moveSpeed);
+            this.enemy.acceleration.set(x, y);
+            this.enemy.acceleration.multiply(this.enemy.moveSpeed);
 
-            // If the enemy makes contact with th player
+            // If the enemy makes contact with the player
             if (this.enemy.position.distance(playerPos) < Math.max(this.enemy.width / 2, this.enemy.height / 2)) {
                 // Deal damage w/ elemental effect (none by default)
                 if (GamePanel.player.damageTimer == 0) {
