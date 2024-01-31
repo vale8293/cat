@@ -20,6 +20,8 @@ public class GamePanel extends JPanel implements Runnable {
     final int screenWidth = 800;
     final int screenHeight = 600;
     final int fps = 60;
+    private boolean paused = false;
+    private boolean unEscaped = false;
     private ArrayList<Entity> newEntities = new ArrayList<Entity>();
 
     KeyHandler keys = new KeyHandler();
@@ -107,47 +109,76 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update(double delta) {
-        ArrayList<Entity> disposedEntities = new ArrayList<Entity>();
-        ArrayList<Item> pickupItems = new ArrayList<Item>();
 
-        // Add newly created entities
-        entities.addAll(newEntities);
-        newEntities.clear();
+        if (!paused) {
+            ArrayList<Entity> disposedEntities = new ArrayList<Entity>();
+            ArrayList<Item> pickupItems = new ArrayList<Item>();
 
-        // Loop through each entity and tick them
-        for (Entity entity : entities) {
-            entity.tickEntity(delta);
+            // Add newly created entities
+            entities.addAll(newEntities);
+            newEntities.clear();
 
-            // Check if entity is disposed and add them to a list
-            if (entity.isDisposed()) {
-                disposedEntities.add(entity);
-            }
+            // Loop through each entity and tick them
+            for (Entity entity : entities) {
+                entity.tickEntity(delta);
 
-            // Check if the entity is an item and is getting picked up
-            if (entity instanceof Item itemEntity) {
-                if (itemEntity.isInPickupRange()) {
-                    pickupItems.add(itemEntity);
+                // Check if entity is disposed and add them to a list
+                if (entity.isDisposed()) {
+                    disposedEntities.add(entity);
+                }
+
+                // Check if the entity is an item and is getting picked up
+                if (entity instanceof Item itemEntity) {
+                    if (itemEntity.isInPickupRange()) {
+                        pickupItems.add(itemEntity);
+                    }
                 }
             }
+
+            // Tick the player
+            player.tickEntity(delta);
+
+            // Pick up items and make them disappear
+            ArrayList<Item> itemsPickedUp = player.pickupItems(pickupItems);
+
+            for (Item item : itemsPickedUp) {
+                item.disappear();
+            }
+
+            // Loop through each disposed entity/item and remove them
+            for (Entity entity : disposedEntities) {
+                entities.remove(entity);
+            }
+
+            // Clear the list of mouse clicks
+            KeyHandler.mouseClicks.clear();
+
+            // Check for pausing
+            if (!KeyHandler.escDown) {
+                unEscaped = true;
+            }
+
+            if (unEscaped && KeyHandler.escDown) {
+                paused = true;
+                unEscaped = false;
+            }
         }
 
-        // Tick the player
-        player.tickEntity(delta);
+        else {
+            // Check for pausing
+            if (!KeyHandler.escDown) {
+                unEscaped = true;
+            }
 
-        // Pick up items and make them disappear
-        ArrayList<Item> itemsPickedUp = player.pickupItems(pickupItems);
+            
 
-        for (Item item : itemsPickedUp) {
-            item.disappear();
+            if (unEscaped && KeyHandler.escDown) {
+                paused = false;
+                unEscaped = false;
+            }
         }
 
-        // Loop through each disposed entity/item and remove them
-        for (Entity entity : disposedEntities) {
-            entities.remove(entity);
-        }
 
-        // Clear the list of mouse clicks
-        KeyHandler.mouseClicks.clear();
     }
 
     public void paintComponent(Graphics g) {

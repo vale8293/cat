@@ -16,6 +16,7 @@ public class ResourceLoader {
         // Load hardcoded assets and return the result of loading them
         return  // UI
                 loadTexture("ui/inv_bar_default", "ui/inv_bar_default.png") &&
+                loadTexture("ui/menu", "ui/menu.png") &&
                 loadSpriteSheet("ui/hearts", "ui/hearts.png", 18, 16) &&
                 loadSpriteSheet("ui/mana", "ui/mana.png", 13, 13) &&
                 loadSpriteSheet("ui/numbers", "ui/numbers.png", 5, 5) &&
