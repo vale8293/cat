@@ -11,7 +11,6 @@ import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Player extends Entity {
 
@@ -102,16 +101,30 @@ public class Player extends Entity {
         // Checks for mouse input
         if (!KeyHandler.mouseClicks.isEmpty()) {
 
-            // Checks for clicks (Scratch)
+
             for (KeyHandler.Click click : KeyHandler.mouseClicks) {
-                if (this.scratchTimer == 0) {
-                    double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
-                    Scratch scratch = new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle);
-                    sndScratch.setFramePosition(0);
-                    sndScratch.loop(0);
-                    Main.getGamePanel().addNewEntity(scratch);
-                    sndScratch.start();
-                    this.scratchTimer = scratchCooldown;
+                // Checks for clicks (Scratch / Other thing)
+                switch (click.getButton()) {
+
+                    // Left Click
+                    case (1) -> {
+                        if (this.scratchTimer == 0) {
+                            double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
+                            Scratch scratch = new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle);
+                            sndScratch.setFramePosition(0);
+                            sndScratch.loop(0);
+                            Main.getGamePanel().addNewEntity(scratch);
+                            sndScratch.start();
+                            this.scratchTimer = scratchCooldown;
+                        }
+                    }
+
+                    // Middle Click
+                    case (2) -> System.out.print("This is click 2 ");
+
+
+                    // Right Click
+                    case (3) -> System.out.print("This is click 3 ");
                 }
             }
         }

@@ -9,10 +9,10 @@ public class Jordan extends Enemy {
         super(startX, startY, "Jordan", "Skitter");
 
         // Animation & Visuals
-        this.aniLength = 5;
-        this.aniFrameDuration = 5;
-        this.width = 160;
-        this.height = 160;
+        this.aniLength = 6;
+        this.aniFrameDuration = 3;
+        this.width = 80;
+        this.height = 80;
 
         // Stats
         this.maxHealth = 3;

@@ -11,8 +11,8 @@ public class Pepto extends Enemy {
         // Animation & Visuals
         this.aniLength = 3;
         this.aniFrameDuration = 8;
-        this.width = 160;
-        this.height = 160;
+        this.width = 120;
+        this.height = 120;
 
         // Stats
         this.maxHealth = 3;

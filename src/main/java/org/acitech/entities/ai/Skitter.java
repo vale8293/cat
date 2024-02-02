@@ -27,7 +27,7 @@ public class Skitter extends EnemyAI {
         // Checks for scratch to determine AI state
         boolean gotScratched = scratchCheck(x, y);
         if (gotScratched) {
-            fleeTimer = 60;
+            fleeTimer = 90;
         }
 
             // If the enemy is close enough to the player, start Skitter AI
