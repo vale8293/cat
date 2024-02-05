@@ -23,8 +23,7 @@ public class ResourceLoader {
                 loadSpriteSheet("ui/streak_bar", "ui/streak_bar.png", 32, 16) &&
 
                 // Player
-                loadSpriteSheet("player/running", "player/running.png", 32, 32) &&
-                loadSpriteSheet("player/idle", "player/idle.png", 32, 32) &&
+                loadSpriteSheet("player/base", "player/base.png", 32, 32) &&
 
                 // Enemies
                 loadSpriteSheet("enemies/Rico", "enemies/Rico.png", 32, 32) &&

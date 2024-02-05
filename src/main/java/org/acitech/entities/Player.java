@@ -41,7 +41,8 @@ public class Player extends Entity {
     public int kbMult = 20; // Can be changed in gameplay
     public int immunity = 30; // Can be changed in gameplay
     public int damageTimer;
-    public boolean bufferInput = false;
+    public String elementState = "base";
+    public boolean bufferInput = false; // For implementing a buffer system later maybe
     public Player() {
         this.friction = 0.9;
     }
@@ -64,10 +65,10 @@ public class Player extends Entity {
         if (this.scratchTimer > 0) {
             this.scratchTimer--;
         }
+
         if (this.streakTimer > 0) {
             this.streakTimer--;
         }
-
         if (this.streakTimer == 0) {
             this.currentStreak = 0;
         }
@@ -96,6 +97,14 @@ public class Player extends Entity {
             if (this.mana > 0) {
                 this.mana -= 1;
             }
+        }
+
+        // Checks for which spell effects to use
+        if (KeyHandler.shiftDown) {
+
+        }
+        if (KeyHandler.spaceDown) {
+
         }
 
         // Checks for mouse input
@@ -163,19 +172,19 @@ public class Player extends Entity {
         // If the player is moving enough, draw the sprite in the direction that movement is
         if (largest > 0.5) {
             switch (direction) {
-                case "up" -> texture = Main.getResources().getTexture("player/running/" + aniFrame + ":3");
-                case "down" -> texture = Main.getResources().getTexture("player/running/" + aniFrame + ":2");
-                case "right" -> texture = Main.getResources().getTexture("player/running/" + aniFrame + ":1");
-                case "left" -> texture = Main.getResources().getTexture("player/running/" + aniFrame + ":0");
+                case "left" -> texture = Main.getResources().getTexture("player/base/" + aniFrame + ":0");
+                case "right" -> texture = Main.getResources().getTexture("player/base/" + aniFrame + ":1");
+                case "up" -> texture = Main.getResources().getTexture("player/base/" + aniFrame + ":2");
+                case "down" -> texture = Main.getResources().getTexture("player/base/" + aniFrame + ":3");
             }
         }
 
         // Idle animation
         else {
             if (direction.equals("left")) {
-                texture = Main.getResources().getTexture("player/idle/" + aniFrame / 3 + ":0");
+                texture = Main.getResources().getTexture("player/base/" + aniFrame + ":4");
             } else {
-                texture = Main.getResources().getTexture("player/idle/" + aniFrame / 3 + ":1");
+                texture = Main.getResources().getTexture("player/base/" + aniFrame + ":5");
             }
         }
 
