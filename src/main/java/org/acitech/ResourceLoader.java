@@ -42,6 +42,7 @@ public class ResourceLoader {
                 loadSpriteSheet("environment/grass_tufts", "environment/grass_tufts.png", 32, 32) &&
                 loadTexture("environment/dirt", "environment/dirt.png") &&
                 loadSpriteSheet("environment/pebbles", "environment/pebbles.png", 32, 32) &&
+                loadTexture("environment/clouds", "environment/clouds.png") &&
 
                 // Attacks
                 loadSpriteSheet("effect/scratch", "effect/scratch.png", 32, 32) &&

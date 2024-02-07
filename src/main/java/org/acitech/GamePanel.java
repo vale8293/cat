@@ -52,17 +52,6 @@ public class GamePanel extends JPanel implements Runnable {
         Room room = new Room(40, 40, new Random().nextInt());
         rooms.put(currentRoom, room);
 
-        for (int x = 0; x < room.getWidth(); x++) {
-            for (int y = 0; y < room.getHeight(); y++) {
-                double noise = room.getSimplex().get((double) x / 10, (double) y / 10, 0);
-                if (noise > 1) {
-                    room.setTile(x, y, Tile.dirt);
-                } else {
-                    room.setTile(x, y, Tile.grass);
-                }
-            }
-        }
-
         // Create 10 enemies for no reason ¯\_(ツ)_/¯
 //        for (int i = 0; i < 10; i++) {
 //            addNewEntity(new Enemy(Math.random() * screenWidth, Math.random() * screenHeight));
@@ -209,6 +198,7 @@ public class GamePanel extends JPanel implements Runnable {
         double offsetY = (player.position.getY() + Tile.tileSize / 2d - this.getHeight() / 2d - camera.getY()) * followSpeed;
 
         camera = new Vector2d(camera.getX() + offsetX, camera.getY() + offsetY);
+//        camera = new Vector2d(player.position.getX() - this.getWidth() / 2d, player.position.getY() - this.getHeight() / 2d);
     }
 
     public Vector2d getCameraCenter() {
