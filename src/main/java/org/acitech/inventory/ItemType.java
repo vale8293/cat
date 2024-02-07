@@ -9,11 +9,12 @@ public enum ItemType {
     STRING(16, "items/string_material", 1, 0, 0),
     BONE(4, "cow", 1,2, 0),
     FEATHER(8, "items/feather_material", 1,0, 0),
-    POTION_INST_HEALTH(1, "cow", 2, 1, 0),
-    POTION_INST_MANA(1, "cow", 2, 1, 0),
-    POTION_ATTACK_UP(1, "cow", 2, 1, 0),
-    POTION_DEFENSE_UP(1, "cow", 2, 1, 0),
-    POTION_SPEED_UP(1, "cow", 2, 1, 0);
+    FIRE_TOME_1(1, "spells/fire_tome_lv1", 3, 0, 1),
+    POTION_INST_HEALTH(1, "cow", 4, 1, 0),
+    POTION_INST_MANA(1, "cow", 4, 1, 0),
+    POTION_ATTACK_UP(1, "cow", 4, 1, 0),
+    POTION_DEFENSE_UP(1, "cow", 4, 1, 0),
+    POTION_SPEED_UP(1, "cow", 4, 1, 0);
 
     // Use Modifier:
     /*
@@ -47,8 +48,8 @@ public enum ItemType {
     // Whether an item will go into
     // inv 1 (Inventory bar, Materials & Misc)
     // inv 2 (Inventory extensions, Backpack?)
-    // inv 2 (Shift & Space, Potions or Spells)
-    // inv 3 (1 2 3 4, Potions)
+    // inv 3 (Shift & Space, Potions or Spells)
+    // inv 4 (1 2 3 4, Potions)
     private final int defaultInvNum;
 
     ItemType(int stackSize, String textureKey, int defaultInvNum, int useMod, int effectMod) {

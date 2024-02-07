@@ -24,6 +24,7 @@ public class ResourceLoader {
 
                 // Player
                 loadSpriteSheet("player/base", "player/base.png", 32, 32) &&
+                loadSpriteSheet("player/fire", "player/fire.png", 32, 32) &&
 
                 // Enemies
                 loadSpriteSheet("enemies/Rico", "enemies/Rico.png", 32, 32) &&
@@ -35,6 +36,9 @@ public class ResourceLoader {
                 loadTexture("items/feather_material", "items/feather_material.png") &&
                 loadTexture("items/string_material", "items/string_material.png") &&
                 loadSpriteSheet("items/experience", "items/experience.png", 12, 12) &&
+
+                // Spell Items
+                loadTexture("spells/fire_tome_lv1", "spells/fire_tome_lv1.png") &&
 
                 // Environment
                 loadSpriteSheet("environment/grass", "environment/grass.png", 32, 32) &&

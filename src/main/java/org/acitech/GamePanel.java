@@ -5,6 +5,8 @@ import org.acitech.entities.Item;
 import org.acitech.entities.Player;
 import org.acitech.entities.enemies.Jordan;
 import org.acitech.entities.enemies.Rico;
+import org.acitech.inventory.ItemStack;
+import org.acitech.inventory.ItemType;
 import org.acitech.tilemap.Room;
 import org.acitech.tilemap.Tile;
 import org.acitech.utils.Vector2d;
@@ -76,6 +78,11 @@ public class GamePanel extends JPanel implements Runnable {
         // Create test enemies for no reason ¯\_(ツ)_/¯
         for (int i = 0; i < 10; i++) {
             addNewEntity(new Jordan(Math.random() * screenWidth + 400, Math.random() * screenHeight));
+        }
+
+        // Create test enemies for no reason ¯\_(ツ)_/¯
+        for (int i = 0; i < 10; i++) {
+            addNewEntity(new Item(Math.random() * screenWidth + 400, Math.random() * screenHeight, new ItemStack(ItemType.FIRE_TOME_1)));
         }
 
         // Create and start the game loop thread

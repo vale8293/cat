@@ -100,11 +100,20 @@ public class Player extends Entity {
         }
 
         // Checks for which spell effects to use
-        if (KeyHandler.shiftDown) {
-
+        if (KeyHandler.shiftDown && KeyHandler.spaceDown) {
+            elementState = "base";
         }
-        if (KeyHandler.spaceDown) {
 
+        else if (KeyHandler.shiftDown) {
+            elementState = "fire";
+        }
+
+        else if (KeyHandler.spaceDown) {
+            elementState = "base";
+        }
+
+        else {
+            elementState = "base";
         }
 
         // Checks for mouse input
@@ -172,19 +181,19 @@ public class Player extends Entity {
         // If the player is moving enough, draw the sprite in the direction that movement is
         if (largest > 0.5) {
             switch (direction) {
-                case "left" -> texture = Main.getResources().getTexture("player/base/" + aniFrame + ":0");
-                case "right" -> texture = Main.getResources().getTexture("player/base/" + aniFrame + ":1");
-                case "up" -> texture = Main.getResources().getTexture("player/base/" + aniFrame + ":2");
-                case "down" -> texture = Main.getResources().getTexture("player/base/" + aniFrame + ":3");
+                case "left" -> texture = Main.getResources().getTexture("player/" + elementState + "/" + aniFrame + ":0");
+                case "right" -> texture = Main.getResources().getTexture("player/" + elementState + "/" + aniFrame + ":1");
+                case "up" -> texture = Main.getResources().getTexture("player/" + elementState + "/" + aniFrame + ":2");
+                case "down" -> texture = Main.getResources().getTexture("player/" + elementState + "/" + aniFrame + ":3");
             }
         }
 
         // Idle animation
         else {
             if (direction.equals("left")) {
-                texture = Main.getResources().getTexture("player/base/" + aniFrame + ":4");
+                texture = Main.getResources().getTexture("player/" + elementState + "/" + aniFrame + ":4");
             } else {
-                texture = Main.getResources().getTexture("player/base/" + aniFrame + ":5");
+                texture = Main.getResources().getTexture("player/" + elementState + "/" + aniFrame + ":5");
             }
         }
 
