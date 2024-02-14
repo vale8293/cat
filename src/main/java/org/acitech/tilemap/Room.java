@@ -2,6 +2,7 @@ package org.acitech.tilemap;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.utils.Vector2d;
 import org.spongepowered.noise.module.source.Simplex;
 
 import java.awt.*;
@@ -12,19 +13,82 @@ import java.util.List;
 public class Room {
 
     private final Tile[][] tilemap;
+    private Vector2d cloudOffset;
+    private double cloudAngle;
+    private Random cloudRng;
     private final int width;
     private final int height;
-    private final Simplex simplex;
+    private final Color skyColor;
+    private final Random seedRng;
+    private final Simplex tuftSimplex;
+    private final Simplex terrainSimplex;
 
     public Room(int width, int height, int seed) {
         this.tilemap = new Tile[width][height];
         this.width = width;
         this.height = height;
-        this.simplex = new Simplex();
-        this.simplex.setSeed(seed);
+        this.skyColor = new Color(4273490);
+        this.cloudOffset = new Vector2d();
+        this.cloudAngle = 0;
+
+        // Create random noise instances
+        this.seedRng = new Random(seed);
+        this.cloudRng = new Random(seedRng.nextInt());
+        this.tuftSimplex = new Simplex();
+        this.tuftSimplex.setSeed(seedRng.nextInt());
+        this.terrainSimplex = new Simplex();
+        this.terrainSimplex.setSeed(seedRng.nextInt());
+
+        // Generate the map
+        generate();
+    }
+
+    private void generate() {
+        Vector2d centerMap = new Vector2d(this.width / 2d, this.height / 2d);
+
+        for (int x = 0; x < this.width; x++) {
+            for (int y = 0; y < this.height; y++) {
+                if (centerMap.distance(new Vector2d(x, y)) < this.width / 2d) {
+                    double noise = this.terrainSimplex.get((double) x / 10, (double) y / 10, 0);
+
+                    if (noise > 1) {
+                        setTile(x, y, Tile.dirt);
+                    } else {
+                        setTile(x, y, Tile.grass);
+                    }
+                }
+            }
+        }
+    }
+
+    private void drawBackground(Graphics2D ctx) {
+        ctx.setColor(this.skyColor);
+        ctx.fillRect(0, 0, Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight());
+
+        BufferedImage image = Main.getResources().getTexture("environment/clouds");
+        int size = Math.max(Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight());
+        int span = size / Tile.tileSize * Tile.tileSize / 4;
+
+        cloudOffset.set(wrap(cloudOffset.getX(), 0, image.getWidth() - span), wrap(cloudOffset.getY(), 0, image.getHeight() - span));
+
+        ctx.drawImage(image, 0, 0, size, size, (int) cloudOffset.getX(), (int) cloudOffset.getY(), (int) cloudOffset.getX() + span, (int) cloudOffset.getY() + span, Main.getGamePanel());
+
+        double x = Math.cos(cloudAngle) * 0.5;
+        double y = Math.sin(cloudAngle) * 0.5;
+
+        cloudOffset.add(x, y);
+        cloudAngle += cloudRng.nextDouble(-0.1, 0.1);
+        cloudAngle = cloudAngle % (Math.PI * 2);
+    }
+
+    private double wrap(double value, double lower, double upper) {
+        double range = upper - lower;
+        return ((value - lower) % range + range) % range + lower;
     }
 
     public void draw(Graphics2D ctx) {
+        drawBackground(ctx);
+
         // Create a collection of tile id's mapped to secondary tile-maps
         HashMap<String, Connector[][][]> connCache = new HashMap<>();
 
@@ -32,8 +96,6 @@ public class Room {
         for (Tile tile : Tile.getConnectedTiles()) {
             connCache.put(tile.getId(), new Connector[width][height][]);
         }
-
-        Random tuftsRng = new Random(this.getSimplex().seed() * 87832L);
 
         // Loop over the room's tilemap
         for (int x = 0; x < width; x++) {
@@ -46,15 +108,19 @@ public class Room {
                     ctx.drawImage(image, x * Tile.tileSize - (int) GamePanel.camera.getX(), y * Tile.tileSize - (int) GamePanel.camera.getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
 
                     if (tile.getId().equals(Tile.grass.getId())) {
-                        if (tuftsRng.nextDouble() > 0.15) {
-                            BufferedImage imageTufts = Main.getResources().getTexture("environment/grass_tufts/" + tuftsRng.nextInt(8) + ":0");
+                        double tuftValue = this.tuftSimplex.get(x * 10, y * 10, 0);
+
+                        if (tuftValue > 0.15) {
+                            BufferedImage imageTufts = Main.getResources().getTexture("environment/grass_tufts/" + ((int) (tuftValue * 10e7) % 8) + ":0");
                             ctx.drawImage(imageTufts, x * Tile.tileSize - (int) GamePanel.camera.getX(), y * Tile.tileSize - (int) GamePanel.camera.getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
                         }
                     }
 
                     if (tile.getId().equals(Tile.dirt.getId())) {
-                        if (tuftsRng.nextDouble() > 0.15) {
-                            BufferedImage imageTufts = Main.getResources().getTexture("environment/pebbles/" + tuftsRng.nextInt(4) + ":0");
+                        double tuftValue = this.tuftSimplex.get(x, y, 0);
+
+                        if (tuftValue > 0.15) {
+                            BufferedImage imageTufts = Main.getResources().getTexture("environment/pebbles/" + ((int) (tuftValue * 10e7) % 4) + ":0");
                             ctx.drawImage(imageTufts, x * Tile.tileSize - (int) GamePanel.camera.getX(), y * Tile.tileSize - (int) GamePanel.camera.getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
                         }
                     }
@@ -158,9 +224,5 @@ public class Room {
 
     public int getHeight() {
         return height;
-    }
-
-    public Simplex getSimplex() {
-        return simplex;
     }
 }
