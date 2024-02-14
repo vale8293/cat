@@ -3,18 +3,16 @@ package org.acitech.entities.enemies;
 import org.acitech.entities.Enemy;
 import org.acitech.inventory.ItemType;
 
-import java.awt.*;
-
 public class Pepto extends Enemy {
 
     public Pepto(double startX, double startY) {
-        super(startX, startY, "Pepto");
+        super(startX, startY, "Pepto", "Fighter");
 
         // Animation & Visuals
         this.aniLength = 3;
         this.aniFrameDuration = 8;
-        this.width = 160;
-        this.height = 160;
+        this.width = 120;
+        this.height = 120;
 
         // Stats
         this.maxHealth = 3;
@@ -29,15 +27,4 @@ public class Pepto extends Enemy {
         // Item Pool (Feather: 1/1)
         this.itemPool.add(ItemType.FEATHER);
     }
-
-    // TODO: I don't think this is needed but am too afraid to remove it for good
-//    @Override
-//    protected void tick(double delta) {
-//        super.tick(delta);
-//    }
-//
-//    @Override
-//    public void draw(Graphics2D ctx) {
-//        super.draw(ctx);
-//    }
 }

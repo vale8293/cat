@@ -2,6 +2,9 @@ package org.acitech.entities;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.entities.ai.EnemyAI;
+import org.acitech.entities.ai.Fighter;
+import org.acitech.entities.ai.Skitter;
 import org.acitech.inventory.ItemStack;
 import org.acitech.inventory.ItemType;
 import org.acitech.utils.Vector2d;
@@ -11,18 +14,19 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Enemy extends Entity {
+abstract public class Enemy extends Entity {
 
     // Identifiers
     private final String enemyName;
+    private EnemyAI enemyAI = null;
     public ArrayList<ItemType> itemPool = new ArrayList<>();
 
     // Animation & Visuals
     private int animationTick = 0;
     public int aniLength = 1;
     public int aniFrameDuration = 1;
-    protected int width = 160;
-    protected int height = 160;
+    public int width = 160;
+    public int height = 160;
 
     // Stats
         // Combat
@@ -46,64 +50,34 @@ public class Enemy extends Entity {
     public int itemDrop = 1;
     public int itemScatter = 5;
 
-    public Enemy(double startX, double startY, String enemyName) {
+    public Enemy(double startX, double startY, String enemyName, String ai) {
         this.position = new Vector2d(startX, startY);
         this.friction = 0.9;
         this.enemyName = enemyName;
+
+        switch (ai.toLowerCase()) {
+            case "fighter" -> this.enemyAI = new Fighter(this);
+            case "skitter" -> this.enemyAI = new Skitter(this);
+            default -> this.enemyAI = null;
+        }
     }
 
     @Override
     // Do this stuff every frame
     protected void tick(double delta) {
-        Vector2d playerPos = GamePanel.player.position;
         if (this.damageTimer > 0) this.damageTimer--; // Reduce damage timer
 
-        // Gets the angle between the player and the enemy
-        double angle = Math.atan2(playerPos.getY() - this.position.getY(), playerPos.getX() - this.position.getX());
-        double x = Math.cos(angle) * 0.5;
-        double y = Math.sin(angle) * 0.5;
-
-        // If the enemy is close enough to the player, start its aggro ai
-        if (this.position.distance(playerPos) < aggroDistance) {
-            this.acceleration = new Vector2d(x, y);
-            this.acceleration = this.acceleration.multiply(moveSpeed);
-
-            // If the enemy makes contact with th player
-            if (this.position.distance(playerPos) < Math.max(this.width / 2, this.height / 2)) {
-                // Deal damage w/ elemental effect (none by default)
-                if (GamePanel.player.damageTimer == 0) {
-                    GamePanel.player.damageTaken(this.damage, this.damageElement);
-                }
-
-                // Knock back the enemy and player
-                this.velocity.set(this.kbMult * -x, this.kbMult * -y);
-                GamePanel.player.velocity = this.velocity.copy().multiply((double) -GamePanel.player.kbMult / this.kbMult);
-            }
+        if (this.enemyAI != null) {
+            this.enemyAI.execute(delta);
         }
 
-        // Looks for any instances of a scratch
-        for (Entity entity : GamePanel.entities) {
-            if (!(entity instanceof Scratch scratch)) continue;
+        // boolean gotScratched = scratchCheck(x, y); // Move into AIs
+        deathCheck();
 
-            // Gets the position of the scratch
-            double dist = scratch.position.distance(this.position);
+    }
 
-            // If the scratch makes contact with the enemy
-            // regain 1 mana
-            // knock it back, lose 1hp, and start i-frames, extend streak
-            if (dist < 100) {
-                if (this.damageTimer == 0) {
-                    if (GamePanel.player.mana < GamePanel.player.maxMana) {
-                        GamePanel.player.mana += 1;
-                    }
-                    this.velocity = new Vector2d(this.kbMult * -x, this.kbMult * -y);
-                    this.health -= Math.max(GamePanel.player.scratchDamage - this.defense, 0);
-                    this.damageTimer = immunity;
-                    GamePanel.player.streakTimer = GamePanel.player.streakTimerMax;
-                }
-            }
-        }
-
+    // Defines basic AI for if an enemy dies
+    protected void deathCheck() {
         // If the enemy dies, get rid of it, todo: play an animation (probably some kinda particle explosion)
         if (this.health <= 0) {
             this.dispose();

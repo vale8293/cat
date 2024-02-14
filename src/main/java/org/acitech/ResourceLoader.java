@@ -16,18 +16,20 @@ public class ResourceLoader {
         // Load hardcoded assets and return the result of loading them
         return  // UI
                 loadTexture("ui/inv_bar_default", "ui/inv_bar_default.png") &&
+                loadTexture("ui/menu", "ui/menu.png") &&
                 loadSpriteSheet("ui/hearts", "ui/hearts.png", 18, 16) &&
                 loadSpriteSheet("ui/mana", "ui/mana.png", 13, 13) &&
                 loadSpriteSheet("ui/numbers", "ui/numbers.png", 5, 5) &&
                 loadSpriteSheet("ui/streak_bar", "ui/streak_bar.png", 32, 16) &&
 
                 // Player
-                loadSpriteSheet("player/running", "player/running.png", 32, 32) &&
-                loadSpriteSheet("player/idle", "player/idle.png", 32, 32) &&
+                loadSpriteSheet("player/base", "player/base.png", 32, 32) &&
+                loadSpriteSheet("player/fire", "player/fire.png", 32, 32) &&
 
                 // Enemies
                 loadSpriteSheet("enemies/Rico", "enemies/Rico.png", 32, 32) &&
                 loadSpriteSheet("enemies/Pepto", "enemies/Pepto.png", 32, 32) &&
+                loadSpriteSheet("enemies/Jordan", "enemies/Jordan.png", 32, 32) &&
 
                 // Items
                 loadTexture("items/water_material", "items/water_material.png") &&
@@ -35,11 +37,15 @@ public class ResourceLoader {
                 loadTexture("items/string_material", "items/string_material.png") &&
                 loadSpriteSheet("items/experience", "items/experience.png", 12, 12) &&
 
+                // Spell Items
+                loadTexture("spells/fire_tome_lv1", "spells/fire_tome_lv1.png") &&
+
                 // Environment
                 loadSpriteSheet("environment/grass", "environment/grass.png", 32, 32) &&
                 loadSpriteSheet("environment/grass_tufts", "environment/grass_tufts.png", 32, 32) &&
                 loadTexture("environment/dirt", "environment/dirt.png") &&
                 loadSpriteSheet("environment/pebbles", "environment/pebbles.png", 32, 32) &&
+                loadTexture("environment/clouds", "environment/clouds.png") &&
 
                 // Attacks
                 loadSpriteSheet("effect/scratch", "effect/scratch.png", 32, 32) &&

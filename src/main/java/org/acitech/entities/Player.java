@@ -11,7 +11,6 @@ import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Player extends Entity {
 
@@ -42,7 +41,8 @@ public class Player extends Entity {
     public int kbMult = 20; // Can be changed in gameplay
     public int immunity = 30; // Can be changed in gameplay
     public int damageTimer;
-    public boolean bufferInput = false;
+    public String elementState = "base";
+    public boolean bufferInput = false; // For implementing a buffer system later maybe
     public Player() {
         this.friction = 0.9;
     }
@@ -50,6 +50,9 @@ public class Player extends Entity {
     // Inventory
     public Inventory inventory1 = new Inventory(8);
     public Inventory inventory2 = new Inventory(2);
+
+    // Load important assets
+    Clip sndScratch = Main.getResources().getSound("player_scratch");
 
     @Override
     // Do this stuff every frame
@@ -62,10 +65,10 @@ public class Player extends Entity {
         if (this.scratchTimer > 0) {
             this.scratchTimer--;
         }
+
         if (this.streakTimer > 0) {
             this.streakTimer--;
         }
-
         if (this.streakTimer == 0) {
             this.currentStreak = 0;
         }
@@ -96,20 +99,50 @@ public class Player extends Entity {
             }
         }
 
+        // Checks for which spell effects to use
+        if (KeyHandler.shiftDown && KeyHandler.spaceDown) {
+            elementState = "base";
+        }
+
+        else if (KeyHandler.shiftDown) {
+            elementState = "fire";
+        }
+
+        else if (KeyHandler.spaceDown) {
+            elementState = "base";
+        }
+
+        else {
+            elementState = "base";
+        }
+
         // Checks for mouse input
         if (!KeyHandler.mouseClicks.isEmpty()) {
 
-            // Checks for clicks (Scratch)
+
             for (KeyHandler.Click click : KeyHandler.mouseClicks) {
-                if (this.scratchTimer == 0) {
-                    double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
-                    Scratch scratch = new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle);
-                    Clip clip = Main.getResources().getSound("player_scratch");
-                    clip.setFramePosition(0);
-                    clip.loop(0);
-                    Main.getGamePanel().addNewEntity(scratch);
-                    clip.start();
-                    this.scratchTimer = scratchCooldown;
+                // Checks for clicks (Scratch / Other thing)
+                switch (click.getButton()) {
+
+                    // Left Click
+                    case (1) -> {
+                        if (this.scratchTimer == 0) {
+                            double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
+                            Scratch scratch = new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle);
+                            sndScratch.setFramePosition(0);
+                            sndScratch.loop(0);
+                            Main.getGamePanel().addNewEntity(scratch);
+                            sndScratch.start();
+                            this.scratchTimer = scratchCooldown;
+                        }
+                    }
+
+                    // Middle Click
+                    case (2) -> System.out.print("This is click 2 ");
+
+
+                    // Right Click
+                    case (3) -> System.out.print("This is click 3 ");
                 }
             }
         }
@@ -148,19 +181,19 @@ public class Player extends Entity {
         // If the player is moving enough, draw the sprite in the direction that movement is
         if (largest > 0.5) {
             switch (direction) {
-                case "up" -> texture = Main.getResources().getTexture("player/running/" + aniFrame + ":3");
-                case "down" -> texture = Main.getResources().getTexture("player/running/" + aniFrame + ":2");
-                case "right" -> texture = Main.getResources().getTexture("player/running/" + aniFrame + ":1");
-                case "left" -> texture = Main.getResources().getTexture("player/running/" + aniFrame + ":0");
+                case "left" -> texture = Main.getResources().getTexture("player/" + elementState + "/" + aniFrame + ":0");
+                case "right" -> texture = Main.getResources().getTexture("player/" + elementState + "/" + aniFrame + ":1");
+                case "up" -> texture = Main.getResources().getTexture("player/" + elementState + "/" + aniFrame + ":2");
+                case "down" -> texture = Main.getResources().getTexture("player/" + elementState + "/" + aniFrame + ":3");
             }
         }
 
         // Idle animation
         else {
             if (direction.equals("left")) {
-                texture = Main.getResources().getTexture("player/idle/" + aniFrame / 3 + ":0");
+                texture = Main.getResources().getTexture("player/" + elementState + "/" + aniFrame + ":4");
             } else {
-                texture = Main.getResources().getTexture("player/idle/" + aniFrame / 3 + ":1");
+                texture = Main.getResources().getTexture("player/" + elementState + "/" + aniFrame + ":5");
             }
         }
 

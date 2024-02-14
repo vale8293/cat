@@ -8,17 +8,26 @@ import java.util.ArrayList;
 
 public class KeyHandler implements KeyListener, MouseListener {
 
+    // Movement
     public static boolean wDown = false;
     public static boolean aDown = false;
     public static boolean sDown = false;
     public static boolean dDown = false;
+
+    // Combat
     public static boolean zDown = false;
     public static boolean xDown = false;
     public static boolean cDown = false;
     public static boolean vDown = false;
-    public static boolean rDown = false;
+    public static boolean shiftDown = false;
+    public static boolean spaceDown = false;
+
+    // Clicks
     public static boolean mousePressed = false;
     public static ArrayList<Click> mouseClicks = new ArrayList<>();
+
+    // Menu
+    public static boolean escDown = false;
 
     @Override
     public void keyTyped(KeyEvent event) {}
@@ -52,8 +61,14 @@ public class KeyHandler implements KeyListener, MouseListener {
             case KeyEvent.VK_V -> {
                 vDown = true;
             }
-            case KeyEvent.VK_R -> {
-                rDown = true;
+            case KeyEvent.VK_SHIFT -> {
+                shiftDown = true;
+            }
+            case KeyEvent.VK_SPACE -> {
+                spaceDown = true;
+            }
+            case KeyEvent.VK_ESCAPE -> {
+                escDown = true;
             }
         }
     }
@@ -87,8 +102,14 @@ public class KeyHandler implements KeyListener, MouseListener {
             case KeyEvent.VK_V -> {
                 vDown = false;
             }
-            case KeyEvent.VK_R -> {
-                rDown = false;
+            case KeyEvent.VK_SHIFT -> {
+                shiftDown = false;
+            }
+            case KeyEvent.VK_SPACE -> {
+                spaceDown = false;
+            }
+            case KeyEvent.VK_ESCAPE -> {
+                escDown = false;
             }
         }
     }
