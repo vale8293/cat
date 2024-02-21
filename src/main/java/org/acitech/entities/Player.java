@@ -36,6 +36,8 @@ public class Player extends Entity {
     public int scratchDamage = 1; // Can be changed in gameplay
     public int scratchCooldown = 20; // Can be changed in gameplay
     public int scratchTimer = scratchCooldown;
+    public int spellCooldown = 40; // Can be changed in gameplay
+    public int spellTimer = spellCooldown;
     public int meleeDefense = 0; // Can be changed in gameplay
     public int magicDefense = 0; // Can be changed in gameplay
     public int kbMult = 20; // Can be changed in gameplay
@@ -64,6 +66,9 @@ public class Player extends Entity {
         }
         if (this.scratchTimer > 0) {
             this.scratchTimer--;
+        }
+        if (this.spellTimer > 0) {
+            this.spellTimer--;
         }
 
         if (this.streakTimer > 0) {
@@ -133,16 +138,24 @@ public class Player extends Entity {
                             sndScratch.loop(0);
                             Main.getGamePanel().addNewEntity(scratch);
                             sndScratch.start();
-                            this.scratchTimer = scratchCooldown;
+                            this.scratchTimer = this.scratchCooldown;
                         }
                     }
 
                     // Middle Click
-                    case (2) -> System.out.print("This is click 2 ");
-
+                    case (2) -> {
+                        System.out.print("hi");
+                    }
 
                     // Right Click
-                    case (3) -> System.out.print("This is click 3 ");
+                    case (3) -> {
+                        if (this.spellTimer == 0) {
+                            double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
+                            Projectile projectile = new Projectile((int) this.position.getX(), (int) this.position.getY(), angle, "fireball", "bullet");
+                            Main.getGamePanel().addNewEntity(projectile);
+                            this.spellTimer = this.spellCooldown;
+                        }
+                    }
                 }
             }
         }
