@@ -85,32 +85,54 @@ public class UI {
 
     // Handles the inventory bar and items (might be rewritten)
     public void drawInventory(Graphics2D ctx) {
-        int invWidth = 688;
-        int invHeight = 64;
+        int invWidth = Math.min((int) (Main.getGamePanel().getWidth() * 0.75d), 688);
+        int invHeight = (int) (invWidth * (64d / 688d));
+        int invLeftPadding = (int) (invWidth * (32d / 688d));
         int invX = Main.getGamePanel().getWidth() / 2 - invWidth / 2;
-        int invY = Main.getGamePanel().getHeight() - 96;
+        int invY = Main.getGamePanel().getHeight() - (int) (invHeight * 1.5d);
 
         BufferedImage barTexture = Main.getResources().getTexture("ui/inv_bar_default");
         ctx.drawImage(barTexture, invX, invY, invWidth, invHeight, Main.getGamePanel());
 
-        for (int slot = 0; slot < GamePanel.player.inventory1.getMaxSlots(); slot++) {
-            ItemStack item = GamePanel.player.inventory1.getItem(slot);
+        int itemScale = (int) (invHeight * 0.8);
+        int itemYOffset = (int) (invHeight * 0.1);
+
+        for (int slot = 0; slot < GamePanel.player.spellInv.getMaxSlots(); slot++) {
+            ItemStack item = GamePanel.player.spellInv.getItem(slot);
             if (item == null) continue;
 
             BufferedImage itemTexture = item.getType().getTexture();
 
-            int itemPos = Main.getGamePanel().getWidth() / 2 - invWidth / 2 + 32 + 64 * slot;
-            ctx.drawImage(itemTexture, itemPos, invY + 4, 48, 48, Main.getGamePanel());
+            int itemPos = invX + invLeftPadding + (int) (itemScale * 1.25) * (slot); // TODO: FINISH ME
+            ctx.drawImage(itemTexture, itemPos, invY + itemYOffset, itemScale, itemScale, Main.getGamePanel());
 
             int itemCount = item.getCount();
             BufferedImage amountTextureOnes = Main.getResources().getTexture("ui/numbers/" + itemCount % 10 + ":0");
-            ctx.drawImage(amountTextureOnes, itemPos + 32, invY + 40, 20, 20, Main.getGamePanel());
+            ctx.drawImage(amountTextureOnes, itemPos + itemScale / 2, invY + itemScale / 2 + itemYOffset, itemScale / 2, itemScale / 2, Main.getGamePanel());
 
             if (itemCount / 10 > 0) {
                 BufferedImage amountTextureTens = Main.getResources().getTexture("ui/numbers/" + (itemCount / 10) % 10 + ":0");
-                ctx.drawImage(amountTextureTens, itemPos + 16, invY + 40, 20, 20, Main.getGamePanel());
+                ctx.drawImage(amountTextureTens, itemPos, invY + itemScale / 2 + itemYOffset, itemScale / 2, itemScale / 2, Main.getGamePanel());
             }
+        }
 
+        for (int slot = 0; slot < GamePanel.player.defaultInv.getMaxSlots(); slot++) {
+            ItemStack item = GamePanel.player.defaultInv.getItem(slot);
+            if (item == null) continue;
+
+            BufferedImage itemTexture = item.getType().getTexture();
+
+            int itemPos = invX + invLeftPadding + (int) (itemScale * 1.25) * (slot + GamePanel.player.spellInv.getMaxSlots());
+            ctx.drawImage(itemTexture, itemPos, invY + itemYOffset, itemScale, itemScale, Main.getGamePanel());
+
+            int itemCount = item.getCount();
+            BufferedImage amountTextureOnes = Main.getResources().getTexture("ui/numbers/" + itemCount % 10 + ":0");
+            ctx.drawImage(amountTextureOnes, itemPos + itemScale / 2, invY + itemScale / 2 + itemYOffset, itemScale / 2, itemScale / 2, Main.getGamePanel());
+
+            if (itemCount / 10 > 0) {
+                BufferedImage amountTextureTens = Main.getResources().getTexture("ui/numbers/" + (itemCount / 10) % 10 + ":0");
+                ctx.drawImage(amountTextureTens, itemPos, invY + itemScale / 2 + itemYOffset, itemScale / 2, itemScale / 2, Main.getGamePanel());
+            }
         }
     }
 

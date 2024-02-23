@@ -5,6 +5,7 @@ import org.acitech.KeyHandler;
 import org.acitech.Main;
 import org.acitech.inventory.Inventory;
 import org.acitech.inventory.ItemStack;
+import org.acitech.inventory.ItemType;
 import org.acitech.utils.Vector2d;
 
 import javax.sound.sampled.Clip;
@@ -48,8 +49,8 @@ public class Player extends Entity {
     }
 
     // Inventory
-    public Inventory inventory1 = new Inventory(8);
-    public Inventory inventory2 = new Inventory(2);
+    public Inventory defaultInv = new Inventory(8);
+    public Inventory spellInv = new Inventory(2);
 
     // Load important assets
     Clip sndScratch = Main.getResources().getSound("player_scratch");
@@ -206,7 +207,13 @@ public class Player extends Entity {
      */
     public ArrayList<Item> pickupItems(ArrayList<Item> items) {
         for (Item item : new ArrayList<>(items)) {
-            ItemStack remaining = GamePanel.player.inventory1.addItem(item.getItemStack());
+            ItemStack remaining;
+
+            if (ItemType.getSpellTypes().contains(item.getItemStack().getType())) {
+                remaining = spellInv.addItem(item.getItemStack());
+            } else {
+                remaining = defaultInv.addItem(item.getItemStack());
+            }
 
             if (remaining != null) {
                 item.setItemStack(remaining);

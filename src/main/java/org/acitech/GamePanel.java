@@ -125,7 +125,7 @@ public class GamePanel extends JPanel implements Runnable {
 
                 // Check if the entity is an item and is getting picked up
                 if (entity instanceof Item itemEntity) {
-                    if (itemEntity.isInPickupRange()) {
+                    if (itemEntity.isInPickupRange() && !itemEntity.isDisappearing()) {
                         pickupItems.add(itemEntity);
                     }
                 }

@@ -3,6 +3,9 @@ package org.acitech.inventory;
 import org.acitech.Main;
 
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public enum ItemType {
     WATER(8, "items/water_material", 1, 1, 2),
@@ -15,6 +18,13 @@ public enum ItemType {
     POTION_ATTACK_UP(1, "cow", 4, 1, 0),
     POTION_DEFENSE_UP(1, "cow", 4, 1, 0),
     POTION_SPEED_UP(1, "cow", 4, 1, 0);
+
+    /*
+     * Predefined groups of similar item types
+     */
+    public static Set<ItemType> getSpellTypes() {
+        return new HashSet<>(Arrays.asList(FIRE_TOME_1, POTION_INST_HEALTH, POTION_INST_MANA, POTION_ATTACK_UP, POTION_DEFENSE_UP, POTION_SPEED_UP));
+    }
 
     // Use Modifier:
     /*
@@ -32,16 +42,16 @@ public enum ItemType {
      * 4: Air
      */
 
-    // How many items can be in one stack
+    /** How many items can be in one stack */
     private final int stackSize;
 
-    // The item's texture
+    /** The item's texture */
     private final String textureKey;
 
-    // The item's action when used
+    /** The item's action when used */
     private final int useMod;
 
-    // The item's elemental effect with that action
+    /** The item's elemental effect with that action */
     private final int effectMod;
 
 
