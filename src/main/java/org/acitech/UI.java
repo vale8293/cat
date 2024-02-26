@@ -103,7 +103,7 @@ public class UI {
 
             BufferedImage itemTexture = item.getType().getTexture();
 
-            int itemPos = invX + invLeftPadding + (int) (itemScale * 1.25) * (slot); // TODO: FINISH ME
+            int itemPos = invX + invLeftPadding + (int) (itemScale * 1.25) * (slot);
             ctx.drawImage(itemTexture, itemPos, invY + itemYOffset, itemScale, itemScale, Main.getGamePanel());
 
             int itemCount = item.getCount();
