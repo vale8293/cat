@@ -2,7 +2,7 @@ package org.acitech.entities;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
-import org.acitech.entities.ai.BulletAI;
+import org.acitech.entities.ai.Bullet;
 import org.acitech.entities.ai.ProjectileAI;
 import org.acitech.utils.Vector2d;
 
@@ -13,7 +13,7 @@ public class Projectile extends Entity {
 
     // Identifiers
     private final String projectileName;
-    private final double angle;
+    public final double angle;
     private ProjectileAI projectileAI = null;
 
     // Animation & Visuals
@@ -38,7 +38,7 @@ public class Projectile extends Entity {
         this.projectileName = projectileName;
 
         switch (ai.toLowerCase()) {
-            case "bullet" -> this.projectileAI = new BulletAI(this);
+            case "bullet" -> this.projectileAI = new Bullet(this);
             default -> this.projectileAI = null;
         }
     }
@@ -88,19 +88,19 @@ public class Projectile extends Entity {
         // Draw the projectile's sprite in the direction that movement is
         if (largest > 0) {
             switch (direction) {
-                case "left" -> texture = Main.getResources().getTexture("enemies/" + projectileName + "/" + aniFrame + ":" + 0);
-                case "right" -> texture = Main.getResources().getTexture("enemies/" + projectileName + "/" + aniFrame + ":" + 1);
-                case "up" -> texture = Main.getResources().getTexture("enemies/" + projectileName + "/" + aniFrame + ":" + 2);
-                case "down" -> texture = Main.getResources().getTexture("enemies/" + projectileName + "/" + aniFrame + ":" + 3);
+                case "left" -> texture = Main.getResources().getTexture("projectiles/" + projectileName + "/" + aniFrame + ":" + 0);
+                case "right" -> texture = Main.getResources().getTexture("projectiles/" + projectileName + "/" + aniFrame + ":" + 1);
+                case "up" -> texture = Main.getResources().getTexture("projectiles/" + projectileName + "/" + aniFrame + ":" + 2);
+                case "down" -> texture = Main.getResources().getTexture("projectiles/" + projectileName + "/" + aniFrame + ":" + 3);
             }
         }
 
-        // Idle animation
+        // Idle animation (should never happen but placeholder)
         else {
             if (direction.equals("left")) {
-                texture = Main.getResources().getTexture("enemies/" + projectileName + "/" + aniFrame + ":" + 4);
+                texture = Main.getResources().getTexture("projectiles/" + projectileName + "/" + aniFrame + ":" + 4);
             } else {
-                texture = Main.getResources().getTexture("enemies/" + projectileName + "/" + aniFrame + ":" + 5);
+                texture = Main.getResources().getTexture("projectiles/" + projectileName + "/" + aniFrame + ":" + 5);
             }
         }
 

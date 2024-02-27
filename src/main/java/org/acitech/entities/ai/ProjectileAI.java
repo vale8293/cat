@@ -8,6 +8,5 @@ abstract public class ProjectileAI {
     public ProjectileAI(Projectile projectile) {
         this.projectile = projectile;
     }
-
     public abstract void execute(double delta);
 }

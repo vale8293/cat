@@ -3,6 +3,7 @@ package org.acitech.entities;
 import org.acitech.GamePanel;
 import org.acitech.KeyHandler;
 import org.acitech.Main;
+import org.acitech.entities.projectiles.Fireball;
 import org.acitech.inventory.Inventory;
 import org.acitech.inventory.ItemStack;
 import org.acitech.utils.Vector2d;
@@ -52,6 +53,9 @@ public class Player extends Entity {
     // Inventory
     public Inventory inventory1 = new Inventory(8);
     public Inventory inventory2 = new Inventory(2);
+
+    // Misc.
+    public Vector2d clickPos = new Vector2d();
 
     // Load important assets
     Clip sndScratch = Main.getResources().getSound("player_scratch");
@@ -132,6 +136,7 @@ public class Player extends Entity {
                     // Left Click
                     case (1) -> {
                         if (this.scratchTimer == 0) {
+                            clickPos.set(click.getX(), click.getY());
                             double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
                             Scratch scratch = new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle);
                             sndScratch.setFramePosition(0);
@@ -144,15 +149,15 @@ public class Player extends Entity {
 
                     // Middle Click
                     case (2) -> {
-                        System.out.print("hi");
+                        System.out.print("middle click");
                     }
 
                     // Right Click
                     case (3) -> {
                         if (this.spellTimer == 0) {
                             double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
-                            Projectile projectile = new Projectile((int) this.position.getX(), (int) this.position.getY(), angle, "fireball", "bullet");
-                            Main.getGamePanel().addNewEntity(projectile);
+                            Fireball fireball = new Fireball(this.position.getX(), this.position.getY(), angle);
+                            Main.getGamePanel().addNewEntity(fireball);
                             this.spellTimer = this.spellCooldown;
                         }
                     }
