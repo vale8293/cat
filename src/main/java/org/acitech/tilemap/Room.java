@@ -27,7 +27,7 @@ public class Room {
         this.tilemap = new Tile[width][height];
         this.width = width;
         this.height = height;
-        this.skyColor = new Color(4273490);
+        this.skyColor = new Color(0x413552);
         this.cloudOffset = new Vector2d();
         this.cloudAngle = 0;
 
