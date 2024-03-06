@@ -24,10 +24,13 @@ public class Skitter extends EnemyAI {
         double x = Math.cos(angle) * 0.5;
         double y = Math.sin(angle) * 0.5;
 
-        // Checks for scratch to determine AI state
+        // Checks for scratch & projectile to determine AI state
         boolean gotScratched = scratchCheck(x, y);
+        boolean gotHitBullet = bulletCheck(x, y);
         if (gotScratched) {
             fleeTimer = 90;
+        } else if (gotHitBullet) {
+            fleeTimer = 120;
         }
 
             // If the enemy is close enough to the player, start Skitter AI

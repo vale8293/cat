@@ -45,6 +45,10 @@ public class ResourceLoader {
 
                 // Other Projectiles
 
+
+                // Effects
+                loadSpriteSheet("effect/explosion", "effect/explosion.png", 32, 32) &&
+
                 // Environment
                 loadSpriteSheet("environment/grass", "environment/grass.png", 32, 32) &&
                 loadSpriteSheet("environment/grass_tufts", "environment/grass_tufts.png", 32, 32) &&

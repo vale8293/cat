@@ -13,6 +13,7 @@ public class Bullet extends ProjectileAI {
         double angle = this.projectile.angle;
         this.projectile.velocity.set(Math.cos(angle + Math.PI), Math.sin(angle + Math.PI));
         this.projectile.velocity.multiply(this.projectile.moveSpeed);
+        this.projectile.deathCheck();
 
     }
 }

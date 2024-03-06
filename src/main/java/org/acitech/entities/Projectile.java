@@ -4,6 +4,7 @@ import org.acitech.GamePanel;
 import org.acitech.Main;
 import org.acitech.entities.ai.Bullet;
 import org.acitech.entities.ai.ProjectileAI;
+import org.acitech.entities.effects.Explosion;
 import org.acitech.utils.Vector2d;
 
 import java.awt.*;
@@ -24,8 +25,10 @@ public class Projectile extends Entity {
     public int height = 160;
 
     // Stats
+    public String onDeath = "none"; // Specifies what happens after the projectile runs out of collisions (ex: explode)
     public int maxCollisions = 1;
     public int collisions = maxCollisions;
+    public int manaCost = 1;
     public int damage = 1;
     public String damageElement = "None";
     public double moveSpeed = 1;
@@ -55,9 +58,14 @@ public class Projectile extends Entity {
     }
 
     // Defines basic AI for when a projectile expires
-    protected void deathCheck() {
-        // If the projectile expires, get rid of it, todo: play an animation (probably some kinda particle explosion)
+    public void deathCheck() {
+        // If the projectile expires, get rid of it
         if (this.collisions <= 0) {
+            switch (this.onDeath) {
+                case ("explosion") -> Main.getGamePanel().addNewEntity(new Explosion(this.position.getX(), this.position.getY()));
+                case ("waterExplosion") -> System.out.println("Placeholder");
+            }
+
             this.dispose();
         }
     }

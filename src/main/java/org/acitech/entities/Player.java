@@ -157,8 +157,11 @@ public class Player extends Entity {
                         if (this.spellTimer == 0) {
                             double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
                             Fireball fireball = new Fireball(this.position.getX(), this.position.getY(), angle);
-                            Main.getGamePanel().addNewEntity(fireball);
-                            this.spellTimer = this.spellCooldown;
+                            if (this.mana >= fireball.manaCost) {
+                                Main.getGamePanel().addNewEntity(fireball);
+                                this.mana -= fireball.manaCost;
+                                this.spellTimer = this.spellCooldown;
+                            }
                         }
                     }
                 }
