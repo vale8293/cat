@@ -85,11 +85,13 @@ public class UI {
 
     // Handles the inventory bar and items (might be rewritten)
     public void drawInventory(Graphics2D ctx) {
-        int invWidth = Math.min((int) (Main.getGamePanel().getWidth() * 0.75d), 688);
-        int invHeight = (int) (invWidth * (64d / 688d));
+        int[] invBounds = getInventoryBounds();
+
+        int invWidth = invBounds[0];
+        int invHeight = invBounds[1];
         int invLeftPadding = (int) (invWidth * (32d / 688d));
-        int invX = Main.getGamePanel().getWidth() / 2 - invWidth / 2;
-        int invY = Main.getGamePanel().getHeight() - (int) (invHeight * 1.5d);
+        int invX = invBounds[2];
+        int invY = invBounds[3];
 
         BufferedImage barTexture = Main.getResources().getTexture("ui/inv_bar_default");
         ctx.drawImage(barTexture, invX, invY, invWidth, invHeight, Main.getGamePanel());
@@ -137,25 +139,27 @@ public class UI {
     }
 
     public void drawStreak(Graphics2D ctx) {
-        int streakWidth = 128;
-        int streakHeight = 64;
+        int streakWidth = (int) Math.min(Main.getGamePanel().getWidth() * (128.0 / 800.0), 128.0);
+        int streakHeight = (int) (streakWidth * 0.5);
+
+        int[] invBounds = getInventoryBounds();
+
         int streakX = Main.getGamePanel().getWidth() / 2 - streakWidth / 2;
-        int streakY = Main.getGamePanel().getHeight() - 180;
+        int streakY = invBounds[3] - invBounds[1] - (int) (streakWidth * (24.0 / 128.0));
 
         BufferedImage streakTexture = Main.getResources().getTexture("ui/streak_bar/" + ((3 - (GamePanel.player.streakTimer + 59) / 60)) + ":0");
         ctx.drawImage(streakTexture, streakX, streakY, streakWidth, streakHeight, Main.getGamePanel());
 
         int streakCount = GamePanel.player.currentStreak;
         BufferedImage amountTextureOnes = Main.getResources().getTexture("ui/numbers/" + streakCount % 10 + ":0");
-        ctx.drawImage(amountTextureOnes, streakX + 112, streakY, 20, 20, Main.getGamePanel());
+        ctx.drawImage(amountTextureOnes, streakX + (int) (streakWidth * (112.0 / 128.0)), streakY, (int) (streakWidth * (20.0 / 128.0)), (int) (streakWidth * (20.0 / 128.0)), Main.getGamePanel());
 
         BufferedImage amountTextureTens = Main.getResources().getTexture("ui/numbers/" + (streakCount / 10) % 10 + ":0");
-        ctx.drawImage(amountTextureTens, streakX + 96, streakY, 20, 20, Main.getGamePanel());
+        ctx.drawImage(amountTextureTens, streakX + (int) (streakWidth * (96.0 / 128.0)), streakY, (int) (streakWidth * (20.0 / 128.0)), (int) (streakWidth * (20.0 / 128.0)), Main.getGamePanel());
     }
 
     // Placeholder: Counts XP in-game (should be polished and repurposed)
     public void drawXP(Graphics2D ctx) {
-
         int xpX = 0;
         int xpY = Main.getGamePanel().getHeight() - 25;
 
@@ -171,5 +175,15 @@ public class UI {
 
         BufferedImage amountTextureThous = Main.getResources().getTexture("ui/numbers/" + (xpCount / 1000) % 10 + ":0");
         ctx.drawImage(amountTextureThous, xpX, xpY, 20, 20, Main.getGamePanel());
+    }
+
+    /** @return An array of integers going from 0: Width, 1: Height, 2: X, 3: Y */
+    private int[] getInventoryBounds() {
+        int invWidth = Math.min((int) (Main.getGamePanel().getWidth() * 0.75d), 688);
+        int invHeight = (int) (invWidth * (64d / 688d));
+        int invX = Main.getGamePanel().getWidth() / 2 - invWidth / 2;
+        int invY = Main.getGamePanel().getHeight() - (int) (invHeight * 1.5d);
+
+        return new int[] { invWidth, invHeight, invX, invY, };
     }
 }
