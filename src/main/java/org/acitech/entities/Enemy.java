@@ -71,9 +71,7 @@ abstract public class Enemy extends Entity {
             this.enemyAI.execute(delta);
         }
 
-        // boolean gotScratched = scratchCheck(x, y); // Move into AIs
         deathCheck();
-
     }
 
     // Defines basic AI for if an enemy dies

@@ -40,6 +40,15 @@ public class ResourceLoader {
                 // Spell Items
                 loadTexture("spells/fire_tome_lv1", "spells/fire_tome_lv1.png") &&
 
+                // Spells
+                loadSpriteSheet("projectiles/fireball", "projectiles/fireball.png", 32, 32) &&
+
+                // Other Projectiles
+
+
+                // Effects
+                loadSpriteSheet("effect/explosion", "effect/explosion.png", 32, 32) &&
+
                 // Environment
                 loadSpriteSheet("environment/grass", "environment/grass.png", 32, 32) &&
                 loadSpriteSheet("environment/grass_tufts", "environment/grass_tufts.png", 32, 32) &&
