@@ -9,8 +9,8 @@ import java.util.HashMap;
 
 public class ResourceLoader {
 
-    private HashMap<String, BufferedImage> textures = new HashMap<>();
-    private HashMap<String, String> soundMap = new HashMap<>();
+    private final HashMap<String, BufferedImage> textures = new HashMap<>();
+    private final HashMap<String, String> soundMap = new HashMap<>();
 
     public boolean load() {
         // Load hardcoded assets and return the result of loading them

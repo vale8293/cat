@@ -24,12 +24,12 @@ public class GamePanel extends JPanel implements Runnable {
     final int fps = 60;
     private boolean paused = false;
     private boolean unEscaped = false;
-    private ArrayList<Entity> newEntities = new ArrayList<Entity>();
+    private ArrayList<Entity> newEntities = new ArrayList<>();
 
     KeyHandler keys = new KeyHandler();
     Thread gameThread;
 
-    public static ArrayList<Entity> entities = new ArrayList<Entity>();
+    public static ArrayList<Entity> entities = new ArrayList<>();
     public static Player player = new Player();
     public static Vector2d camera = new Vector2d(0, 0);
     public static UI ui = new UI();
@@ -118,8 +118,8 @@ public class GamePanel extends JPanel implements Runnable {
     public void update(double delta) {
 
         if (!paused) {
-            ArrayList<Entity> disposedEntities = new ArrayList<Entity>();
-            ArrayList<Item> pickupItems = new ArrayList<Item>();
+            ArrayList<Entity> disposedEntities = new ArrayList<>();
+            ArrayList<Item> pickupItems = new ArrayList<>();
 
             // Add newly created entities
             entities.addAll(newEntities);

@@ -37,39 +37,17 @@ public class KeyHandler implements KeyListener, MouseListener {
         int code = event.getKeyCode();
 
         switch (code) {
-            case KeyEvent.VK_W -> {
-                wDown = true;
-            }
-            case KeyEvent.VK_A -> {
-                aDown = true;
-            }
-            case KeyEvent.VK_S -> {
-                sDown = true;
-            }
-            case KeyEvent.VK_D -> {
-                dDown = true;
-            }
-            case KeyEvent.VK_Z -> {
-                zDown = true;
-            }
-            case KeyEvent.VK_X -> {
-                xDown = true;
-            }
-            case KeyEvent.VK_C -> {
-                cDown = true;
-            }
-            case KeyEvent.VK_V -> {
-                vDown = true;
-            }
-            case KeyEvent.VK_SHIFT -> {
-                shiftDown = true;
-            }
-            case KeyEvent.VK_SPACE -> {
-                spaceDown = true;
-            }
-            case KeyEvent.VK_ESCAPE -> {
-                escDown = true;
-            }
+            case KeyEvent.VK_W -> wDown = true;
+            case KeyEvent.VK_A -> aDown = true;
+            case KeyEvent.VK_S -> sDown = true;
+            case KeyEvent.VK_D -> dDown = true;
+            case KeyEvent.VK_Z -> zDown = true;
+            case KeyEvent.VK_X -> xDown = true;
+            case KeyEvent.VK_C -> cDown = true;
+            case KeyEvent.VK_V -> vDown = true;
+            case KeyEvent.VK_SHIFT -> shiftDown = true;
+            case KeyEvent.VK_SPACE -> spaceDown = true;
+            case KeyEvent.VK_ESCAPE -> escDown = true;
         }
     }
 
@@ -78,39 +56,17 @@ public class KeyHandler implements KeyListener, MouseListener {
         int code = event.getKeyCode();
 
         switch (code) {
-            case KeyEvent.VK_W -> {
-                wDown = false;
-            }
-            case KeyEvent.VK_A -> {
-                aDown = false;
-            }
-            case KeyEvent.VK_S -> {
-                sDown = false;
-            }
-            case KeyEvent.VK_D -> {
-                dDown = false;
-            }
-            case KeyEvent.VK_Z -> {
-                zDown = false;
-            }
-            case KeyEvent.VK_X -> {
-                xDown = false;
-            }
-            case KeyEvent.VK_C -> {
-                cDown = false;
-            }
-            case KeyEvent.VK_V -> {
-                vDown = false;
-            }
-            case KeyEvent.VK_SHIFT -> {
-                shiftDown = false;
-            }
-            case KeyEvent.VK_SPACE -> {
-                spaceDown = false;
-            }
-            case KeyEvent.VK_ESCAPE -> {
-                escDown = false;
-            }
+            case KeyEvent.VK_W -> wDown = false;
+            case KeyEvent.VK_A -> aDown = false;
+            case KeyEvent.VK_S -> sDown = false;
+            case KeyEvent.VK_D -> dDown = false;
+            case KeyEvent.VK_Z -> zDown = false;
+            case KeyEvent.VK_X -> xDown = false;
+            case KeyEvent.VK_C -> cDown = false;
+            case KeyEvent.VK_V -> vDown = false;
+            case KeyEvent.VK_SHIFT -> shiftDown = false;
+            case KeyEvent.VK_SPACE -> spaceDown = false;
+            case KeyEvent.VK_ESCAPE -> escDown = false;
         }
     }
 
