@@ -27,7 +27,6 @@ public class Inventory {
 
     public void emptySlot(int slot) {
         if (slot > maxSlots) return;
-
         slots[slot] = null;
     }
 

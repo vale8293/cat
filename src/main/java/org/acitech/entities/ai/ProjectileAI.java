@@ -1,5 +1,4 @@
 package org.acitech.entities.ai;
-
 import org.acitech.entities.Projectile;
 
 abstract public class ProjectileAI {

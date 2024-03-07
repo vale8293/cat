@@ -45,7 +45,7 @@ public class Player extends Entity {
     public int immunity = 30; // Can be changed in gameplay
     public int damageTimer;
     public String elementState = "base";
-    public boolean bufferInput = false; // For implementing a buffer system later maybe
+    // public boolean bufferInput = false; // For implementing a buffer system later maybe
     public Player() {
         this.friction = 0.9;
     }

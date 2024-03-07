@@ -4,7 +4,6 @@ import org.acitech.GamePanel;
 import org.acitech.Main;
 import org.acitech.entities.Enemy;
 import org.acitech.entities.Entity;
-import org.acitech.entities.Scratch;
 import org.acitech.utils.Vector2d;
 
 import java.awt.*;

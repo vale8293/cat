@@ -16,7 +16,7 @@ public class Projectile extends Entity {
     // Identifiers
     private final String projectileName;
     public final double angle;
-    private ProjectileAI projectileAI = null;
+    private ProjectileAI projectileAI;
 
     // Animation & Visuals
     private int animationTick = 0;
@@ -46,6 +46,7 @@ public class Projectile extends Entity {
 
         switch (ai.toLowerCase()) {
             case "bullet" -> this.projectileAI = new Bullet(this);
+            case "mydog" -> System.out.print(":mydog:");
             default -> this.projectileAI = null;
         }
     }

@@ -4,6 +4,7 @@ import org.acitech.entities.Entity;
 import org.acitech.entities.Item;
 import org.acitech.entities.Player;
 import org.acitech.entities.enemies.Jordan;
+import org.acitech.entities.enemies.Pepto;
 import org.acitech.entities.enemies.Rico;
 import org.acitech.inventory.ItemStack;
 import org.acitech.inventory.ItemType;
@@ -65,22 +66,22 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
-        // Create 10 enemies for no reason ¯\_(ツ)_/¯
-//        for (int i = 0; i < 10; i++) {
-//            addNewEntity(new Enemy(Math.random() * screenWidth, Math.random() * screenHeight));
-//        }
-
-        // Create test enemies for no reason ¯\_(ツ)_/¯
+        // Test Rico
         for (int i = 0; i < 5; i++) {
             addNewEntity(new Rico(Math.random() * screenWidth + 400, Math.random() * screenHeight));
         }
 
-        // Create test enemies for no reason ¯\_(ツ)_/¯
+        // Test Pepto
+        for (int i = 0; i < 5; i++) {
+            addNewEntity(new Pepto(Math.random() * screenWidth + 400, Math.random() * screenHeight));
+        }
+
+        // Test Jordan
         for (int i = 0; i < 10; i++) {
             addNewEntity(new Jordan(Math.random() * screenWidth + 400, Math.random() * screenHeight));
         }
 
-        // Create test enemies for no reason ¯\_(ツ)_/¯
+        // Test Fire Tome
         for (int i = 0; i < 10; i++) {
             addNewEntity(new Item(Math.random() * screenWidth + 400, Math.random() * screenHeight, new ItemStack(ItemType.FIRE_TOME_1)));
         }
