@@ -42,6 +42,8 @@ public class ResourceLoader {
 
                 // Spells
                 loadSpriteSheet("projectiles/fireball", "projectiles/fireball.png", 32, 32) &&
+                loadSound("fireball", "player/fireCast.wav") &&
+                loadSound("explosion", "player/explosion.wav") &&
 
                 // Other Projectiles
 
@@ -57,7 +59,7 @@ public class ResourceLoader {
 
                 // Attacks
                 loadSpriteSheet("effect/scratch", "effect/scratch.png", 32, 32) &&
-                loadSound("player_scratch", "player/scratch.wav") &&
+                loadSound("scratch", "player/scratch.wav") &&
 
                 // Misc.
                 loadTexture("cow", "cow.png");

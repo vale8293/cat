@@ -7,6 +7,7 @@ import org.acitech.entities.ai.ProjectileAI;
 import org.acitech.entities.effects.Explosion;
 import org.acitech.utils.Vector2d;
 
+import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -33,6 +34,9 @@ public class Projectile extends Entity {
     public String damageElement = "None";
     public double moveSpeed = 1;
     public int kbMult = 10;
+
+    // Load important stuff
+    Clip sndExplo = Main.getResources().getSound("explosion"); // like from splatoon
 
     public Projectile(double startX, double startY, double rot, String projectileName, String ai) {
         this.position = new Vector2d(startX, startY);
@@ -62,7 +66,10 @@ public class Projectile extends Entity {
         // If the projectile expires, get rid of it
         if (this.collisions <= 0) {
             switch (this.onDeath) {
-                case ("explosion") -> Main.getGamePanel().addNewEntity(new Explosion(this.position.getX(), this.position.getY()));
+                case ("explosion") -> {
+                    Main.getGamePanel().addNewEntity(new Explosion(this.position.getX(), this.position.getY()));
+                    sndExplo.start();
+                }
                 case ("waterExplosion") -> System.out.println("Placeholder");
             }
 

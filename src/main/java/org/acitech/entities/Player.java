@@ -58,7 +58,8 @@ public class Player extends Entity {
     public Vector2d clickPos = new Vector2d();
 
     // Load important assets
-    Clip sndScratch = Main.getResources().getSound("player_scratch");
+    Clip sndScratch = Main.getResources().getSound("scratch");
+    Clip sndFire = Main.getResources().getSound("fireball");
 
     @Override
     // Do this stuff every frame
@@ -159,6 +160,9 @@ public class Player extends Entity {
                             Fireball fireball = new Fireball(this.position.getX(), this.position.getY(), angle);
                             if (this.mana >= fireball.manaCost) {
                                 Main.getGamePanel().addNewEntity(fireball);
+                                sndFire.setFramePosition(0);
+                                sndFire.loop(0);
+                                sndFire.start();
                                 this.mana -= fireball.manaCost;
                                 this.spellTimer = this.spellCooldown;
                             }
