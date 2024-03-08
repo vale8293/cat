@@ -2,6 +2,7 @@ package org.acitech.entities.effects;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.entities.Enemy;
 import org.acitech.entities.Entity;
 import org.acitech.utils.Vector2d;
 
@@ -18,6 +19,7 @@ public class Explosion extends Entity {
 
     // Stats
     public int lifetime = 20;
+    public int damage = 3;
 
     public Explosion(double startX, double startY) {
         this.position = new Vector2d(startX, startY);
@@ -26,9 +28,21 @@ public class Explosion extends Entity {
     @Override
     protected void tick(double delta) {
         if (lifetime > 0) {
-            lifetime--;
+            this.lifetime--;
         } else {
             this.dispose();
+        }
+
+        // todo: julian tell me what's wrong
+        // Looks for any instances of enemies
+        for (Entity entity : GamePanel.entities) {
+            if (!(entity instanceof Enemy enemy)) continue;
+            if (this.position.distance(enemy.position) < 3000) {
+                if (enemy.immunity <= 0) {
+                    System.out.println("im dealing the damage now ^_^"); // this never happens idk why
+                    enemy.health -= this.damage; // Deal explosion damage
+                }
+            }
         }
     }
 
@@ -39,7 +53,6 @@ public class Explosion extends Entity {
         animationTick = animationTick % (aniLength * aniFrameDuration);
         int aniFrame = animationTick / (aniFrameDuration);
 
-        System.out.println(aniFrame);
         BufferedImage texture = Main.getResources().getTexture("effect/explosion/" + aniFrame + ":" + 0);
         ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
     }

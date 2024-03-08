@@ -19,9 +19,8 @@ public class Fighter extends EnemyAI {
         double x = Math.cos(angle) * 0.5;
         double y = Math.sin(angle) * 0.5;
 
-        // Declares AI Specific variables
-        boolean gotScratched = scratchCheck(x, y);
-        boolean gotHitBullet = bulletCheck(x, y);
+        scratchCheck(x, y);
+        bulletCheck(x, y);
 
         // If the enemy is close enough to the player, start Fighter AI
         if (this.enemy.position.distance(playerPos) < this.enemy.aggroDistance) {

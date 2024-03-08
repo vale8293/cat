@@ -18,7 +18,7 @@ abstract public class Enemy extends Entity {
 
     // Identifiers
     private final String enemyName;
-    private EnemyAI enemyAI = null;
+    private final EnemyAI enemyAI;
     public ArrayList<ItemType> itemPool = new ArrayList<>();
 
     // Animation & Visuals
@@ -33,7 +33,7 @@ abstract public class Enemy extends Entity {
     public int maxHealth = 1;
     public int health = maxHealth;
     public int maxMana = 0;
-    public int mana = maxMana;
+    public int mana = maxMana; // To be used in the future maybe
     public int damage = 1;
     public String damageElement = "None";
     public int defense = 0;

@@ -4,6 +4,7 @@ import org.acitech.entities.Entity;
 import org.acitech.entities.Item;
 import org.acitech.entities.Player;
 import org.acitech.entities.enemies.Jordan;
+import org.acitech.entities.enemies.Pepto;
 import org.acitech.entities.enemies.Rico;
 import org.acitech.inventory.ItemStack;
 import org.acitech.inventory.ItemType;
@@ -24,12 +25,12 @@ public class GamePanel extends JPanel implements Runnable {
     final int fps = 60;
     private boolean paused = false;
     private boolean unEscaped = false;
-    private ArrayList<Entity> newEntities = new ArrayList<Entity>();
+    private ArrayList<Entity> newEntities = new ArrayList<>();
 
     KeyHandler keys = new KeyHandler();
     Thread gameThread;
 
-    public static ArrayList<Entity> entities = new ArrayList<Entity>();
+    public static ArrayList<Entity> entities = new ArrayList<>();
     public static Player player = new Player();
     public static Vector2d camera = new Vector2d(0, 0);
     public static UI ui = new UI();
@@ -54,22 +55,22 @@ public class GamePanel extends JPanel implements Runnable {
         Room room = new Room(40, 40, new Random().nextInt());
         rooms.put(currentRoom, room);
 
-        // Create 10 enemies for no reason ¯\_(ツ)_/¯
-//        for (int i = 0; i < 10; i++) {
-//            addNewEntity(new Enemy(Math.random() * screenWidth, Math.random() * screenHeight));
-//        }
-
         // Create test enemies for no reason ¯\_(ツ)_/¯
         for (int i = 0; i < 5; i++) {
             addNewEntity(new Rico(Math.random() * screenWidth + 400, Math.random() * screenHeight));
         }
 
-        // Create test enemies for no reason ¯\_(ツ)_/¯
+        // Test Pepto
+        for (int i = 0; i < 5; i++) {
+            addNewEntity(new Pepto(Math.random() * screenWidth + 400, Math.random() * screenHeight));
+        }
+
+        // Test Jordan
         for (int i = 0; i < 10; i++) {
             addNewEntity(new Jordan(Math.random() * screenWidth + 400, Math.random() * screenHeight));
         }
 
-        // Create test enemies for no reason ¯\_(ツ)_/¯
+        // Test Fire Tome
         for (int i = 0; i < 10; i++) {
             addNewEntity(new Item(Math.random() * screenWidth + 400, Math.random() * screenHeight, new ItemStack(ItemType.FIRE_TOME_1)));
         }
@@ -107,8 +108,8 @@ public class GamePanel extends JPanel implements Runnable {
     public void update(double delta) {
 
         if (!paused) {
-            ArrayList<Entity> disposedEntities = new ArrayList<Entity>();
-            ArrayList<Item> pickupItems = new ArrayList<Item>();
+            ArrayList<Entity> disposedEntities = new ArrayList<>();
+            ArrayList<Item> pickupItems = new ArrayList<>();
 
             // Add newly created entities
             entities.addAll(newEntities);

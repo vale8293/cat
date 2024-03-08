@@ -13,8 +13,8 @@ public class Scratch extends Entity {
     public final double angle;
     private final Vector2d originPosition;
     private final int distance;
-    private int width = 64;
-    private int height = 64;
+    private final int width = 64;
+    private final int height = 64;
     private int animationTick = 0;
 
     public Scratch(int originX, int originY, int distance, double rot) {
