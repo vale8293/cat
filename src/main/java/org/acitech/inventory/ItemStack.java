@@ -24,4 +24,9 @@ public class ItemStack {
     public int getCount() {
         return count;
     }
+
+    @Override
+    public String toString() {
+        return "@" + super.hashCode() + " " + type.toString() + " * " + count;
+    }
 }

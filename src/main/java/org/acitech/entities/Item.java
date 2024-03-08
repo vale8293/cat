@@ -37,7 +37,7 @@ public class Item extends Entity {
         double x = Math.cos(angle) * 0.5;
         double y = Math.sin(angle) * 0.5;
 
-        if (this.pickupImmunity == 0) {
+        if (this.pickupImmunity <= 0) {
             // Sucks up the item if it's close enough to the player
             if (this.position.distance(playerPos) < 100) {
                 this.acceleration.add(new Vector2d(x, y).multiply(moveSpeed));
@@ -75,6 +75,10 @@ public class Item extends Entity {
      */
     public void disappear() {
         this.isDisappearing = true;
+    }
+
+    public boolean isDisappearing() {
+        return isDisappearing;
     }
 
     public ItemStack getItemStack() {
