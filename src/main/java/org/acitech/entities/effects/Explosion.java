@@ -33,15 +33,12 @@ public class Explosion extends Entity {
             this.dispose();
         }
 
-        // todo: julian tell me what's wrong
         // Looks for any instances of enemies
         for (Entity entity : GamePanel.entities) {
             if (!(entity instanceof Enemy enemy)) continue;
-            if (this.position.distance(enemy.position) < 3000) {
-                if (enemy.immunity <= 0) {
-                    System.out.println("im dealing the damage now ^_^"); // this never happens idk why
-                    enemy.health -= this.damage; // Deal explosion damage
-                }
+
+            if (this.position.distance(enemy.position) < 130) {
+                enemy.dealDamage(this.damage);
             }
         }
     }

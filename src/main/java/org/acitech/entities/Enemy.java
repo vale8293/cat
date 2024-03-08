@@ -28,12 +28,9 @@ abstract public class Enemy extends Entity {
     public int width = 160;
     public int height = 160;
 
-    // Stats
-        // Combat
-    public int maxHealth = 1;
-    public int health = maxHealth;
-    public int maxMana = 0;
-    public int mana = maxMana; // To be used in the future maybe
+    // Stats & Combat
+    protected int health, maxHealth = 1;
+    public int mana, maxMana = 0; // To be used in the future maybe
     public int damage = 1;
     public String damageElement = "None";
     public int defense = 0;
@@ -184,5 +181,20 @@ abstract public class Enemy extends Entity {
         }
 
         return maskImg;
+    }
+
+    public boolean dealDamage(int amount) {
+        if (this.damageTimer > 0) return false;
+
+        this.health -= Math.max(0, amount);
+        return true;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
     }
 }
