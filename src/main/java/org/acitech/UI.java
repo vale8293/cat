@@ -160,21 +160,24 @@ public class UI {
 
     // Placeholder: Counts XP in-game (should be polished and repurposed)
     public void drawXP(Graphics2D ctx) {
+        double scale = getGuiScale();
+
+        int numberScale = (int) (20 * scale);
         int xpX = 0;
-        int xpY = Main.getGamePanel().getHeight() - 25;
+        int xpY = Main.getGamePanel().getHeight() - (int) (25.0 * scale);
 
         int xpCount = GamePanel.player.xpCount;
         BufferedImage amountTextureOnes = Main.getResources().getTexture("ui/numbers/" + xpCount % 10 + ":0");
-        ctx.drawImage(amountTextureOnes, xpX + 48, xpY, 20, 20, Main.getGamePanel());
+        ctx.drawImage(amountTextureOnes, xpX + (int) (48 * scale), xpY, numberScale, numberScale, Main.getGamePanel());
 
         BufferedImage amountTextureTens = Main.getResources().getTexture("ui/numbers/" + (xpCount / 10) % 10 + ":0");
-        ctx.drawImage(amountTextureTens, xpX + 32, xpY, 20, 20, Main.getGamePanel());
+        ctx.drawImage(amountTextureTens, xpX + (int) (32 * scale), xpY, numberScale, numberScale, Main.getGamePanel());
 
         BufferedImage amountTextureHunds = Main.getResources().getTexture("ui/numbers/" + (xpCount / 100) % 10 + ":0");
-        ctx.drawImage(amountTextureHunds, xpX + 16, xpY, 20, 20, Main.getGamePanel());
+        ctx.drawImage(amountTextureHunds, xpX + (int) (16 * scale), xpY, numberScale, numberScale, Main.getGamePanel());
 
         BufferedImage amountTextureThous = Main.getResources().getTexture("ui/numbers/" + (xpCount / 1000) % 10 + ":0");
-        ctx.drawImage(amountTextureThous, xpX, xpY, 20, 20, Main.getGamePanel());
+        ctx.drawImage(amountTextureThous, xpX, xpY, numberScale, numberScale, Main.getGamePanel());
     }
 
     /** @return An array of integers going from 0: Width, 1: Height, 2: X, 3: Y */
@@ -185,5 +188,9 @@ public class UI {
         int invY = Main.getGamePanel().getHeight() - (int) (invHeight * 1.5d);
 
         return new int[] { invWidth, invHeight, invX, invY, };
+    }
+
+    private double getGuiScale() {
+        return Math.min(Math.min(Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight()), 800.0) / 800.0;
     }
 }
