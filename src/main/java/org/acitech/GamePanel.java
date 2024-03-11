@@ -19,9 +19,6 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class GamePanel extends JPanel implements Runnable {
-
-    final int screenWidth = 800;
-    final int screenHeight = 600;
     final int fps = 60;
     private boolean paused = false;
     private boolean unEscaped = false;
@@ -39,8 +36,11 @@ public class GamePanel extends JPanel implements Runnable {
 
     public GamePanel() {
         // Configure the JPanel
-        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-        this.setMinimumSize(new Dimension(screenWidth, screenHeight));
+        int initWidth = 800;
+        int initHeight = 600;
+
+        this.setPreferredSize(new Dimension(initWidth, initHeight));
+        this.setMinimumSize(new Dimension(initWidth, initHeight));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
         this.setFocusable(true);
@@ -57,22 +57,22 @@ public class GamePanel extends JPanel implements Runnable {
 
         // Create test enemies for no reason ¯\_(ツ)_/¯
         for (int i = 0; i < 5; i++) {
-            addNewEntity(new Rico(Math.random() * screenWidth + 400, Math.random() * screenHeight));
+            addNewEntity(new Rico(Math.random() * getWidth() + 400, Math.random() * getHeight()));
         }
 
         // Test Pepto
         for (int i = 0; i < 5; i++) {
-            addNewEntity(new Pepto(Math.random() * screenWidth + 400, Math.random() * screenHeight));
+            addNewEntity(new Pepto(Math.random() * getWidth() + 400, Math.random() * getHeight()));
         }
 
         // Test Jordan
         for (int i = 0; i < 10; i++) {
-            addNewEntity(new Jordan(Math.random() * screenWidth + 400, Math.random() * screenHeight));
+            addNewEntity(new Jordan(Math.random() * getWidth() + 400, Math.random() * getHeight()));
         }
 
         // Test Fire Tome
         for (int i = 0; i < 10; i++) {
-            addNewEntity(new Item(Math.random() * screenWidth + 400, Math.random() * screenHeight, new ItemStack(ItemType.FIRE_TOME_1)));
+            addNewEntity(new Item(Math.random() * getWidth() + 400, Math.random() * getHeight(), new ItemStack(ItemType.FIRE_TOME_1)));
         }
 
         // Create and start the game loop thread
