@@ -3,6 +3,7 @@ package org.acitech.entities;
 import org.acitech.GamePanel;
 import org.acitech.KeyHandler;
 import org.acitech.Main;
+import org.acitech.entities.projectiles.Aquaball;
 import org.acitech.entities.projectiles.Fireball;
 import org.acitech.inventory.Inventory;
 import org.acitech.inventory.ItemStack;
@@ -113,30 +114,22 @@ public class Player extends Entity {
         // Checks for which spell effects to use
         if (KeyHandler.shiftDown && KeyHandler.spaceDown) {
             elementState = "base";
-        }
-
-        else if (KeyHandler.shiftDown) {
+        } else if (KeyHandler.shiftDown) {
             elementState = "fire";
-        }
-
-        else if (KeyHandler.spaceDown) {
-            elementState = "base";
-        }
-
-        else {
+        } else if (KeyHandler.spaceDown) {
+            elementState = "aqua";
+        } else {
             elementState = "base";
         }
 
         // Checks for mouse input
         if (!KeyHandler.mouseClicks.isEmpty()) {
-
-
             for (KeyHandler.Click click : KeyHandler.mouseClicks) {
                 // Checks for clicks (Scratch / Other thing)
                 switch (click.getButton()) {
 
                     // Left Click
-                    case (1) -> {
+                    case (1) -> { // Scratches
                         if (this.scratchTimer == 0) {
                             clickPos.set(click.getX(), click.getY());
                             double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
@@ -156,16 +149,39 @@ public class Player extends Entity {
 
                     // Right Click
                     case (3) -> {
-                        if (this.spellTimer == 0) {
-                            double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
-                            Fireball fireball = new Fireball(this.position.getX(), this.position.getY(), angle);
-                            if (this.mana >= fireball.manaCost) {
-                                Main.getGamePanel().addNewEntity(fireball);
-                                sndFire.setFramePosition(0);
-                                sndFire.loop(0);
-                                sndFire.start();
-                                this.mana -= fireball.manaCost;
-                                this.spellTimer = this.spellCooldown;
+                        switch (elementState) {
+                            case ("base") -> { // todo: Pounces
+                                System.out.print("hello");
+                            }
+
+                            case ("fire") -> { // Uses a fireball
+                                if (this.spellTimer == 0) {
+                                    double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
+                                    Fireball fireball = new Fireball(this.position.getX(), this.position.getY(), angle);
+                                    if (this.mana >= fireball.manaCost) {
+                                        Main.getGamePanel().addNewEntity(fireball);
+                                        sndFire.setFramePosition(0);
+                                        sndFire.loop(0);
+                                        sndFire.start();
+                                        this.mana -= fireball.manaCost;
+                                        this.spellTimer = this.spellCooldown;
+                                    }
+                                }
+                            }
+
+                            case ("aqua") -> { // Uses a aquaball
+                                if (this.spellTimer == 0) {
+                                    double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
+                                    Aquaball aquaball = new Aquaball(this.position.getX(), this.position.getY(), angle);
+                                    if (this.mana >= aquaball.manaCost) {
+                                        Main.getGamePanel().addNewEntity(aquaball);
+                                        sndFire.setFramePosition(0);
+                                        sndFire.loop(0);
+                                        sndFire.start();
+                                        this.mana -= aquaball.manaCost;
+                                        this.spellTimer = this.spellCooldown;
+                                    }
+                                }
                             }
                         }
                     }

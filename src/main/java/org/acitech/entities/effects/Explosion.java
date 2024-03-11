@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 
 public class Explosion extends Entity {
     // Animation & Visuals
+    private String explosionType;
     private int animationTick = -1;
     public int aniLength = 4;
     public int aniFrameDuration = 5;
@@ -21,8 +22,9 @@ public class Explosion extends Entity {
     public int lifetime = 20;
     public int damage = 3;
 
-    public Explosion(double startX, double startY) {
+    public Explosion(double startX, double startY, String explosionType) {
         this.position = new Vector2d(startX, startY);
+        this.explosionType = explosionType;
     }
 
     @Override
@@ -36,7 +38,6 @@ public class Explosion extends Entity {
         // Looks for any instances of enemies
         for (Entity entity : GamePanel.entities) {
             if (!(entity instanceof Enemy enemy)) continue;
-
             if (this.position.distance(enemy.position) < 130) {
                 enemy.dealDamage(this.damage);
             }
@@ -50,7 +51,7 @@ public class Explosion extends Entity {
         animationTick = animationTick % (aniLength * aniFrameDuration);
         int aniFrame = animationTick / (aniFrameDuration);
 
-        BufferedImage texture = Main.getResources().getTexture("effect/explosion/" + aniFrame + ":" + 0);
+        BufferedImage texture = Main.getResources().getTexture("effect/explosion_" + explosionType + "/" + aniFrame + ":" + 0);
         ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
     }
 }

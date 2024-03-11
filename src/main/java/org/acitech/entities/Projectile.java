@@ -66,14 +66,15 @@ public class Projectile extends Entity {
     public void deathCheck() {
         // If the projectile expires, get rid of it
         if (this.collisions <= 0) {
-            switch (this.onDeath) {
-                case ("explosion") -> {
-                    Main.getGamePanel().addNewEntity(new Explosion(this.position.getX(), this.position.getY()));
-                    sndExplo.start();
+            if (this.onDeath.equalsIgnoreCase("explosion")) {
+                switch (this.damageElement) {
+                    case ("fire") -> this.damageElement = "fire";
+                    case ("aqua") -> this.damageElement = "aqua";
                 }
-                case ("waterExplosion") -> System.out.println("Placeholder");
-            }
 
+                Main.getGamePanel().addNewEntity(new Explosion(this.position.getX(), this.position.getY(), this.damageElement));
+                sndExplo.start();
+            }
             this.dispose();
         }
     }
