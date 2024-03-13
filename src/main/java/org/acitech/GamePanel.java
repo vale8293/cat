@@ -212,8 +212,8 @@ public class GamePanel extends JPanel implements Runnable {
 
         // Update the upper and lower bounds
         upperBounds.set(
-            Main.getGamePanel().getCamera().getX() + Main.getGamePanel().getWidth(),
-            Main.getGamePanel().getCamera().getY() + Main.getGamePanel().getHeight()
+            camera.getX() + Main.getGamePanel().getWidth(),
+            camera.getY() + Main.getGamePanel().getHeight()
         );
         lowerBounds.set(
             upperBounds.getX() - Main.getGamePanel().getWidth() - 1,
@@ -226,10 +226,6 @@ public class GamePanel extends JPanel implements Runnable {
                 player.position.getX() - player.width / 2d - camera.getX(),
                 player.position.getY() - player.height / 2d - camera.getY()
         );
-    }
-
-    public Vector2d getCamera() {
-        return camera;
     }
 
     public Vector2d getUpperFrameBounds() {
