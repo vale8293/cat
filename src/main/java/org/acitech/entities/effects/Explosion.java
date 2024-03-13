@@ -14,17 +14,18 @@ public class Explosion extends Entity {
     private String explosionType;
     private int animationTick = -1;
     public int aniLength = 4;
-    public int aniFrameDuration = 5;
+    public int aniFrameDuration = 3;
     public int width = 160;
     public int height = 160;
 
     // Stats
     public int lifetime = 20;
-    public int damage = 3;
+    public int onDeathDamage;
 
-    public Explosion(double startX, double startY, String explosionType) {
+    public Explosion(double startX, double startY, String explosionType, int onDeathDamage) {
         this.position = new Vector2d(startX, startY);
         this.explosionType = explosionType;
+        this.onDeathDamage = onDeathDamage;
     }
 
     @Override
@@ -35,11 +36,13 @@ public class Explosion extends Entity {
             this.dispose();
         }
 
-        // Looks for any instances of enemies
-        for (Entity entity : GamePanel.entities) {
-            if (!(entity instanceof Enemy enemy)) continue;
-            if (this.position.distance(enemy.position) < 130) {
-                enemy.dealDamage(this.damage);
+        if (this.lifetime > 18) {
+            // Looks for any instances of enemies
+            for (Entity entity : GamePanel.entities) {
+                if (!(entity instanceof Enemy enemy)) continue;
+                if (this.position.distance(enemy.position) < 130) {
+                    enemy.dealDamage(this.onDeathDamage);
+                }
             }
         }
     }

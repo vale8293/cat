@@ -5,7 +5,7 @@ import org.acitech.entities.Projectile;
 public class Aquaball extends Projectile {
 
     public Aquaball(double startX, double startY, double rot) {
-        super(startX, startY, rot, "waterball", "bullet");
+        super(startX, startY, rot, "aquaball", "bullet");
 
         // Animation & Visuals
         this.aniLength = 5;

@@ -9,6 +9,7 @@ import org.acitech.utils.Vector2d;
 
 import javax.sound.sampled.Clip;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 public class Projectile extends Entity {
@@ -16,6 +17,7 @@ public class Projectile extends Entity {
     // Identifiers
     private final String projectileName;
     public final double angle;
+    public final Vector2d originPosition;
     private ProjectileAI projectileAI;
 
     // Animation & Visuals
@@ -27,6 +29,7 @@ public class Projectile extends Entity {
 
     // Stats
     public String onDeath = "none"; // Specifies what happens after the projectile runs out of collisions (ex: explode)
+    public int onDeathDamage = 0;
     public int maxCollisions = 1;
     public int collisions = maxCollisions;
     public int manaCost = 1;
@@ -40,6 +43,7 @@ public class Projectile extends Entity {
 
     public Projectile(double startX, double startY, double rot, String projectileName, String ai) {
         this.position = new Vector2d(startX, startY);
+        this.originPosition = position.copy();
         this.angle = rot;
         this.friction = 0.9;
         this.projectileName = projectileName;
@@ -68,11 +72,11 @@ public class Projectile extends Entity {
         if (this.collisions <= 0) {
             if (this.onDeath.equalsIgnoreCase("explosion")) {
                 switch (this.damageElement) {
-                    case ("fire") -> this.damageElement = "fire";
-                    case ("aqua") -> this.damageElement = "aqua";
+                    case ("fire") -> this.onDeathDamage = this.damage / 2;
+                    case ("aqua") -> this.onDeathDamage = this.damage / 3;
                 }
 
-                Main.getGamePanel().addNewEntity(new Explosion(this.position.getX(), this.position.getY(), this.damageElement));
+                Main.getGamePanel().addNewEntity(new Explosion(this.position.getX(), this.position.getY(), this.damageElement, this.onDeathDamage));
                 sndExplo.start();
             }
             this.dispose();
@@ -82,45 +86,21 @@ public class Projectile extends Entity {
     @Override
     // Handles graphics
     public void draw(Graphics2D ctx) {
-        BufferedImage texture = Main.getResources().getTexture("cow");
+        BufferedImage texture;
 
         // Increments the frame of the animation
         animationTick += 1;
         animationTick = animationTick % (aniLength * aniFrameDuration);
         int aniFrame = animationTick / (aniFrameDuration);
 
-        double largest = 0;
-        String direction = "right";
+        texture = Main.getResources().getTexture("projectiles/" + projectileName + "/" + aniFrame + ":" + 0);
 
-        // Check which direction has the largest speed
-        if (Math.abs(this.velocity.getX()) > largest) {
-            largest = Math.abs(this.velocity.getX());
-            direction = this.velocity.getX() > 0 ? "right" : "left";
-        }
-        if (Math.abs(this.velocity.getY()) > largest) {
-            largest = Math.abs(this.velocity.getY());
-            direction = this.velocity.getY() > 0 ? "down" : "up";
-        }
+        AffineTransform oldXForm = ctx.getTransform();
 
-        // Draw the projectile's sprite in the direction that movement is
-        if (largest > 0) {
-            switch (direction) {
-                case "left" -> texture = Main.getResources().getTexture("projectiles/" + projectileName + "/" + aniFrame + ":" + 0);
-                case "right" -> texture = Main.getResources().getTexture("projectiles/" + projectileName + "/" + aniFrame + ":" + 1);
-                case "up" -> texture = Main.getResources().getTexture("projectiles/" + projectileName + "/" + aniFrame + ":" + 2);
-                case "down" -> texture = Main.getResources().getTexture("projectiles/" + projectileName + "/" + aniFrame + ":" + 3);
-            }
-        }
+        ctx.translate(this.originPosition.getX() - (int) GamePanel.camera.getX(), this.originPosition.getY() - (int) GamePanel.camera.getY());
+        ctx.rotate(this.angle - Math.PI / 2);
+        ctx.drawImage(texture, -width / 2, (int) -this.originPosition.distance(this.position) - height / 2, width, height, Main.getGamePanel());
 
-        // Idle animation (should never happen but placeholder)
-        else {
-            if (direction.equals("left")) {
-                texture = Main.getResources().getTexture("projectiles/" + projectileName + "/" + aniFrame + ":" + 4);
-            } else {
-                texture = Main.getResources().getTexture("projectiles/" + projectileName + "/" + aniFrame + ":" + 5);
-            }
-        }
-
-        ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
+        ctx.setTransform(oldXForm);
     }
 }

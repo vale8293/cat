@@ -187,6 +187,7 @@ abstract public class Enemy extends Entity {
         if (this.damageTimer > 0) return false;
 
         this.health -= Math.max(0, amount);
+        this.damageTimer = this.immunity;
         return true;
     }
 

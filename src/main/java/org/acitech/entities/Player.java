@@ -28,7 +28,7 @@ public class Player extends Entity {
         // UI
     public int maxHealth = 6; // Can be changed in gameplay
     public int health = maxHealth; // Can be changed in gameplay
-    public int maxMana = 6; // Can be changed in gameplay
+    public int maxMana = 600; // Can be changed in gameplay
     public int mana = maxMana; // Can be changed in gameplay
     public int xpCount = 0; // Can be changed in gameplay
     public int currentStreak = 0;
@@ -248,6 +248,12 @@ public class Player extends Entity {
      */
     public ArrayList<Item> pickupItems(ArrayList<Item> items) {
         for (Item item : new ArrayList<>(items)) {
+            // Heals the player via picking up a particular item
+//            if (item.getItemStack().getType().equals(ItemType.BONE)) {
+//                health += 1;
+//                continue;
+//            }
+
             ItemStack remaining;
 
             if (ItemType.getSpellTypes().contains(item.getItemStack().getType())) {

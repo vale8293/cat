@@ -43,7 +43,7 @@ public class ResourceLoader {
 
                 // Spells
                 loadSpriteSheet("projectiles/fireball", "projectiles/fireball.png", 32, 32) &&
-                loadSpriteSheet("projectiles/aquaball", "projectiles/aquaball.png", 32, 32) && // todo: PLACEHOLDER
+                loadSpriteSheet("projectiles/aquaball", "projectiles/aquaball.png", 32, 32) &&
                 loadSound("fireball", "player/fireCast.wav") &&
                 loadSound("explosion", "player/explosion.wav") &&
 
@@ -52,7 +52,7 @@ public class ResourceLoader {
 
                 // Effects
                 loadSpriteSheet("effect/explosion_fire", "effect/explosion_fire.png", 32, 32) &&
-                loadSpriteSheet("effect/explosion_aqua", "effect/explosion_aqua.png", 32, 32) && // todo: PLACEHOLDER??
+                loadSpriteSheet("effect/explosion_aqua", "effect/explosion_aqua.png", 32, 32) &&
 
                 // Environment
                 loadSpriteSheet("environment/grass", "environment/grass.png", 32, 32) &&
