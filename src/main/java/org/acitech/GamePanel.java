@@ -30,6 +30,8 @@ public class GamePanel extends JPanel implements Runnable {
     public static ArrayList<Entity> entities = new ArrayList<>();
     public static Player player = new Player();
     public static Vector2d camera = new Vector2d(0, 0);
+    private static Vector2d upperBounds = new Vector2d(0, 0);
+    private static Vector2d lowerBounds = new Vector2d(0, 0);
     public static UI ui = new UI();
     public static HashMap<String, Room> rooms = new HashMap<>();
     public static String currentRoom = "default";
@@ -201,12 +203,22 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     private void updateCamera() {
-        double followSpeed = 0.2;
+        double followSpeed = 0.15;
         double offsetX = (player.position.getX() + Tile.tileSize / 2d - this.getWidth() / 2d - camera.getX()) * followSpeed;
         double offsetY = (player.position.getY() + Tile.tileSize / 2d - this.getHeight() / 2d - camera.getY()) * followSpeed;
 
         camera = new Vector2d(camera.getX() + offsetX, camera.getY() + offsetY);
 //        camera = new Vector2d(player.position.getX() - this.getWidth() / 2d, player.position.getY() - this.getHeight() / 2d);
+
+        // Update the upper and lower bounds
+        upperBounds.set(
+            Main.getGamePanel().getCamera().getX() + Main.getGamePanel().getWidth(),
+            Main.getGamePanel().getCamera().getY() + Main.getGamePanel().getHeight()
+        );
+        lowerBounds.set(
+            upperBounds.getX() - Main.getGamePanel().getWidth() - 1,
+            upperBounds.getY() - Main.getGamePanel().getHeight() - 1
+        );
     }
 
     public Vector2d getCameraCenter() {
@@ -214,5 +226,17 @@ public class GamePanel extends JPanel implements Runnable {
                 player.position.getX() - player.width / 2d - camera.getX(),
                 player.position.getY() - player.height / 2d - camera.getY()
         );
+    }
+
+    public Vector2d getCamera() {
+        return camera;
+    }
+
+    public Vector2d getUpperFrameBounds() {
+        return upperBounds;
+    }
+
+    public Vector2d getLowerFrameBounds() {
+        return lowerBounds;
     }
 }
