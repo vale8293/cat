@@ -16,17 +16,17 @@ public class Room {
     private Vector2d cloudOffset;
     private double cloudAngle;
     private Random cloudRng;
-    private final int width;
-    private final int height;
+    private final int maxWidth;
+    private final int maxHeight;
     private final Color skyColor;
     private final Random seedRng;
     private final Simplex tuftSimplex;
     private final Simplex terrainSimplex;
 
-    public Room(int width, int height, int seed) {
-        this.tilemap = new Tile[width][height];
-        this.width = width;
-        this.height = height;
+    public Room(int maxWidth, int maxHeight, int seed) {
+        this.tilemap = new Tile[maxWidth][maxHeight];
+        this.maxWidth = maxWidth;
+        this.maxHeight = maxHeight;
         this.skyColor = new Color(0x413552);
         this.cloudOffset = new Vector2d();
         this.cloudAngle = 0;
@@ -44,11 +44,11 @@ public class Room {
     }
 
     private void generate() {
-        Vector2d centerMap = new Vector2d(this.width / 2d, this.height / 2d);
+        Vector2d centerMap = new Vector2d(this.maxWidth / 2d, this.maxHeight / 2d);
 
-        for (int x = 0; x < this.width; x++) {
-            for (int y = 0; y < this.height; y++) {
-                if (centerMap.distance(new Vector2d(x, y)) < this.width / 2d) {
+        for (int x = 0; x < this.maxWidth; x++) {
+            for (int y = 0; y < this.maxHeight; y++) {
+                if (centerMap.distance(new Vector2d(x, y)) < this.maxWidth / 2d) {
                     double noise = this.terrainSimplex.get((double) x / 10, (double) y / 10, 0);
 
                     if (noise > 1) {
@@ -86,20 +86,32 @@ public class Room {
         return ((value - lower) % range + range) % range + lower;
     }
 
+    private double clamp(double value, double lower, double upper) {
+        return Math.max(Math.min(value, upper), lower);
+    }
+
     public void draw(Graphics2D ctx) {
         drawBackground(ctx);
+
+        Vector2d upperBounds = Main.getGamePanel().getUpperFrameBounds();
+        Vector2d lowerBounds = Main.getGamePanel().getLowerFrameBounds();
+
+        int widthP = (int) clamp(Math.ceil(upperBounds.getX() / Tile.tileSize), 0, maxWidth);
+        int widthN = (int) clamp(Math.floor(lowerBounds.getX() / Tile.tileSize), 0, maxWidth);
+        int heightP = (int) clamp(Math.ceil(upperBounds.getY() / Tile.tileSize), 0, maxHeight);
+        int heightN = (int) clamp(Math.floor(lowerBounds.getY() / Tile.tileSize), 0, maxHeight);
 
         // Create a collection of tile id's mapped to secondary tile-maps
         HashMap<String, Connector[][][]> connCache = new HashMap<>();
 
         // Initialize the collection of tile-maps for each connectable tile type
         for (Tile tile : Tile.getConnectedTiles()) {
-            connCache.put(tile.getId(), new Connector[width][height][]);
+            connCache.put(tile.getId(), new Connector[maxWidth][maxHeight][]);
         }
 
         // Loop over the room's tilemap
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
+        for (int x = widthN; x < widthP; x++) {
+            for (int y = heightN; y < heightP; y++) {
                 Tile tile = tilemap[x][y]; // Get the tile at the iterated coordinate
 
                 // If the tile is defined, draw it
@@ -182,8 +194,8 @@ public class Room {
             Tile connTile = Tile.getTileById(connTileId);
             Connector[][][] connMap = connCache.get(connTileId);
 
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
+            for (int x = widthN; x < widthP; x++) {
+                for (int y = heightN; y < heightP; y++) {
                     Connector[] connectors = connMap[x][y];
 
                     if (connectors == null) continue;
@@ -219,10 +231,10 @@ public class Room {
     }
 
     public int getWidth() {
-        return width;
+        return maxWidth;
     }
 
     public int getHeight() {
-        return height;
+        return maxHeight;
     }
 }
