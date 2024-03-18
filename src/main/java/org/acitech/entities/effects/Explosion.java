@@ -19,13 +19,31 @@ public class Explosion extends Entity {
     public int height = 160;
 
     // Stats
-    public int lifetime = 20;
+    public int lifetime;
     public int onDeathDamage;
 
     public Explosion(double startX, double startY, String explosionType, int onDeathDamage) {
         this.position = new Vector2d(startX, startY);
         this.explosionType = explosionType;
         this.onDeathDamage = onDeathDamage;
+
+        switch(explosionType) {
+            case ("fire") -> {
+                aniLength = 4;
+                aniFrameDuration = 4;
+                lifetime = 16;
+            }
+            case ("aqua") -> {
+                aniLength = 5;
+                aniFrameDuration = 3;
+                lifetime = 15;
+            }
+            default -> {
+                aniLength = 1;
+                aniFrameDuration = 1;
+                lifetime = 0;
+            }
+        }
     }
 
     @Override
