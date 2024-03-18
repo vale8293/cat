@@ -29,10 +29,7 @@ public class Experience extends Entity {
         Vector2d playerPos = GamePanel.player.position;
 
         // Gets the angle between the player and the XP Orb
-        double angle = Math.atan2(playerPos.getY() - this.position.getY(), playerPos.getX() - this.position.getX());
-        double x = Math.cos(angle) * 0.5;
-        double y = Math.sin(angle) * 0.5;
-        this.acceleration.add(new Vector2d(x, y).multiply(moveSpeed));
+        this.acceleration.add(playerPos.directionTo(this.position).multiply(moveSpeed * 0.5));
 
         if (this.position.distance(playerPos) < Math.max(this.width / 2, this.height / 2)) {
             GamePanel.player.xpCount += 1;

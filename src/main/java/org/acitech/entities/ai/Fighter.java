@@ -15,16 +15,14 @@ public class Fighter extends EnemyAI {
         Vector2d playerPos = GamePanel.player.position;
 
         // Gets the angle between the player and the enemy
-        double angle = Math.atan2(playerPos.getY() - this.enemy.position.getY(), playerPos.getX() - this.enemy.position.getX());
-        double x = Math.cos(angle) * 0.5;
-        double y = Math.sin(angle) * 0.5;
+        Vector2d direction = playerPos.directionTo(this.enemy.position).multiply(0.5);
 
-        scratchCheck(x, y);
-        bulletCheck(x, y);
+        scratchCheck(direction.getX(), direction.getY());
+        bulletCheck(direction.getX(), direction.getY());
 
         // If the enemy is close enough to the player, start Fighter AI
         if (this.enemy.position.distance(playerPos) < this.enemy.aggroDistance) {
-            this.enemy.acceleration.set(x, y);
+            this.enemy.acceleration.set(direction.getX(), direction.getY());
             this.enemy.acceleration.multiply(this.enemy.moveSpeed);
 
             // If the enemy makes contact with the player
@@ -35,7 +33,7 @@ public class Fighter extends EnemyAI {
                 }
 
                 // Knock back the enemy and player
-                this.enemy.velocity.set(this.enemy.kbMult * -x, this.enemy.kbMult * -y);
+                this.enemy.velocity.set(this.enemy.kbMult * -direction.getX(), this.enemy.kbMult * -direction.getY());
                 GamePanel.player.velocity = this.enemy.velocity.copy().multiply((double) -GamePanel.player.kbMult / this.enemy.kbMult);
             }
         }

@@ -20,13 +20,11 @@ public class Skitter extends EnemyAI {
         }
 
         // Gets the angle between the player and the enemy
-        double angle = Math.atan2(playerPos.getY() - this.enemy.position.getY(), playerPos.getX() - this.enemy.position.getX());
-        double x = Math.cos(angle) * 0.5;
-        double y = Math.sin(angle) * 0.5;
+        Vector2d direction = playerPos.directionTo(this.enemy.position).multiply(0.5);
 
         // Checks for scratch & projectile to determine AI state
-        boolean gotScratched = scratchCheck(x, y);
-        boolean gotHitBullet = bulletCheck(x, y);
+        boolean gotScratched = scratchCheck(direction.getX(), direction.getY());
+        boolean gotHitBullet = bulletCheck(direction.getX(), direction.getY());
         if (gotScratched) {
             fleeTimer = 90;
         } else if (gotHitBullet) {
@@ -37,8 +35,12 @@ public class Skitter extends EnemyAI {
         if (this.enemy.position.distance(playerPos) < this.enemy.aggroDistance) {
 
             // Determines whether the enemy should be running towards or away from the player
-            if (fleeTimer == 0) {this.enemy.acceleration.set(x, y);}
-            else {this.enemy.acceleration.set(-x * 1.2, -y * 1.2);}
+            if (fleeTimer == 0) {
+                this.enemy.acceleration.set(direction.getX(), direction.getY());
+            }
+            else {
+                this.enemy.acceleration.set(-direction.getX() * 1.2, -direction.getY() * 1.2);
+            }
             this.enemy.acceleration.multiply(this.enemy.moveSpeed);
 
             // If the enemy makes contact with the player
@@ -49,7 +51,7 @@ public class Skitter extends EnemyAI {
                 }
 
                 // Knock back the enemy and player
-                this.enemy.velocity.set(this.enemy.kbMult * -x, this.enemy.kbMult * -y);
+                this.enemy.velocity.set(this.enemy.kbMult * -direction.getX(), this.enemy.kbMult * -direction.getY());
                 GamePanel.player.velocity = this.enemy.velocity.copy().multiply((double) -GamePanel.player.kbMult / this.enemy.kbMult);
             }
         }

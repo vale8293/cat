@@ -20,6 +20,9 @@ public class Vector2d {
         return y;
     }
 
+    public Vector2d set(Vector2d vector) {
+        return this.set(vector.getX(), vector.getY());
+    }
     public Vector2d set(double x, double y) {
         this.x = x;
         this.y = y;
@@ -91,6 +94,22 @@ public class Vector2d {
         return Math.pow(vector.getX() - this.x, 2) + Math.pow(vector.getY() - this.y, 2);
     }
 
+    public double angleTo(Vector2d vector) {
+        return this.angleTo(vector.getY(), vector.getX());
+    }
+    public double angleTo(double x, double y) {
+        return Math.atan2(this.y - x, this.x - y);
+    }
+    
+    public Vector2d directionTo(Vector2d vector) {
+        double angle = angleTo(vector);
+        return new Vector2d(Math.cos(angle), Math.sin(angle));
+    }
+    public Vector2d directionTo(double x, double y) {
+        double angle = angleTo(x, y);
+        return new Vector2d(Math.cos(angle), Math.sin(angle));
+    }
+
     /** @return The vector's magnitude */
     public double length() {
         return Math.sqrt(this.lengthSquared());
@@ -154,6 +173,7 @@ public class Vector2d {
         }
         return this;
     }
+    /** @return A copy of the vector */
     public Vector2d copy() {
         return new Vector2d(this.x, this.y);
     }

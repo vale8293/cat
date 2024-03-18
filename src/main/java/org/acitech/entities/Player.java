@@ -132,7 +132,7 @@ public class Player extends Entity {
                     case (1) -> { // Scratches
                         if (this.scratchTimer == 0) {
                             clickPos.set(click.getX(), click.getY());
-                            double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
+                            double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
                             Scratch scratch = new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle);
                             sndScratch.setFramePosition(0);
                             sndScratch.loop(0);
@@ -156,8 +156,9 @@ public class Player extends Entity {
 
                             case ("fire") -> { // Uses a fireball
                                 if (this.spellTimer == 0) {
-                                    double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
+                                    double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
                                     Fireball fireball = new Fireball(this.position.getX(), this.position.getY(), angle);
+
                                     if (this.mana >= fireball.manaCost) {
                                         Main.getGamePanel().addNewEntity(fireball);
                                         sndFire.setFramePosition(0);
@@ -171,8 +172,9 @@ public class Player extends Entity {
 
                             case ("aqua") -> { // Uses a aquaball
                                 if (this.spellTimer == 0) {
-                                    double angle = Math.atan2(Main.getGamePanel().getCameraCenter().getY() + width / 2d - click.getY(), Main.getGamePanel().getCameraCenter().getX() + height / 2d - click.getX());
+                                    double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
                                     Aquaball aquaball = new Aquaball(this.position.getX(), this.position.getY(), angle);
+
                                     if (this.mana >= aquaball.manaCost) {
                                         Main.getGamePanel().addNewEntity(aquaball);
                                         sndFire.setFramePosition(0);

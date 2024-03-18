@@ -1,5 +1,7 @@
 package org.acitech;
 
+import org.acitech.utils.Vector2d;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -90,22 +92,25 @@ public class KeyHandler implements KeyListener, MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {}
 
-    public class Click {
+    public static class Click {
         private final int x;
         private final int y;
         private final int button;
 
         Click(MouseEvent event) {
-            x = event.getX();
-            y = event.getY();
-            button = event.getButton();
+            this.x = event.getX();
+            this.y = event.getY();
+            this.button = event.getButton();
         }
 
         public int getX() {
-            return x;
+            return this.x;
         }
         public int getY() {
-            return y;
+            return this.y;
+        }
+        public Vector2d toVector() {
+            return new Vector2d(this.x, this.y);
         }
         public int getButton() {
             return button;
