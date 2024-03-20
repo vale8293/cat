@@ -49,9 +49,11 @@ public class GamePanel extends JPanel implements Runnable {
         // Register keyboard and mouse listeners
         this.addKeyListener(keys);
         this.addMouseListener(keys);
+
+        startGameThread();
     }
 
-    public void startGameThread() {
+    private void startGameThread() {
         // Create a room
         Room room = new Room(40, 40, new Random().nextInt());
         rooms.put(currentRoom, room);
