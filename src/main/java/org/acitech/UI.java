@@ -169,7 +169,7 @@ public class UI {
         int streakX = Main.getGamePanel().getWidth() / 2 - streakWidth / 2;
         int streakY = invY - invHeight - (int) (24.0 * scale);
 
-        BufferedImage streakTexture = Main.getResources().getTexture("ui/streak_bar/" + ((3 - (GamePanel.player.streakTimer + 59) / 60)) + ":0");
+        BufferedImage streakTexture = Main.getResources().getTexture("ui/streak_bar/" + ((3 - (GamePanel.player.streakTimer + (GamePanel.player.streakTimerMax / 3) - 1) / (GamePanel.player.streakTimerMax / 3))) + ":0");
         ctx.drawImage(streakTexture, streakX, streakY, streakWidth, streakHeight, Main.getGamePanel());
 
         int streakCount = GamePanel.player.currentStreak;
