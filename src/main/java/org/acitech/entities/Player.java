@@ -26,25 +26,26 @@ public class Player extends Entity {
 
     // Stats
         // UI
-    public int maxHealth = 6; // Can be changed in gameplay
+    public int maxHealth = 6; // Can be changed in gameplay (Default: 6)
     public int health = maxHealth; // Can be changed in gameplay
-    public int maxMana = 600; // Can be changed in gameplay
+    public int maxMana = 6; // Can be changed in gameplay (Default: 6)
     public int mana = maxMana; // Can be changed in gameplay
-    public int xpCount = 0; // Can be changed in gameplay
-    public int currentStreak = 0;
-    public int streakTimerMax = 180;
+    public int xpCount = 0; // Can be changed in gameplay (Default: 0)
+    public int level = 1; // Can be changed in gameplay (Default: 1)
+    public int currentStreak = 0; // Can be changed in gameplay (Default: 0)
+    public int streakTimerMax = 180; // Can be changed in gameplay (Default: 180)
     public int streakTimer = 0;
 
         // Combat & Movement
-    public int scratchDamage = 1; // Can be changed in gameplay
-    public int scratchCooldown = 20; // Can be changed in gameplay
+    public int scratchDamage = 1; // Can be changed in gameplay (Default: 1)
+    public int scratchCooldown = 20; // Can be changed in gameplay (Default: 20)
     public int scratchTimer = scratchCooldown;
-    public int spellCooldown = 40; // Can be changed in gameplay
+    public int spellCooldown = 40; // Can be changed in gameplay (Default: 40)
     public int spellTimer = spellCooldown;
-    public int meleeDefense = 0; // Can be changed in gameplay
-    public int magicDefense = 0; // Can be changed in gameplay
-    public int kbMult = 20; // Can be changed in gameplay
-    public int immunity = 30; // Can be changed in gameplay
+    public int meleeDefense = 0; // Can be changed in gameplay (Default: 0)
+    public int magicDefense = 0; // Can be changed in gameplay (Default: 0)
+    public int kbMult = 20; // Can be changed in gameplay (Default: 20)
+    public int immunity = 30; // Can be changed in gameplay (Default: 30)
     public int damageTimer;
     public String elementState = "base";
     // public boolean bufferInput = false; // For implementing a buffer system later maybe
@@ -197,6 +198,41 @@ public class Player extends Entity {
         this.damageTimer = this.immunity;
         this.streakTimer = 0;
         this.currentStreak = 0;
+    }
+
+    public void levelUpCheck() {
+        switch (this.level) {
+            case (1) -> { // Raise mana cap by 1 star, restore mana
+                if (this.xpCount >= 20) {
+                    this.level += 1;
+                    this.maxMana += 6;
+                    this.mana = this.maxMana;
+                }
+            }
+            case (2) -> { // Make streak timer take longer to dissipate, adjust current streak timer if not 0
+                if (this.xpCount >= 50) {
+                    this.level += 1;
+                    this.streakTimerMax += 60;
+                    if (this.streakTimer > 0) {
+                        this.streakTimer += 60;
+                    }
+                }
+            }
+            case (3) -> { // Raise max health by 1 heart, restore health
+                if (this.xpCount >= 100) {
+                    this.level += 1;
+                    this.maxHealth += 2;
+                    this.health = maxHealth;
+                }
+            }
+            case (4) -> { // Raise scratch damage by 1
+                if (this.xpCount >= 200) {
+                    this.level += 1;
+                    this.scratchDamage += 1;
+                }
+            }
+            default -> {}
+        }
     }
 
     @Override

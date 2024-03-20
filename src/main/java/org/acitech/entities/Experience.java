@@ -32,7 +32,8 @@ public class Experience extends Entity {
         this.acceleration.add(playerPos.directionTo(this.position).multiply(moveSpeed * 0.5));
 
         if (this.position.distance(playerPos) < Math.max(this.width / 2, this.height / 2)) {
-            GamePanel.player.xpCount += 1;
+            GamePanel.player.xpCount += 1; // Increases xp by 1
+            GamePanel.player.levelUpCheck(); // Checks if this pushes the player past a lv up threshold
             this.dispose();
         }
     }
