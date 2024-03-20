@@ -32,7 +32,6 @@ public class GamePanel extends JPanel implements Runnable {
     public static Vector2d camera = new Vector2d(0, 0);
     private static Vector2d upperBounds = new Vector2d(0, 0);
     private static Vector2d lowerBounds = new Vector2d(0, 0);
-    public static UI ui = new UI();
     public static HashMap<String, Room> rooms = new HashMap<>();
     public static String currentRoom = "default";
 
@@ -194,10 +193,14 @@ public class GamePanel extends JPanel implements Runnable {
 
         // Draw the player & ui
         player.draw(ctx);
-        ui.draw(ctx);
+        UI.draw(ctx);
 
         // Update the camera position
         updateCamera();
+
+        if (paused) {
+            UI.drawPauseMenu(ctx);
+        }
 
         ctx.dispose();
     }

@@ -7,15 +7,15 @@ import java.awt.image.BufferedImage;
 
 public class UI {
 
-    private final int heightOfHearts = 64;
+    private static final int heightOfHearts = 64;
 
     /** Top padding of the stats area */
-    private final int paddingOfStats = 16;
+    private static final int paddingOfStats = 16;
 
-    private final int heightOfInventory = 64;
+    private static final int heightOfInventory = 64;
 
     // Draws all UI elements
-    public void draw(Graphics2D ctx) {
+    public static void draw(Graphics2D ctx) {
         drawHealth(ctx);
         drawMana(ctx);
         drawInventory(ctx);
@@ -24,7 +24,7 @@ public class UI {
     }
 
     // Handles the graphics for the health bar
-    public void drawHealth(Graphics2D ctx) {
+    public static void drawHealth(Graphics2D ctx) {
         double scale = getGuiScale();
 
         int x = 0;
@@ -61,7 +61,7 @@ public class UI {
     }
 
     // Handles the mana star(s), functions the same as HP
-    public void drawMana(Graphics2D ctx) {
+    public static void drawMana(Graphics2D ctx) {
         double scale = getGuiScale();
 
         int x = 0;
@@ -105,7 +105,7 @@ public class UI {
     }
 
     // Handles the inventory bar and items (might be rewritten)
-    public void drawInventory(Graphics2D ctx) {
+    public static void drawInventory(Graphics2D ctx) {
         double scale = getGuiScale();
 
         int invWidth = (int) (688.0 * scale);
@@ -159,7 +159,7 @@ public class UI {
         }
     }
 
-    public void drawStreak(Graphics2D ctx) {
+    public static void drawStreak(Graphics2D ctx) {
         double scale = getGuiScale();
 
         int streakWidth = (int) (128.0 * scale);
@@ -181,7 +181,7 @@ public class UI {
     }
 
     // Placeholder: Counts XP in-game (should be polished and repurposed)
-    public void drawXP(Graphics2D ctx) {
+    public static void drawXP(Graphics2D ctx) {
         double scale = getGuiScale();
 
         int numberScale = (int) (20 * scale);
@@ -202,7 +202,22 @@ public class UI {
         ctx.drawImage(amountTextureThous, xpX, xpY, numberScale, numberScale, Main.getGamePanel());
     }
 
-    private double getGuiScale() {
+    public static void drawPauseMenu(Graphics2D ctx) {
+        double scale = getGuiScale();
+
+        int menuWidth = (int) (350 * scale);
+        int menuHeight = (int) (504 * scale);
+        int menuX = Main.getGamePanel().getWidth() / 2 - menuWidth / 2;
+        int menuY = Main.getGamePanel().getHeight() / 2 - menuHeight / 2;
+
+        ctx.setColor(new Color(0f, 0f, 0f, 0.3f));
+        ctx.fillRect(0, 0, Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight());
+
+        BufferedImage menuTexture = Main.getResources().getTexture("ui/menu");
+        ctx.drawImage(menuTexture, menuX, menuY, menuWidth, menuHeight, Main.getGamePanel());
+    }
+
+    private static double getGuiScale() {
         return Math.min(Math.min(Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight()), 800.0) / 800.0;
     }
 }
