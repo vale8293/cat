@@ -50,14 +50,20 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keys);
         this.addMouseListener(keys);
 
-        startGameThread();
+        initGame();
     }
 
-    private void startGameThread() {
+    public void initGame() {
         // Create a room
         Room room = new Room(40, 40, new Random().nextInt());
         rooms.put(currentRoom, room);
 
+        // Create and start the game loop thread
+        gameThread = new Thread(this);
+        gameThread.start();
+    }
+
+    public void initScene() {
         // Create test enemies for no reason ¯\_(ツ)_/¯
         for (int i = 0; i < 5; i++) {
             addNewEntity(new Rico(Math.random() * getWidth() + 400, Math.random() * getHeight()));
@@ -77,10 +83,6 @@ public class GamePanel extends JPanel implements Runnable {
         for (int i = 0; i < 10; i++) {
             addNewEntity(new Item(Math.random() * getWidth() + 400, Math.random() * getHeight(), new ItemStack(ItemType.FIRE_TOME_1)));
         }
-
-        // Create and start the game loop thread
-        gameThread = new Thread(this);
-        gameThread.start();
     }
 
     public void addNewEntity(Entity entity) {

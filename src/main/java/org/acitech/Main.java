@@ -32,6 +32,9 @@ public class Main {
 
         window.setLocationRelativeTo(null);
         window.setVisible(true);
+
+        // Initialize the scene
+        gamePanel.initScene();
     }
 
     public static ResourceLoader getResources() {
