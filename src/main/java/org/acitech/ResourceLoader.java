@@ -27,6 +27,7 @@ public class ResourceLoader {
                 loadSpriteSheet("player/base", "player/base.png", 32, 32) &&
                 loadSpriteSheet("player/fire", "player/fire.png", 32, 32) &&
                 loadSpriteSheet("player/aqua", "player/aqua.png", 32, 32) && // todo: PLACEHOLDER
+                loadTexture("player/death", "player/death.png") &&
 
                 // Enemies
                 loadSpriteSheet("enemies/Rico", "enemies/Rico.png", 32, 32) &&

@@ -28,6 +28,7 @@ public class Player extends Entity {
         // UI
     public int maxHealth = 6; // Can be changed in gameplay (Default: 6)
     public int health = maxHealth; // Can be changed in gameplay
+    public boolean alive = true;
     public int maxMana = 6; // Can be changed in gameplay (Default: 6)
     public int mana = maxMana; // Can be changed in gameplay
     public int xpCount = 0; // Can be changed in gameplay (Default: 0)
@@ -67,122 +68,125 @@ public class Player extends Entity {
     @Override
     // Do this stuff every frame
     protected void tick(double delta) {
-
-        // Decrements cooldowns
-        if (this.damageTimer > 0) {
-            this.damageTimer--;
-        }
-        if (this.scratchTimer > 0) {
-            this.scratchTimer--;
-        }
-        if (this.spellTimer > 0) {
-            this.spellTimer--;
-        }
-
-        if (this.streakTimer > 0) {
-            this.streakTimer--;
-        }
-        if (this.streakTimer == 0) {
-            this.currentStreak = 0;
-        }
-
-        // Checks all the possible keys
-        if (KeyHandler.wDown) {
-            this.acceleration = this.acceleration.add(new Vector2d(0, -.5));
-        }
-        if (KeyHandler.aDown) {
-            this.acceleration = this.acceleration.add(new Vector2d(-.5, 0));
-        }
-        if (KeyHandler.sDown) {
-            this.acceleration = this.acceleration.add(new Vector2d(0, .5));
-        }
-        if (KeyHandler.dDown) {
-            this.acceleration = this.acceleration.add(new Vector2d(.5, 0));
-        }
-
-        // Placeholders for testing
-        if (KeyHandler.zDown) {
-            if (this.health > 0) {
-                this.health -= 1;
+        if (this.alive) {
+            // Decrements cooldowns
+            if (this.damageTimer > 0) {
+                this.damageTimer--;
             }
-        }
-        if (KeyHandler.xDown) {
-            if (this.mana > 0) {
-                this.mana -= 1;
+            if (this.scratchTimer > 0) {
+                this.scratchTimer--;
             }
-        }
+            if (this.spellTimer > 0) {
+                this.spellTimer--;
+            }
 
-        // Checks for which spell effects to use
-        if (KeyHandler.shiftDown && KeyHandler.spaceDown) {
-            elementState = "base";
-        } else if (KeyHandler.shiftDown) {
-            elementState = "fire";
-        } else if (KeyHandler.spaceDown) {
-            elementState = "aqua";
-        } else {
-            elementState = "base";
-        }
+            if (this.streakTimer > 0) {
+                this.streakTimer--;
+            }
+            if (this.streakTimer == 0) {
+                this.currentStreak = 0;
+            }
 
-        // Checks for mouse input
-        if (!KeyHandler.mouseClicks.isEmpty()) {
-            for (KeyHandler.Click click : KeyHandler.mouseClicks) {
-                // Checks for clicks (Scratch / Other thing)
-                switch (click.getButton()) {
+            // Checks all the possible keys
+            if (KeyHandler.wDown) {
+                this.acceleration = this.acceleration.add(new Vector2d(0, -.5));
+            }
+            if (KeyHandler.aDown) {
+                this.acceleration = this.acceleration.add(new Vector2d(-.5, 0));
+            }
+            if (KeyHandler.sDown) {
+                this.acceleration = this.acceleration.add(new Vector2d(0, .5));
+            }
+            if (KeyHandler.dDown) {
+                this.acceleration = this.acceleration.add(new Vector2d(.5, 0));
+            }
 
-                    // Left Click
-                    case (1) -> { // Scratches
-                        if (this.scratchTimer == 0) {
-                            clickPos.set(click.getX(), click.getY());
-                            double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
-                            Scratch scratch = new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle);
-                            sndScratch.setFramePosition(0);
-                            sndScratch.loop(0);
-                            Main.getGamePanel().addNewEntity(scratch);
-                            sndScratch.start();
-                            this.scratchTimer = this.scratchCooldown;
-                        }
-                    }
+            // Placeholders for testing
+            if (KeyHandler.zDown) {
+                if (this.health > 0) {
+                    this.health -= 1;
+                }
+            }
+            if (KeyHandler.xDown) {
+                if (this.mana > 0) {
+                    this.mana -= 1;
+                }
+            }
 
-                    // Middle Click
-                    case (2) -> {
-                        System.out.print("middle click");
-                    }
+            this.deathCheck();
 
-                    // Right Click
-                    case (3) -> {
-                        switch (elementState) {
-                            case ("base") -> { // todo: Pounces
-                                System.out.print("hello");
+            // Checks for which spell effects to use
+            if (KeyHandler.shiftDown && KeyHandler.spaceDown) {
+                elementState = "base";
+            } else if (KeyHandler.shiftDown) {
+                elementState = "fire";
+            } else if (KeyHandler.spaceDown) {
+                elementState = "aqua";
+            } else {
+                elementState = "base";
+            }
+
+            // Checks for mouse input
+            if (!KeyHandler.mouseClicks.isEmpty()) {
+                for (KeyHandler.Click click : KeyHandler.mouseClicks) {
+                    // Checks for clicks (Scratch / Other thing)
+                    switch (click.getButton()) {
+
+                        // Left Click
+                        case (1) -> { // Scratches
+                            if (this.scratchTimer == 0) {
+                                clickPos.set(click.getX(), click.getY());
+                                double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
+                                Scratch scratch = new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle);
+                                sndScratch.setFramePosition(0);
+                                sndScratch.loop(0);
+                                Main.getGamePanel().addNewEntity(scratch);
+                                sndScratch.start();
+                                this.scratchTimer = this.scratchCooldown;
                             }
+                        }
 
-                            case ("fire") -> { // Uses a fireball
-                                if (this.spellTimer == 0) {
-                                    double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
-                                    Fireball fireball = new Fireball(this.position.getX(), this.position.getY(), angle);
+                        // Middle Click
+                        case (2) -> {
+                            System.out.print("middle click");
+                        }
 
-                                    if (this.mana >= fireball.manaCost) {
-                                        Main.getGamePanel().addNewEntity(fireball);
-                                        sndFire.setFramePosition(0);
-                                        sndFire.loop(0);
-                                        sndFire.start();
-                                        this.mana -= fireball.manaCost;
-                                        this.spellTimer = this.spellCooldown;
+                        // Right Click
+                        case (3) -> {
+                            switch (elementState) {
+                                case ("base") -> { // todo: Pounces
+                                    System.out.print("hello");
+                                }
+
+                                case ("fire") -> { // Uses a fireball
+                                    if (this.spellTimer == 0) {
+                                        double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
+                                        Fireball fireball = new Fireball(this.position.getX(), this.position.getY(), angle);
+
+                                        if (this.mana >= fireball.manaCost) {
+                                            Main.getGamePanel().addNewEntity(fireball);
+                                            sndFire.setFramePosition(0);
+                                            sndFire.loop(0);
+                                            sndFire.start();
+                                            this.mana -= fireball.manaCost;
+                                            this.spellTimer = this.spellCooldown;
+                                        }
                                     }
                                 }
-                            }
 
-                            case ("aqua") -> { // Uses a aquaball
-                                if (this.spellTimer == 0) {
-                                    double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
-                                    Aquaball aquaball = new Aquaball(this.position.getX(), this.position.getY(), angle);
+                                case ("aqua") -> { // Uses a aquaball
+                                    if (this.spellTimer == 0) {
+                                        double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
+                                        Aquaball aquaball = new Aquaball(this.position.getX(), this.position.getY(), angle);
 
-                                    if (this.mana >= aquaball.manaCost) {
-                                        Main.getGamePanel().addNewEntity(aquaball);
-                                        sndFire.setFramePosition(0);
-                                        sndFire.loop(0);
-                                        sndFire.start();
-                                        this.mana -= aquaball.manaCost;
-                                        this.spellTimer = this.spellCooldown;
+                                        if (this.mana >= aquaball.manaCost) {
+                                            Main.getGamePanel().addNewEntity(aquaball);
+                                            sndFire.setFramePosition(0);
+                                            sndFire.loop(0);
+                                            sndFire.start();
+                                            this.mana -= aquaball.manaCost;
+                                            this.spellTimer = this.spellCooldown;
+                                        }
                                     }
                                 }
                             }
@@ -198,6 +202,13 @@ public class Player extends Entity {
         this.damageTimer = this.immunity;
         this.streakTimer = 0;
         this.currentStreak = 0;
+    }
+
+    public void deathCheck() {
+        if (this.health <= 0) {
+            this.alive = false;
+            this.kbMult = 0;
+        }
     }
 
     public void levelUpCheck() {
@@ -277,6 +288,9 @@ public class Player extends Entity {
             }
         }
 
+        if (!this.alive) {
+            texture = Main.getResources().getTexture("player/death");
+        }
         ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
     }
 
