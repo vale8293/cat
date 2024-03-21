@@ -65,23 +65,23 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void initScene() {
         // Create test enemies for no reason ¯\_(ツ)_/¯
-        for (int i = 0; i < 5; i++) {
-            addNewEntity(new Rico(Math.random() * getWidth() + 400, Math.random() * getHeight()));
+        for (int i = 0; i < 100; i++) {
+            addNewEntity(new Rico(Math.random() * getWidth() + 600, Math.random() * getHeight()));
         }
 
         // Test Pepto
-        for (int i = 0; i < 5; i++) {
-            addNewEntity(new Pepto(Math.random() * getWidth() + 400, Math.random() * getHeight()));
+        for (int i = 0; i < 100; i++) {
+            addNewEntity(new Pepto(Math.random() * getWidth() + 600, Math.random() * getHeight()));
         }
 
         // Test Jordan
-        for (int i = 0; i < 10; i++) {
-            addNewEntity(new Jordan(Math.random() * getWidth() + 400, Math.random() * getHeight()));
+        for (int i = 0; i < 100; i++) {
+            addNewEntity(new Jordan(Math.random() * getWidth() + 600, Math.random() * getHeight()));
         }
 
         // Test Fire Tome
         for (int i = 0; i < 10; i++) {
-            addNewEntity(new Item(Math.random() * getWidth() + 400, Math.random() * getHeight(), new ItemStack(ItemType.FIRE_TOME_1)));
+            addNewEntity(new Item(Math.random() * getWidth() + 6000, Math.random() * getHeight(), new ItemStack(ItemType.FIRE_TOME_1)));
         }
     }
 
