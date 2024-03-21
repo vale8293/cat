@@ -19,7 +19,7 @@ public class Explosion extends Entity {
     public int height = 160;
 
     // Stats
-    public int maxLifetime;
+    public boolean hasDealtAOE = false;
     public int lifetime;
     public int onDeathDamage;
 
@@ -32,40 +32,39 @@ public class Explosion extends Entity {
             case ("fire") -> {
                 this.aniLength = 4;
                 this.aniFrameDuration = 4;
-                this.maxLifetime = 16;
-                this.lifetime = maxLifetime;
             }
             case ("aqua") -> {
                 this.aniLength = 5;
                 this.aniFrameDuration = 3;
-                this.maxLifetime = 15;
-                this.lifetime = maxLifetime;
             }
             default -> {
                 this.aniLength = 1;
                 this.aniFrameDuration = 1;
-                this.maxLifetime = 0;
-                this.lifetime = maxLifetime;
             }
         }
+
+        this.lifetime = this.aniLength * this.aniFrameDuration;
     }
 
     @Override
     protected void tick(double delta) {
-        if (this.lifetime > maxLifetime - 2) {
+        if (this.lifetime > 0) {
             this.lifetime--;
         } else {
             this.dispose();
         }
 
-        if (this.lifetime > 18) {
+        if (!this.hasDealtAOE) {
             // Looks for any instances of enemies
             for (Entity entity : GamePanel.entities) {
                 if (!(entity instanceof Enemy enemy)) continue;
-                if (this.position.distance(enemy.position) < 1500) {
+
+                if (this.position.distance(enemy.position) < 130) {
                     enemy.dealDamage(this.onDeathDamage);
                 }
             }
+
+            this.hasDealtAOE = true;
         }
     }
 
