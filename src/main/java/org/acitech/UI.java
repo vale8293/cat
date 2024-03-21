@@ -217,6 +217,20 @@ public class UI {
         ctx.drawImage(menuTexture, menuX, menuY, menuWidth, menuHeight, Main.getGamePanel());
     }
 
+    public static void drawText(Graphics2D ctx, int x, int y, int magnitude, String text) {
+        double scale = getGuiScale();
+
+        int size = (int) (7 * magnitude * scale);
+        int sub = size / 7;
+
+        for (int i = 0, offset = -sub; i < text.length(); i++, offset += size - sub) {
+            char letter = text.charAt(i);
+
+            BufferedImage letterTexture = Main.getResources().getTexture("ui/font/" + ((int) letter - 1) + ":0");
+            ctx.drawImage(letterTexture, x + offset, y, size, size, Main.getGamePanel());
+        }
+    }
+
     private static double getGuiScale() {
         return Math.min(Math.min(Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight()), 800.0) / 800.0;
     }
