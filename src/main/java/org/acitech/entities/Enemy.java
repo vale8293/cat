@@ -30,7 +30,7 @@ abstract public class Enemy extends Entity {
 
     // Stats & Combat
     protected int health, maxHealth = 1;
-    public int mana, maxMana = 0; // To be used in the future maybe
+    protected int mana, maxMana = 0; // To be used in the future maybe
     public int damage = 1;
     public String damageElement = "None";
     public int defense = 0;
@@ -38,6 +38,7 @@ abstract public class Enemy extends Entity {
     public int kbMult = 20;
     public int aggroDistance = 300;
     public int immunity = 20;
+    // public int heartChance = 15; // 15% chane to drop a heart that restores 1hp
     public int damageTimer;
 
     // Rewards

@@ -13,6 +13,7 @@ public enum ItemType {
     BONE(4, "cow", 1,2, 0),
     FEATHER(8, "items/feather_material", 1,0, 0),
     FIRE_TOME_1(1, "spells/fire_tome_lv1", 3, 0, 1),
+    AQUA_TOME_1(1, "spells/aqua_tome_lv1", 3, 0, 1),
     POTION_INST_HEALTH(1, "cow", 4, 1, 0),
     POTION_INST_MANA(1, "cow", 4, 1, 0),
     POTION_ATTACK_UP(1, "cow", 4, 1, 0),
@@ -23,7 +24,7 @@ public enum ItemType {
      * Predefined groups of similar item types
      */
     public static Set<ItemType> getSpellTypes() {
-        return new HashSet<>(Arrays.asList(FIRE_TOME_1, POTION_INST_HEALTH, POTION_INST_MANA, POTION_ATTACK_UP, POTION_DEFENSE_UP, POTION_SPEED_UP));
+        return new HashSet<>(Arrays.asList(FIRE_TOME_1, AQUA_TOME_1, POTION_INST_HEALTH, POTION_INST_MANA, POTION_ATTACK_UP, POTION_DEFENSE_UP, POTION_SPEED_UP));
     }
 
     // Use Modifier:

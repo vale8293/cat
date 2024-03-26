@@ -27,10 +27,10 @@ public class Player extends Entity {
     // Stats
         // UI
     public int maxHealth = 6; // Can be changed in gameplay (Default: 6)
-    public int health = maxHealth; // Can be changed in gameplay
+    public int health = this.maxHealth; // Can be changed in gameplay
     public boolean alive = true;
     public int maxMana = 6; // Can be changed in gameplay (Default: 6)
-    public int mana = maxMana; // Can be changed in gameplay
+    public int mana = this.maxMana; // Can be changed in gameplay
     public int xpCount = 0; // Can be changed in gameplay (Default: 0)
     public int level = 1; // Can be changed in gameplay (Default: 1)
     public int currentStreak = 0; // Can be changed in gameplay (Default: 0)
@@ -40,9 +40,9 @@ public class Player extends Entity {
         // Combat & Movement
     public int scratchDamage = 1; // Can be changed in gameplay (Default: 1)
     public int scratchCooldown = 20; // Can be changed in gameplay (Default: 20)
-    public int scratchTimer = scratchCooldown;
+    public int scratchTimer = this.scratchCooldown;
     public int spellCooldown = 40; // Can be changed in gameplay (Default: 40)
-    public int spellTimer = spellCooldown;
+    public int spellTimer = this.spellCooldown;
     public int meleeDefense = 0; // Can be changed in gameplay (Default: 0)
     public int magicDefense = 0; // Can be changed in gameplay (Default: 0)
     public int kbMult = 20; // Can be changed in gameplay (Default: 20)
@@ -83,7 +83,7 @@ public class Player extends Entity {
             if (this.streakTimer > 0) {
                 this.streakTimer--;
             }
-            if (this.streakTimer == 0) {
+            if (this.streakTimer <= 0) {
                 this.currentStreak = 0;
             }
 
@@ -119,9 +119,19 @@ public class Player extends Entity {
             if (KeyHandler.shiftDown && KeyHandler.spaceDown) {
                 elementState = "base";
             } else if (KeyHandler.shiftDown) {
-                elementState = "fire";
+                if (this.spellInv.getItem(0) != null) {
+                    switch (this.spellInv.getItem(0).getType()) {
+                        case FIRE_TOME_1 -> elementState = "fire";
+                        case AQUA_TOME_1 -> elementState = "aqua";
+                    }
+                }
             } else if (KeyHandler.spaceDown) {
-                elementState = "aqua";
+                if (this.spellInv.getItem(1) != null) {
+                    switch (this.spellInv.getItem(1).getType()) {
+                        case FIRE_TOME_1 -> elementState = "fire";
+                        case AQUA_TOME_1 -> elementState = "aqua";
+                    }
+                }
             } else {
                 elementState = "base";
             }
@@ -159,7 +169,7 @@ public class Player extends Entity {
                                 }
 
                                 case ("fire") -> { // Uses a fireball
-                                    if (this.spellTimer == 0) {
+                                    if (this.spellTimer == 0) { // If spells are off cooldown
                                         double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
                                         Fireball fireball = new Fireball(this.position.getX(), this.position.getY(), angle);
 
@@ -211,13 +221,14 @@ public class Player extends Entity {
         }
     }
 
-    public void levelUpCheck() {
+    public String levelUpCheck() {
         switch (this.level) {
             case (1) -> { // Raise mana cap by 1 star, restore mana
                 if (this.xpCount >= 20) {
                     this.level += 1;
                     this.maxMana += 6;
                     this.mana = this.maxMana;
+                    return "+Mana!";
                 }
             }
             case (2) -> { // Make streak timer take longer to dissipate, adjust current streak timer if not 0
@@ -227,6 +238,7 @@ public class Player extends Entity {
                     if (this.streakTimer > 0) {
                         this.streakTimer += 60;
                     }
+                    return "+Streak Duration!";
                 }
             }
             case (3) -> { // Raise max health by 1 heart, restore health
@@ -234,16 +246,19 @@ public class Player extends Entity {
                     this.level += 1;
                     this.maxHealth += 2;
                     this.health = maxHealth;
+                    return "+HP!";
                 }
             }
             case (4) -> { // Raise scratch damage by 1
                 if (this.xpCount >= 200) {
                     this.level += 1;
                     this.scratchDamage += 1;
+                    return "+Scratch Damage!";
                 }
             }
             default -> {}
         }
+        return "";
     }
 
     @Override
@@ -291,6 +306,7 @@ public class Player extends Entity {
         if (!this.alive) {
             texture = Main.getResources().getTexture("player/death");
         }
+
         ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
     }
 

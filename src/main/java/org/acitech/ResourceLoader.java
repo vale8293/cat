@@ -42,6 +42,7 @@ public class ResourceLoader {
 
                 // Spell Items
                 loadTexture("spells/fire_tome_lv1", "spells/fire_tome_lv1.png") &&
+                loadTexture("spells/aqua_tome_lv1", "spells/aqua_tome_lv1.png") &&
 
                 // Spells
                 loadSpriteSheet("projectiles/fireball", "projectiles/fireball.png", 32, 32) &&

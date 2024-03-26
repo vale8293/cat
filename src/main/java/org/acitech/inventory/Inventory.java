@@ -1,5 +1,4 @@
 package org.acitech.inventory;
-
 import java.util.ArrayList;
 
 public class Inventory {
