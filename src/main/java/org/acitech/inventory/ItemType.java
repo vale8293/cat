@@ -14,17 +14,21 @@ public enum ItemType {
     FEATHER(8, "items/feather_material", 1,0, 0),
     FIRE_TOME_1(1, "spells/fire_tome_lv1", 3, 0, 1),
     AQUA_TOME_1(1, "spells/aqua_tome_lv1", 3, 0, 1),
-    POTION_INST_HEALTH(1, "cow", 4, 1, 0),
-    POTION_INST_MANA(1, "cow", 4, 1, 0),
-    POTION_ATTACK_UP(1, "cow", 4, 1, 0),
-    POTION_DEFENSE_UP(1, "cow", 4, 1, 0),
-    POTION_SPEED_UP(1, "cow", 4, 1, 0);
+    HEALTH_POTION(5, "items/health_potion", 4, 1, 0),
+    MANA_POTION(5, "items/mana_potion", 4, 1, 0),
+    ATTACK_POTION(5, "items/attack_potion", 4, 1, 0),
+    DEFENSE_POTION(5, "cow", 4, 1, 0), // lol
+    SPEED_POTION(5, "items/speed_potion", 4, 1, 0);
 
     /*
      * Predefined groups of similar item types
      */
     public static Set<ItemType> getSpellTypes() {
-        return new HashSet<>(Arrays.asList(FIRE_TOME_1, AQUA_TOME_1, POTION_INST_HEALTH, POTION_INST_MANA, POTION_ATTACK_UP, POTION_DEFENSE_UP, POTION_SPEED_UP));
+        return new HashSet<>(Arrays.asList(FIRE_TOME_1, AQUA_TOME_1));
+    }
+
+    public static Set<ItemType> getPotionTypes() {
+        return new HashSet<>(Arrays.asList(HEALTH_POTION, MANA_POTION, ATTACK_POTION, DEFENSE_POTION, SPEED_POTION));
     }
 
     // Use Modifier:
@@ -59,7 +63,7 @@ public enum ItemType {
     // Whether an item will go into
     // inv 1 (Inventory bar, Materials & Misc)
     // inv 2 (Inventory extensions, Backpack?)
-    // inv 3 (Shift & Space, Potions or Spells)
+    // inv 3 (Shift & Space, Spells)
     // inv 4 (1 2 3 4, Potions)
     private final int defaultInvNum;
 

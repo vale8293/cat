@@ -43,6 +43,7 @@ public class Player extends Entity {
     public int scratchTimer = this.scratchCooldown;
     public int spellCooldown = 40; // Can be changed in gameplay (Default: 40)
     public int spellTimer = this.spellCooldown;
+    public double moveSpeed = 0.5;
     public int meleeDefense = 0; // Can be changed in gameplay (Default: 0)
     public int magicDefense = 0; // Can be changed in gameplay (Default: 0)
     public int kbMult = 20; // Can be changed in gameplay (Default: 20)
@@ -57,6 +58,7 @@ public class Player extends Entity {
     // Inventory
     public Inventory defaultInv = new Inventory(8);
     public Inventory spellInv = new Inventory(2);
+    public Inventory potionInv = new Inventory(4);
 
     // Misc.
     public Vector2d clickPos = new Vector2d();
@@ -89,16 +91,16 @@ public class Player extends Entity {
 
             // Checks all the possible keys
             if (KeyHandler.wDown) {
-                this.acceleration = this.acceleration.add(new Vector2d(0, -.5));
+                this.acceleration = this.acceleration.add(new Vector2d(0, -this.moveSpeed));
             }
             if (KeyHandler.aDown) {
-                this.acceleration = this.acceleration.add(new Vector2d(-.5, 0));
+                this.acceleration = this.acceleration.add(new Vector2d(-this.moveSpeed, 0));
             }
             if (KeyHandler.sDown) {
-                this.acceleration = this.acceleration.add(new Vector2d(0, .5));
+                this.acceleration = this.acceleration.add(new Vector2d(0, this.moveSpeed));
             }
             if (KeyHandler.dDown) {
-                this.acceleration = this.acceleration.add(new Vector2d(.5, 0));
+                this.acceleration = this.acceleration.add(new Vector2d(this.moveSpeed, 0));
             }
 
             // Placeholders for testing
@@ -316,16 +318,28 @@ public class Player extends Entity {
      */
     public ArrayList<Item> pickupItems(ArrayList<Item> items) {
         for (Item item : new ArrayList<>(items)) {
-            // Heals the player via picking up a particular item
-//            if (item.getItemStack().getType().equals(ItemType.BONE)) {
-//                health += 1;
-//                continue;
-//            }
+
+            switch (item.getItemStack().getType()) {
+                case HEALTH_POTION -> {
+                    this.health++;
+                }
+                case MANA_POTION -> {
+                    this.mana += 12;
+                }
+                case ATTACK_POTION -> {
+                    this.scratchDamage++;
+                }
+                case SPEED_POTION -> {
+                    this.moveSpeed += 0.2;
+                }
+            }
 
             ItemStack remaining;
 
             if (ItemType.getSpellTypes().contains(item.getItemStack().getType())) {
                 remaining = spellInv.addItem(item.getItemStack());
+            } else if (ItemType.getPotionTypes().contains(item.getItemStack().getType())) {
+                remaining = potionInv.addItem(item.getItemStack());
             } else {
                 remaining = defaultInv.addItem(item.getItemStack());
             }

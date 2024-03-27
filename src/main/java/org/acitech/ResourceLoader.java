@@ -39,6 +39,10 @@ public class ResourceLoader {
                 loadTexture("items/feather_material", "items/feather_material.png") &&
                 loadTexture("items/string_material", "items/string_material.png") &&
                 loadSpriteSheet("items/experience", "items/experience.png", 12, 12) &&
+                loadTexture("items/attack_potion", "items/attack_potion.png") &&
+                loadTexture("items/health_potion", "items/health_potion.png") &&
+                loadTexture("items/mana_potion", "items/mana_potion.png") &&
+                loadTexture("items/speed_potion", "items/speed_potion.png") &&
 
                 // Spell Items
                 loadTexture("spells/fire_tome_lv1", "spells/fire_tome_lv1.png") &&
