@@ -219,14 +219,16 @@ public class UI {
 
     public static void drawText(Graphics2D ctx, int x, int y, int magnitude, String text) {
         double scale = getGuiScale();
+        String matText = text.toUpperCase();
 
         int size = (int) (7 * magnitude * scale);
         int sub = size / 7;
 
-        for (int i = 0, offset = -sub; i < text.length(); i++, offset += size - sub) {
-            char letter = text.charAt(i);
+        for (int i = 0, offset = -sub; i < matText.length(); i++, offset += size - sub) {
+            char letter = matText.charAt(i);
+            int charIndex = (int) letter - 1;
 
-            BufferedImage letterTexture = Main.getResources().getTexture("ui/font/" + ((int) letter - 1) + ":0");
+            BufferedImage letterTexture = Main.getResources().getTexture("ui/font/" + charIndex + ":0");
             ctx.drawImage(letterTexture, x + offset, y, size, size, Main.getGamePanel());
         }
     }
