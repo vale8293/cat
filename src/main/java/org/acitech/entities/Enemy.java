@@ -184,8 +184,18 @@ abstract public class Enemy extends Entity {
         return maskImg;
     }
 
-    public boolean dealDamage(int amount) {
+    public boolean dealDamage(int amount, String damageElement) {
         if (this.damageTimer > 0) return false;
+
+        switch (damageElement) {
+            case ("fire") -> { // Set the enemy on fire
+
+            }
+            case ("aqua") -> { // Make the enemy wet
+
+            }
+            default -> {}
+        }
 
         this.health -= Math.max(0, amount);
         this.damageTimer = this.immunity;

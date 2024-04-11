@@ -60,7 +60,7 @@ public class Explosion extends Entity {
                 if (!(entity instanceof Enemy enemy)) continue;
 
                 if (this.position.distance(enemy.position) < 130) {
-                    enemy.dealDamage(this.onDeathDamage);
+                    enemy.dealDamage(this.onDeathDamage, this.explosionType);
                 }
             }
 

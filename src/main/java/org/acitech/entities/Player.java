@@ -149,7 +149,7 @@ public class Player extends Entity {
                             if (this.scratchTimer == 0) {
                                 clickPos.set(click.getX(), click.getY());
                                 double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
-                                Scratch scratch = new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle);
+                                Scratch scratch = new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle, this.elementState);
                                 sndScratch.setFramePosition(0);
                                 sndScratch.loop(0);
                                 Main.getGamePanel().addNewEntity(scratch);
@@ -161,12 +161,16 @@ public class Player extends Entity {
                         // Middle Click
                         case (2) -> {
                             System.out.print("middle click");
+//                            if (Check if there is an item in that slot, check what it does when used (in ItemType)) {
+//                              todo: hey julian this is for using an item after you add the cursor in, doesn't have to be middle click but it can be, have fun :D
+//                            }
                         }
 
                         // Right Click
                         case (3) -> {
                             switch (elementState) {
                                 case ("base") -> { // todo: Pounces
+                                    System.out.print("hello");
                                     System.out.print("hello");
                                 }
 

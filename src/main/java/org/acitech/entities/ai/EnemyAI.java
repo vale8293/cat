@@ -37,7 +37,7 @@ abstract public class EnemyAI {
                         GamePanel.player.mana += 1;
                     }
                     this.enemy.velocity.set(this.enemy.kbMult * -x, this.enemy.kbMult * -y);
-                    this.enemy.dealDamage(GamePanel.player.scratchDamage - this.enemy.defense);
+                    this.enemy.dealDamage(GamePanel.player.scratchDamage - this.enemy.defense, this.enemy.damageElement);
                     this.enemy.damageTimer = this.enemy.immunity;
                     GamePanel.player.streakTimer = GamePanel.player.streakTimerMax;
                 }
@@ -64,7 +64,7 @@ abstract public class EnemyAI {
 
                 if (this.enemy.damageTimer == 0) {
                     this.enemy.velocity.set(this.enemy.kbMult * -x, this.enemy.kbMult * -y);
-                    this.enemy.dealDamage(projectile.damage - this.enemy.defense);
+                    this.enemy.dealDamage(projectile.damage - this.enemy.defense, "base");
                     this.enemy.damageTimer = this.enemy.immunity;
                     GamePanel.player.streakTimer = GamePanel.player.streakTimerMax;
                     projectile.collisions--;
