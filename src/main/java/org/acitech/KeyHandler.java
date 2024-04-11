@@ -7,8 +7,13 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 
+// TODO: rename to InputControls and change methods to only use mouseClicks and keysPressed also add a controls dictionary
 public class KeyHandler implements KeyListener, MouseListener {
+
+    // Keys
+    public static HashMap<Character, Boolean> keysPressed = new HashMap<>();
 
     // Movement
     public static boolean wDown = false;
@@ -38,6 +43,8 @@ public class KeyHandler implements KeyListener, MouseListener {
     public void keyPressed(KeyEvent event) {
         int code = event.getKeyCode();
 
+        keysPressed.put(event.getKeyChar(), true);
+
         switch (code) {
             case KeyEvent.VK_W -> wDown = true;
             case KeyEvent.VK_A -> aDown = true;
@@ -56,6 +63,8 @@ public class KeyHandler implements KeyListener, MouseListener {
     @Override
     public void keyReleased(KeyEvent event) {
         int code = event.getKeyCode();
+
+        keysPressed.put(event.getKeyChar(), false);
 
         switch (code) {
             case KeyEvent.VK_W -> wDown = false;
@@ -91,6 +100,10 @@ public class KeyHandler implements KeyListener, MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e) {}
+
+    public static boolean isKeyPressed(char key) {
+        return keysPressed.getOrDefault(key, false);
+    }
 
     public static class Click {
         private final int x;

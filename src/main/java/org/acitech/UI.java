@@ -1,5 +1,6 @@
 package org.acitech;
 
+import org.acitech.entities.Player;
 import org.acitech.inventory.ItemStack;
 
 import java.awt.*;
@@ -157,6 +158,9 @@ public class UI {
                 ctx.drawImage(amountTextureTens, itemPos, invY + itemScale / 2 + itemYOffset, itemScale / 2, itemScale / 2, Main.getGamePanel());
             }
         }
+
+        BufferedImage cursorTexture = Main.getResources().getTexture("ui/cursor");
+        ctx.drawImage(cursorTexture, (int) (invX + invLeftPadding + GamePanel.player.selectedSlot * itemScale * 1.258), invY + itemScale / 2 + itemYOffset * 4, itemScale, (int) (20 * scale), Main.getGamePanel());
     }
 
     public static void drawStreak(Graphics2D ctx) {

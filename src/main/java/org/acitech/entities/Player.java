@@ -59,6 +59,7 @@ public class Player extends Entity {
     public Inventory defaultInv = new Inventory(8);
     public Inventory spellInv = new Inventory(2);
     public Inventory potionInv = new Inventory(4);
+    public int selectedSlot = 0;
 
     // Misc.
     public Vector2d clickPos = new Vector2d();
@@ -101,6 +102,29 @@ public class Player extends Entity {
             }
             if (KeyHandler.dDown) {
                 this.acceleration = this.acceleration.add(new Vector2d(this.moveSpeed, 0));
+            }
+
+            // Check all cursor keys
+            if (KeyHandler.isKeyPressed('1')) {
+                selectedSlot = 0;
+            } else if (KeyHandler.isKeyPressed('2')) {
+                selectedSlot = 1;
+            } else if (KeyHandler.isKeyPressed('3')) {
+                selectedSlot = 2;
+            } else if (KeyHandler.isKeyPressed('4')) {
+                selectedSlot = 3;
+            } else if (KeyHandler.isKeyPressed('5')) {
+                selectedSlot = 4;
+            } else if (KeyHandler.isKeyPressed('6')) {
+                selectedSlot = 5;
+            } else if (KeyHandler.isKeyPressed('7')) {
+                selectedSlot = 6;
+            } else if (KeyHandler.isKeyPressed('8')) {
+                selectedSlot = 7;
+            } else if (KeyHandler.isKeyPressed('9')) {
+                selectedSlot = 8;
+            } else if (KeyHandler.isKeyPressed('0')) {
+                selectedSlot = 9;
             }
 
             // Placeholders for testing

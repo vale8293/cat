@@ -17,6 +17,7 @@ public class ResourceLoader {
         return  // UI
                 loadTexture("ui/inv_bar_default", "ui/inv_bar_default.png") &&
                 loadTexture("ui/menu", "ui/menu.png") &&
+                loadTexture("ui/cursor", "ui/cursor.png") &&
                 loadSpriteSheet("ui/hearts", "ui/hearts.png", 18, 16) &&
                 loadSpriteSheet("ui/mana", "ui/mana.png", 13, 13) &&
                 loadSpriteSheet("ui/font", "ui/font.png", 7, 7) &&
