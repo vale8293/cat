@@ -16,8 +16,9 @@ public class Scratch extends Entity {
     private final int width = 64;
     private final int height = 64;
     private int animationTick = 0;
+    private String element = "base";
 
-    public Scratch(int originX, int originY, int distance, double rot) {
+    public Scratch(int originX, int originY, int distance, double rot, String element) {
         this.originPosition = new Vector2d(originX, originY);
 
         double y = this.originPosition.getY() + Math.sin(rot) * -distance;
@@ -26,6 +27,8 @@ public class Scratch extends Entity {
         this.position = new Vector2d(x, y);
         this.distance = distance;
         this.angle = rot;
+
+        this.element = element;
     }
 
     @Override

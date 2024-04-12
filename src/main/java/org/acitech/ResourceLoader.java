@@ -17,14 +17,18 @@ public class ResourceLoader {
         return  // UI
                 loadTexture("ui/inv_bar_default", "ui/inv_bar_default.png") &&
                 loadTexture("ui/menu", "ui/menu.png") &&
+                loadTexture("ui/cursor", "ui/cursor.png") &&
                 loadSpriteSheet("ui/hearts", "ui/hearts.png", 18, 16) &&
                 loadSpriteSheet("ui/mana", "ui/mana.png", 13, 13) &&
-                loadSpriteSheet("ui/numbers", "ui/numbers.png", 5, 5) &&
+                loadSpriteSheet("ui/font", "ui/font.png", 7, 7) &&
+                loadSpriteSheet("ui/numbers", "ui/numbers.png", 5, 5) && // todo: delete
                 loadSpriteSheet("ui/streak_bar", "ui/streak_bar.png", 32, 16) &&
 
                 // Player
                 loadSpriteSheet("player/base", "player/base.png", 32, 32) &&
                 loadSpriteSheet("player/fire", "player/fire.png", 32, 32) &&
+                loadSpriteSheet("player/aqua", "player/aqua.png", 32, 32) && // todo: PLACEHOLDER
+                loadTexture("player/death", "player/death.png") &&
 
                 // Enemies
                 loadSpriteSheet("enemies/Rico", "enemies/Rico.png", 32, 32) &&
@@ -36,12 +40,18 @@ public class ResourceLoader {
                 loadTexture("items/feather_material", "items/feather_material.png") &&
                 loadTexture("items/string_material", "items/string_material.png") &&
                 loadSpriteSheet("items/experience", "items/experience.png", 12, 12) &&
+                loadTexture("items/attack_potion", "items/attack_potion.png") &&
+                loadTexture("items/health_potion", "items/health_potion.png") &&
+                loadTexture("items/mana_potion", "items/mana_potion.png") &&
+                loadTexture("items/speed_potion", "items/speed_potion.png") &&
 
                 // Spell Items
                 loadTexture("spells/fire_tome_lv1", "spells/fire_tome_lv1.png") &&
+                loadTexture("spells/aqua_tome_lv1", "spells/aqua_tome_lv1.png") &&
 
                 // Spells
                 loadSpriteSheet("projectiles/fireball", "projectiles/fireball.png", 32, 32) &&
+                loadSpriteSheet("projectiles/aquaball", "projectiles/aquaball.png", 32, 32) &&
                 loadSound("fireball", "player/fireCast.wav") &&
                 loadSound("explosion", "player/explosion.wav") &&
 
@@ -49,7 +59,8 @@ public class ResourceLoader {
 
 
                 // Effects
-                loadSpriteSheet("effect/explosion", "effect/explosion.png", 32, 32) &&
+                loadSpriteSheet("effect/explosion_fire", "effect/explosion_fire.png", 32, 32) &&
+                loadSpriteSheet("effect/explosion_aqua", "effect/explosion_aqua.png", 32, 32) &&
 
                 // Environment
                 loadSpriteSheet("environment/grass", "environment/grass.png", 32, 32) &&

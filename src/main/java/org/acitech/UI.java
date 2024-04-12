@@ -1,5 +1,6 @@
 package org.acitech;
 
+import org.acitech.entities.Player;
 import org.acitech.inventory.ItemStack;
 
 import java.awt.*;
@@ -7,8 +8,15 @@ import java.awt.image.BufferedImage;
 
 public class UI {
 
+    private static final int heightOfHearts = 64;
+
+    /** Top padding of the stats area */
+    private static final int paddingOfStats = 16;
+
+    private static final int heightOfInventory = 64;
+
     // Draws all UI elements
-    public void draw(Graphics2D ctx) {
+    public static void draw(Graphics2D ctx) {
         drawHealth(ctx);
         drawMana(ctx);
         drawInventory(ctx);
@@ -17,9 +25,15 @@ public class UI {
     }
 
     // Handles the graphics for the health bar
-    public void drawHealth(Graphics2D ctx) {
+    public static void drawHealth(Graphics2D ctx) {
+        double scale = getGuiScale();
+
         int x = 0;
         int cobalt = GamePanel.player.health; // thanks cobalt :)
+        int statsPadding = (int) (paddingOfStats * scale);
+        int heartWidth = (int) (72.0 * scale);
+        int heartHeight = (int) (heightOfHearts * scale);
+        int heartGap = (int) (4.0 * scale);
 
         for (int i = 0; i < GamePanel.player.maxHealth / 2; i++) {
             BufferedImage texture;
@@ -42,15 +56,23 @@ public class UI {
             }
 
             // Draws hearts rightward with small gaps between
-            ctx.drawImage(texture, x + 16, 16, 72, 64, Main.getGamePanel());
-            x += texture.getWidth() * 4 + 4;
+            ctx.drawImage(texture, x + statsPadding, statsPadding, heartWidth, heartHeight, Main.getGamePanel());
+            x += heartWidth + heartGap;
         }
     }
 
     // Handles the mana star(s), functions the same as HP
-    public void drawMana(Graphics2D ctx) {
+    public static void drawMana(Graphics2D ctx) {
+        double scale = getGuiScale();
+
         int x = 0;
         int cobalt = GamePanel.player.mana; // thanks cobalt :)
+        int statsPadding = (int) (paddingOfStats * scale);
+        int heartHeight = (int) (heightOfHearts * scale);
+        int manaSize = (int) (16.0 * scale);
+        int manaWidth = (int) (52.0 * scale);
+        int manaHeight = (int) (52.0 * scale);
+        int manaGap = (int) (4.0 * scale);
 
         for (int i = 0; i < GamePanel.player.maxMana / 6; i++) {
             BufferedImage texture;
@@ -78,20 +100,20 @@ public class UI {
             }
 
             // Draws stars rightward with small gaps between
-            ctx.drawImage(texture, x + 16, 84, 52, 52, Main.getGamePanel());
-            x += texture.getWidth() * 4 + 4;
+            ctx.drawImage(texture, x + statsPadding, statsPadding + heartHeight + manaSize, manaWidth, manaHeight, Main.getGamePanel());
+            x += manaWidth + manaGap;
         }
     }
 
     // Handles the inventory bar and items (might be rewritten)
-    public void drawInventory(Graphics2D ctx) {
-        int[] invBounds = getInventoryBounds();
+    public static void drawInventory(Graphics2D ctx) {
+        double scale = getGuiScale();
 
-        int invWidth = invBounds[0];
-        int invHeight = invBounds[1];
-        int invLeftPadding = (int) (invWidth * (32d / 688d));
-        int invX = invBounds[2];
-        int invY = invBounds[3];
+        int invWidth = (int) (688.0 * scale);
+        int invHeight = (int) (heightOfInventory * scale);
+        int invX = Main.getGamePanel().getWidth() / 2 - invWidth / 2;
+        int invY = Main.getGamePanel().getHeight() - (int) (invHeight * 1.5d);
+        int invLeftPadding = (int) (32.0 * scale);
 
         BufferedImage barTexture = Main.getResources().getTexture("ui/inv_bar_default");
         ctx.drawImage(barTexture, invX, invY, invWidth, invHeight, Main.getGamePanel());
@@ -136,54 +158,86 @@ public class UI {
                 ctx.drawImage(amountTextureTens, itemPos, invY + itemScale / 2 + itemYOffset, itemScale / 2, itemScale / 2, Main.getGamePanel());
             }
         }
+
+        BufferedImage cursorTexture = Main.getResources().getTexture("ui/cursor");
+        ctx.drawImage(cursorTexture, (int) (invX + invLeftPadding + GamePanel.player.selectedSlot * itemScale * 1.258), invY + itemScale / 2 + itemYOffset * 4, itemScale, (int) (20 * scale), Main.getGamePanel());
     }
 
-    public void drawStreak(Graphics2D ctx) {
-        int streakWidth = (int) Math.min(Main.getGamePanel().getWidth() * (128.0 / 800.0), 128.0);
+    public static void drawStreak(Graphics2D ctx) {
+        double scale = getGuiScale();
+
+        int streakWidth = (int) (128.0 * scale);
         int streakHeight = (int) (streakWidth * 0.5);
-
-        int[] invBounds = getInventoryBounds();
-
+        int invHeight = (int) (heightOfInventory * scale);
+        int invY = Main.getGamePanel().getHeight() - (int) (invHeight * 1.5d);
         int streakX = Main.getGamePanel().getWidth() / 2 - streakWidth / 2;
-        int streakY = invBounds[3] - invBounds[1] - (int) (streakWidth * (24.0 / 128.0));
+        int streakY = invY - invHeight - (int) (24.0 * scale);
 
-        BufferedImage streakTexture = Main.getResources().getTexture("ui/streak_bar/" + ((3 - (GamePanel.player.streakTimer + 59) / 60)) + ":0");
+        BufferedImage streakTexture = Main.getResources().getTexture("ui/streak_bar/" + ((3 - (GamePanel.player.streakTimer + (GamePanel.player.streakTimerMax / 3) - 1) / (GamePanel.player.streakTimerMax / 3))) + ":0");
         ctx.drawImage(streakTexture, streakX, streakY, streakWidth, streakHeight, Main.getGamePanel());
 
         int streakCount = GamePanel.player.currentStreak;
         BufferedImage amountTextureOnes = Main.getResources().getTexture("ui/numbers/" + streakCount % 10 + ":0");
-        ctx.drawImage(amountTextureOnes, streakX + (int) (streakWidth * (112.0 / 128.0)), streakY, (int) (streakWidth * (20.0 / 128.0)), (int) (streakWidth * (20.0 / 128.0)), Main.getGamePanel());
+        ctx.drawImage(amountTextureOnes, streakX + (int) (112.0 * scale), streakY, (int) (20.0 * scale), (int) (20.0 * scale), Main.getGamePanel());
 
         BufferedImage amountTextureTens = Main.getResources().getTexture("ui/numbers/" + (streakCount / 10) % 10 + ":0");
-        ctx.drawImage(amountTextureTens, streakX + (int) (streakWidth * (96.0 / 128.0)), streakY, (int) (streakWidth * (20.0 / 128.0)), (int) (streakWidth * (20.0 / 128.0)), Main.getGamePanel());
+        ctx.drawImage(amountTextureTens, streakX + (int) (96.0 * scale), streakY, (int) (20.0 * scale), (int) (20.0 * scale), Main.getGamePanel());
     }
 
     // Placeholder: Counts XP in-game (should be polished and repurposed)
-    public void drawXP(Graphics2D ctx) {
+    public static void drawXP(Graphics2D ctx) {
+        double scale = getGuiScale();
+
+        int numberScale = (int) (20 * scale);
         int xpX = 0;
-        int xpY = Main.getGamePanel().getHeight() - 25;
+        int xpY = Main.getGamePanel().getHeight() - (int) (25.0 * scale);
 
         int xpCount = GamePanel.player.xpCount;
         BufferedImage amountTextureOnes = Main.getResources().getTexture("ui/numbers/" + xpCount % 10 + ":0");
-        ctx.drawImage(amountTextureOnes, xpX + 48, xpY, 20, 20, Main.getGamePanel());
+        ctx.drawImage(amountTextureOnes, xpX + (int) (48 * scale), xpY, numberScale, numberScale, Main.getGamePanel());
 
         BufferedImage amountTextureTens = Main.getResources().getTexture("ui/numbers/" + (xpCount / 10) % 10 + ":0");
-        ctx.drawImage(amountTextureTens, xpX + 32, xpY, 20, 20, Main.getGamePanel());
+        ctx.drawImage(amountTextureTens, xpX + (int) (32 * scale), xpY, numberScale, numberScale, Main.getGamePanel());
 
         BufferedImage amountTextureHunds = Main.getResources().getTexture("ui/numbers/" + (xpCount / 100) % 10 + ":0");
-        ctx.drawImage(amountTextureHunds, xpX + 16, xpY, 20, 20, Main.getGamePanel());
+        ctx.drawImage(amountTextureHunds, xpX + (int) (16 * scale), xpY, numberScale, numberScale, Main.getGamePanel());
 
         BufferedImage amountTextureThous = Main.getResources().getTexture("ui/numbers/" + (xpCount / 1000) % 10 + ":0");
-        ctx.drawImage(amountTextureThous, xpX, xpY, 20, 20, Main.getGamePanel());
+        ctx.drawImage(amountTextureThous, xpX, xpY, numberScale, numberScale, Main.getGamePanel());
     }
 
-    /** @return An array of integers going from 0: Width, 1: Height, 2: X, 3: Y */
-    private int[] getInventoryBounds() {
-        int invWidth = Math.min((int) (Main.getGamePanel().getWidth() * 0.75d), 688);
-        int invHeight = (int) (invWidth * (64d / 688d));
-        int invX = Main.getGamePanel().getWidth() / 2 - invWidth / 2;
-        int invY = Main.getGamePanel().getHeight() - (int) (invHeight * 1.5d);
+    public static void drawPauseMenu(Graphics2D ctx) {
+        double scale = getGuiScale();
 
-        return new int[] { invWidth, invHeight, invX, invY, };
+        int menuWidth = (int) (350 * scale);
+        int menuHeight = (int) (504 * scale);
+        int menuX = Main.getGamePanel().getWidth() / 2 - menuWidth / 2;
+        int menuY = Main.getGamePanel().getHeight() / 2 - menuHeight / 2;
+
+        ctx.setColor(new Color(0f, 0f, 0f, 0.3f));
+        ctx.fillRect(0, 0, Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight());
+
+        BufferedImage menuTexture = Main.getResources().getTexture("ui/menu");
+        ctx.drawImage(menuTexture, menuX, menuY, menuWidth, menuHeight, Main.getGamePanel());
+    }
+
+    public static void drawText(Graphics2D ctx, int x, int y, int magnitude, String text) {
+        double scale = getGuiScale();
+        String matText = text.toUpperCase();
+
+        int size = (int) (7 * magnitude * scale);
+        int sub = size / 7;
+
+        for (int i = 0, offset = -sub; i < matText.length(); i++, offset += size - sub) {
+            char letter = matText.charAt(i);
+            int charIndex = (int) letter - 1;
+
+            BufferedImage letterTexture = Main.getResources().getTexture("ui/font/" + charIndex + ":0");
+            ctx.drawImage(letterTexture, x + offset, y, size, size, Main.getGamePanel());
+        }
+    }
+
+    private static double getGuiScale() {
+        return Math.min(Math.min(Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight()), 800.0) / 800.0;
     }
 }

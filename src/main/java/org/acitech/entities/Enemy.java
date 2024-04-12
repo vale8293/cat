@@ -28,12 +28,9 @@ abstract public class Enemy extends Entity {
     public int width = 160;
     public int height = 160;
 
-    // Stats
-        // Combat
-    public int maxHealth = 1;
-    public int health = maxHealth;
-    public int maxMana = 0;
-    public int mana = maxMana; // To be used in the future maybe
+    // Stats & Combat
+    protected int health, maxHealth = 1;
+    protected int mana, maxMana = 0; // To be used in the future maybe
     public int damage = 1;
     public String damageElement = "None";
     public int defense = 0;
@@ -41,6 +38,7 @@ abstract public class Enemy extends Entity {
     public int kbMult = 20;
     public int aggroDistance = 300;
     public int immunity = 20;
+    // public int heartChance = 15; // 15% chane to drop a heart that restores 1hp
     public int damageTimer;
 
     // Rewards
@@ -184,5 +182,31 @@ abstract public class Enemy extends Entity {
         }
 
         return maskImg;
+    }
+
+    public boolean dealDamage(int amount, String damageElement) {
+        if (this.damageTimer > 0) return false;
+
+        switch (damageElement) {
+            case ("fire") -> { // Set the enemy on fire
+
+            }
+            case ("aqua") -> { // Make the enemy wet
+
+            }
+            default -> {}
+        }
+
+        this.health -= Math.max(0, amount);
+        this.damageTimer = this.immunity;
+        return true;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
     }
 }

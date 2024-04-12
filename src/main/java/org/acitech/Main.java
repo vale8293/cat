@@ -33,8 +33,8 @@ public class Main {
         window.setLocationRelativeTo(null);
         window.setVisible(true);
 
-        // Start the game loop thread
-        gamePanel.startGameThread();
+        // Initialize the scene
+        gamePanel.initScene();
     }
 
     public static ResourceLoader getResources() {

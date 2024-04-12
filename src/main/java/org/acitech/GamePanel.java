@@ -6,6 +6,7 @@ import org.acitech.entities.Player;
 import org.acitech.entities.enemies.Jordan;
 import org.acitech.entities.enemies.Pepto;
 import org.acitech.entities.enemies.Rico;
+import org.acitech.inputs.Controls;
 import org.acitech.inventory.ItemStack;
 import org.acitech.inventory.ItemType;
 import org.acitech.tilemap.Room;
@@ -19,28 +20,29 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class GamePanel extends JPanel implements Runnable {
-
-    final int screenWidth = 800;
-    final int screenHeight = 600;
     final int fps = 60;
     private boolean paused = false;
     private boolean unEscaped = false;
     private ArrayList<Entity> newEntities = new ArrayList<>();
 
-    KeyHandler keys = new KeyHandler();
+    Controls keys = new Controls();
     Thread gameThread;
 
     public static ArrayList<Entity> entities = new ArrayList<>();
     public static Player player = new Player();
     public static Vector2d camera = new Vector2d(0, 0);
-    public static UI ui = new UI();
+    private static Vector2d upperBounds = new Vector2d(0, 0);
+    private static Vector2d lowerBounds = new Vector2d(0, 0);
     public static HashMap<String, Room> rooms = new HashMap<>();
     public static String currentRoom = "default";
 
     public GamePanel() {
         // Configure the JPanel
-        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-        this.setMinimumSize(new Dimension(screenWidth, screenHeight));
+        int initWidth = 800;
+        int initHeight = 600;
+
+        this.setPreferredSize(new Dimension(initWidth, initHeight));
+        this.setMinimumSize(new Dimension(initWidth, initHeight));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
         this.setFocusable(true);
@@ -48,36 +50,55 @@ public class GamePanel extends JPanel implements Runnable {
         // Register keyboard and mouse listeners
         this.addKeyListener(keys);
         this.addMouseListener(keys);
+
+        initGame();
     }
 
-    public void startGameThread() {
+    public void initGame() {
         // Create a room
         Room room = new Room(40, 40, new Random().nextInt());
         rooms.put(currentRoom, room);
 
+        // Create and start the game loop thread
+        gameThread = new Thread(this);
+        gameThread.start();
+    }
+
+    public void initScene() {
         // Create test enemies for no reason ¯\_(ツ)_/¯
         for (int i = 0; i < 5; i++) {
-            addNewEntity(new Rico(Math.random() * screenWidth + 400, Math.random() * screenHeight));
+            addNewEntity(new Rico(Math.random() * getWidth() + 600, Math.random() * getHeight()));
         }
 
         // Test Pepto
         for (int i = 0; i < 5; i++) {
-            addNewEntity(new Pepto(Math.random() * screenWidth + 400, Math.random() * screenHeight));
+            addNewEntity(new Pepto(Math.random() * getWidth() + 600, Math.random() * getHeight()));
         }
 
         // Test Jordan
-        for (int i = 0; i < 10; i++) {
-            addNewEntity(new Jordan(Math.random() * screenWidth + 400, Math.random() * screenHeight));
+        for (int i = 0; i < 5; i++) {
+            addNewEntity(new Jordan(Math.random() * getWidth() + 600, Math.random() * getHeight()));
         }
 
         // Test Fire Tome
-        for (int i = 0; i < 10; i++) {
-            addNewEntity(new Item(Math.random() * screenWidth + 400, Math.random() * screenHeight, new ItemStack(ItemType.FIRE_TOME_1)));
+        for (int i = 0; i < 2; i++) {
+            addNewEntity(new Item(Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.FIRE_TOME_1)));
         }
 
-        // Create and start the game loop thread
-        gameThread = new Thread(this);
-        gameThread.start();
+        // Test Aqua Tome
+        for (int i = 0; i < 2; i++) {
+            addNewEntity(new Item(Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.AQUA_TOME_1)));
+        }
+
+        // Test Potions
+        for (int i = 0; i < 2; i++) {
+            addNewEntity(new Item(Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.ATTACK_POTION)));
+            addNewEntity(new Item(Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.MANA_POTION)));
+            addNewEntity(new Item(Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.HEALTH_POTION)));
+            addNewEntity(new Item(Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.SPEED_POTION)));
+        }
+
+
     }
 
     public void addNewEntity(Entity entity) {
@@ -148,28 +169,25 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             // Clear the list of mouse clicks
-            KeyHandler.mouseClicks.clear();
+            Controls.flushClicks();
 
             // Check for pausing
-            if (!KeyHandler.escDown) {
+            if (!Controls.isKeyPressed(Controls.pauseKey)) {
                 unEscaped = true;
             }
 
-            if (unEscaped && KeyHandler.escDown) {
+            if (unEscaped && Controls.isKeyPressed(Controls.pauseKey)) {
                 paused = true;
                 unEscaped = false;
             }
         }
-
         else {
             // Check for pausing
-            if (!KeyHandler.escDown) {
+            if (!Controls.isKeyPressed(Controls.pauseKey)) {
                 unEscaped = true;
             }
 
-            
-
-            if (unEscaped && KeyHandler.escDown) {
+            if (unEscaped && Controls.isKeyPressed(Controls.pauseKey)) {
                 paused = false;
                 unEscaped = false;
             }
@@ -192,21 +210,35 @@ public class GamePanel extends JPanel implements Runnable {
 
         // Draw the player & ui
         player.draw(ctx);
-        ui.draw(ctx);
+        UI.draw(ctx);
 
         // Update the camera position
         updateCamera();
+
+        if (paused) {
+            UI.drawPauseMenu(ctx);
+        }
 
         ctx.dispose();
     }
 
     private void updateCamera() {
-        double followSpeed = 0.2;
+        double followSpeed = 0.15;
         double offsetX = (player.position.getX() + Tile.tileSize / 2d - this.getWidth() / 2d - camera.getX()) * followSpeed;
         double offsetY = (player.position.getY() + Tile.tileSize / 2d - this.getHeight() / 2d - camera.getY()) * followSpeed;
 
         camera = new Vector2d(camera.getX() + offsetX, camera.getY() + offsetY);
 //        camera = new Vector2d(player.position.getX() - this.getWidth() / 2d, player.position.getY() - this.getHeight() / 2d);
+
+        // Update the upper and lower bounds
+        upperBounds.set(
+            camera.getX() + Main.getGamePanel().getWidth(),
+            camera.getY() + Main.getGamePanel().getHeight()
+        );
+        lowerBounds.set(
+            upperBounds.getX() - Main.getGamePanel().getWidth() - 1,
+            upperBounds.getY() - Main.getGamePanel().getHeight() - 1
+        );
     }
 
     public Vector2d getCameraCenter() {
@@ -214,5 +246,13 @@ public class GamePanel extends JPanel implements Runnable {
                 player.position.getX() - player.width / 2d - camera.getX(),
                 player.position.getY() - player.height / 2d - camera.getY()
         );
+    }
+
+    public Vector2d getUpperFrameBounds() {
+        return upperBounds;
+    }
+
+    public Vector2d getLowerFrameBounds() {
+        return lowerBounds;
     }
 }

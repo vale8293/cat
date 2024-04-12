@@ -33,14 +33,12 @@ public class Item extends Entity {
         }
 
         // Gets the angle between the player and the item
-        double angle = Math.atan2(playerPos.getY() - this.position.getY(), playerPos.getX() - this.position.getX());
-        double x = Math.cos(angle) * 0.5;
-        double y = Math.sin(angle) * 0.5;
+        Vector2d direction = playerPos.directionTo(this.position).multiply(moveSpeed * 0.5);
 
         if (this.pickupImmunity <= 0) {
             // Sucks up the item if it's close enough to the player
             if (this.position.distance(playerPos) < 100) {
-                this.acceleration.add(new Vector2d(x, y).multiply(moveSpeed));
+                this.acceleration.add(direction);
 
                 this.inPickupRange = true;
             } else {

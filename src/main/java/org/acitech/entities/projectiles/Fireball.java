@@ -14,7 +14,9 @@ public class Fireball extends Projectile {
         this.height = 160;
 
         // Stats
+        this.damageElement = "fire";
         this.onDeath = "explosion";
+        this.onDeathDamage = 3;
         this.moveSpeed = 12;
         this.manaCost = 3;
         this.damage = 5;
