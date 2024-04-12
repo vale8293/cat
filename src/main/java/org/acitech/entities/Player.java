@@ -1,7 +1,8 @@
 package org.acitech.entities;
 
 import org.acitech.GamePanel;
-import org.acitech.KeyHandler;
+import org.acitech.inputs.Click;
+import org.acitech.inputs.Controls;
 import org.acitech.Main;
 import org.acitech.entities.projectiles.Aquaball;
 import org.acitech.entities.projectiles.Fireball;
@@ -91,49 +92,49 @@ public class Player extends Entity {
             }
 
             // Checks all the possible keys
-            if (KeyHandler.wDown) {
+            if (Controls.isKeyPressed(Controls.upKey)) {
                 this.acceleration = this.acceleration.add(new Vector2d(0, -this.moveSpeed));
             }
-            if (KeyHandler.aDown) {
+            if (Controls.isKeyPressed(Controls.leftKey)) {
                 this.acceleration = this.acceleration.add(new Vector2d(-this.moveSpeed, 0));
             }
-            if (KeyHandler.sDown) {
+            if (Controls.isKeyPressed(Controls.downKey)) {
                 this.acceleration = this.acceleration.add(new Vector2d(0, this.moveSpeed));
             }
-            if (KeyHandler.dDown) {
+            if (Controls.isKeyPressed(Controls.rightKey)) {
                 this.acceleration = this.acceleration.add(new Vector2d(this.moveSpeed, 0));
             }
 
             // Check all cursor keys
-            if (KeyHandler.isKeyPressed('1')) {
+            if (Controls.isKeyPressed(Controls.$1stSlotKey)) {
                 selectedSlot = 0;
-            } else if (KeyHandler.isKeyPressed('2')) {
+            } else if (Controls.isKeyPressed(Controls.$2ndSlotKey)) {
                 selectedSlot = 1;
-            } else if (KeyHandler.isKeyPressed('3')) {
+            } else if (Controls.isKeyPressed(Controls.$3rdSlotKey)) {
                 selectedSlot = 2;
-            } else if (KeyHandler.isKeyPressed('4')) {
+            } else if (Controls.isKeyPressed(Controls.$4thSlotKey)) {
                 selectedSlot = 3;
-            } else if (KeyHandler.isKeyPressed('5')) {
+            } else if (Controls.isKeyPressed(Controls.$5thSlotKey)) {
                 selectedSlot = 4;
-            } else if (KeyHandler.isKeyPressed('6')) {
+            } else if (Controls.isKeyPressed(Controls.$6thSlotKey)) {
                 selectedSlot = 5;
-            } else if (KeyHandler.isKeyPressed('7')) {
+            } else if (Controls.isKeyPressed(Controls.$7thSlotKey)) {
                 selectedSlot = 6;
-            } else if (KeyHandler.isKeyPressed('8')) {
+            } else if (Controls.isKeyPressed(Controls.$8thSlotKey)) {
                 selectedSlot = 7;
-            } else if (KeyHandler.isKeyPressed('9')) {
+            } else if (Controls.isKeyPressed(Controls.$9thSlotKey)) {
                 selectedSlot = 8;
-            } else if (KeyHandler.isKeyPressed('0')) {
+            } else if (Controls.isKeyPressed(Controls.$10thSlotKey)) {
                 selectedSlot = 9;
             }
 
             // Placeholders for testing
-            if (KeyHandler.zDown) {
+            if (Controls.isKeyPressed(Controls.zKey)) {
                 if (this.health > 0) {
                     this.health -= 1;
                 }
             }
-            if (KeyHandler.xDown) {
+            if (Controls.isKeyPressed(Controls.xKey)) {
                 if (this.mana > 0) {
                     this.mana -= 1;
                 }
@@ -142,16 +143,16 @@ public class Player extends Entity {
             this.deathCheck();
 
             // Checks for which spell effects to use
-            if (KeyHandler.shiftDown && KeyHandler.spaceDown) {
+            if (Controls.isKeyPressed(Controls.leftElemKey) && Controls.isKeyPressed(Controls.rightElemKey)) {
                 elementState = "base";
-            } else if (KeyHandler.shiftDown) {
+            } else if (Controls.isKeyPressed(Controls.leftElemKey)) {
                 if (this.spellInv.getItem(0) != null) {
                     switch (this.spellInv.getItem(0).getType()) {
                         case FIRE_TOME_1 -> elementState = "fire";
                         case AQUA_TOME_1 -> elementState = "aqua";
                     }
                 }
-            } else if (KeyHandler.spaceDown) {
+            } else if (Controls.isKeyPressed(Controls.rightElemKey)) {
                 if (this.spellInv.getItem(1) != null) {
                     switch (this.spellInv.getItem(1).getType()) {
                         case FIRE_TOME_1 -> elementState = "fire";
@@ -163,8 +164,8 @@ public class Player extends Entity {
             }
 
             // Checks for mouse input
-            if (!KeyHandler.mouseClicks.isEmpty()) {
-                for (KeyHandler.Click click : KeyHandler.mouseClicks) {
+            if (Controls.hasMouseClicks()) {
+                for (Click click : Controls.getMouseClicks()) {
                     // Checks for clicks (Scratch / Other thing)
                     switch (click.getButton()) {
 

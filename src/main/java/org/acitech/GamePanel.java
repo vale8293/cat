@@ -6,6 +6,7 @@ import org.acitech.entities.Player;
 import org.acitech.entities.enemies.Jordan;
 import org.acitech.entities.enemies.Pepto;
 import org.acitech.entities.enemies.Rico;
+import org.acitech.inputs.Controls;
 import org.acitech.inventory.ItemStack;
 import org.acitech.inventory.ItemType;
 import org.acitech.tilemap.Room;
@@ -24,7 +25,7 @@ public class GamePanel extends JPanel implements Runnable {
     private boolean unEscaped = false;
     private ArrayList<Entity> newEntities = new ArrayList<>();
 
-    KeyHandler keys = new KeyHandler();
+    Controls keys = new Controls();
     Thread gameThread;
 
     public static ArrayList<Entity> entities = new ArrayList<>();
@@ -168,28 +169,25 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             // Clear the list of mouse clicks
-            KeyHandler.mouseClicks.clear();
+            Controls.flushClicks();
 
             // Check for pausing
-            if (!KeyHandler.escDown) {
+            if (!Controls.isKeyPressed(Controls.pauseKey)) {
                 unEscaped = true;
             }
 
-            if (unEscaped && KeyHandler.escDown) {
+            if (unEscaped && Controls.isKeyPressed(Controls.pauseKey)) {
                 paused = true;
                 unEscaped = false;
             }
         }
-
         else {
             // Check for pausing
-            if (!KeyHandler.escDown) {
+            if (!Controls.isKeyPressed(Controls.pauseKey)) {
                 unEscaped = true;
             }
 
-            
-
-            if (unEscaped && KeyHandler.escDown) {
+            if (unEscaped && Controls.isKeyPressed(Controls.pauseKey)) {
                 paused = false;
                 unEscaped = false;
             }
