@@ -44,7 +44,7 @@ public enum ItemType {
     private final String effectMod;
 
     /** A potion's duration */
-    private final int duration;
+    private final Integer duration;
 
     // Whether an item will go into
     // inv 1 (Inventory bar, Materials & Misc)
