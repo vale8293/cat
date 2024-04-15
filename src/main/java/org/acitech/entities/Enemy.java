@@ -30,7 +30,7 @@ abstract public class Enemy extends Entity {
 
     // Stats & Combat
     protected int health, maxHealth = 1;
-    protected int mana, maxMana = 0; // To be used in the future maybe
+    // protected int mana, maxMana = 0; // To be used in the future maybe
     public int damage = 1;
     public String damageElement = "None";
     public int defense = 0;

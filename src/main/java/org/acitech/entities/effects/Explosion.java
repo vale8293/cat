@@ -33,7 +33,7 @@ public class Explosion extends Entity {
                 this.aniLength = 4;
                 this.aniFrameDuration = 4;
             }
-            case ("aqua") -> {
+            case ("aqua"), ("wind") -> {
                 this.aniLength = 5;
                 this.aniFrameDuration = 3;
             }

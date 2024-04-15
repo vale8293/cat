@@ -1,11 +1,12 @@
 package org.acitech.entities;
 
 import org.acitech.GamePanel;
-import org.acitech.inputs.Click;
-import org.acitech.inputs.Controls;
 import org.acitech.Main;
 import org.acitech.entities.projectiles.Aquaball;
 import org.acitech.entities.projectiles.Fireball;
+import org.acitech.entities.projectiles.Windball;
+import org.acitech.inputs.Click;
+import org.acitech.inputs.Controls;
 import org.acitech.inventory.Inventory;
 import org.acitech.inventory.ItemStack;
 import org.acitech.inventory.ItemType;
@@ -26,7 +27,7 @@ public class Player extends Entity {
     public int height = 160;
 
     // Stats
-        // UI
+    // UI
     public int maxHealth = 6; // Can be changed in gameplay (Default: 6)
     public int health = this.maxHealth; // Can be changed in gameplay
     public boolean alive = true;
@@ -38,7 +39,7 @@ public class Player extends Entity {
     public int streakTimerMax = 180; // Can be changed in gameplay (Default: 180)
     public int streakTimer = 0;
 
-        // Combat & Movement
+    // Combat & Movement
     public int scratchDamage = 1; // Can be changed in gameplay (Default: 1)
     public int scratchCooldown = 20; // Can be changed in gameplay (Default: 20)
     public int scratchTimer = this.scratchCooldown;
@@ -51,6 +52,7 @@ public class Player extends Entity {
     public int immunity = 30; // Can be changed in gameplay (Default: 30)
     public int damageTimer;
     public String elementState = "base";
+
     // public boolean bufferInput = false; // For implementing a buffer system later maybe
     public Player() {
         this.friction = 0.9;
@@ -144,7 +146,11 @@ public class Player extends Entity {
 
             // Checks for which spell effects to use
             if (Controls.isKeyPressed(Controls.leftElemKey) && Controls.isKeyPressed(Controls.rightElemKey)) {
-                elementState = "base";
+                if ((this.spellInv.getItem(0) != null) && (this.spellInv.getItem(1) != null)) {
+                    if (!this.spellInv.getItem(0).getType().equals(this.spellInv.getItem(1).getType())) {
+                        elementState = "wind";
+                    }
+                }
             } else if (Controls.isKeyPressed(Controls.leftElemKey)) {
                 if (this.spellInv.getItem(0) != null) {
                     switch (this.spellInv.getItem(0).getType()) {
@@ -196,7 +202,6 @@ public class Player extends Entity {
                             switch (elementState) {
                                 case ("base") -> { // todo: Pounces
                                     System.out.print("hello");
-                                    System.out.print("hello");
                                 }
 
                                 case ("fire") -> { // Uses a fireball
@@ -226,6 +231,22 @@ public class Player extends Entity {
                                             sndFire.loop(0);
                                             sndFire.start();
                                             this.mana -= aquaball.manaCost;
+                                            this.spellTimer = this.spellCooldown;
+                                        }
+                                    }
+                                }
+
+                                case ("wind") -> { // Uses a windball
+                                    if (this.spellTimer == 0) {
+                                        double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
+                                        Windball windball = new Windball(this.position.getX(), this.position.getY(), angle);
+
+                                        if (this.mana >= windball.manaCost) {
+                                            Main.getGamePanel().addNewEntity(windball);
+                                            sndFire.setFramePosition(0);
+                                            sndFire.loop(0);
+                                            sndFire.start();
+                                            this.mana -= windball.manaCost;
                                             this.spellTimer = this.spellCooldown;
                                         }
                                     }
@@ -285,6 +306,47 @@ public class Player extends Entity {
                     this.level += 1;
                     this.scratchDamage += 1;
                     return "+Scratch Damage!";
+                }
+            }
+            case (5) -> { // Increase i-frames by 10
+                if (this.xpCount >= 300) {
+                    this.level += 1;
+                    this.immunity += 10;
+                    return "+Immunity Length!";
+                }
+            }
+            case (6) -> { // Raise mana cap by 1 star, restore mana
+                if (this.xpCount >= 425) {
+                    this.level += 1;
+                    this.maxMana += 6;
+                    this.mana = this.maxMana;
+                    return "+Mana!";
+                }
+            }
+            case (7) -> { // Make streak timer take longer to dissipate, adjust current streak timer if not 0
+                if (this.xpCount >= 575) {
+                    this.level += 1;
+                    this.streakTimerMax += 60;
+                    if (this.streakTimer > 0) {
+                        this.streakTimer += 60;
+                    }
+                    return "+Streak Duration!";
+                }
+            }
+            case (8) -> {
+                if (this.xpCount >= 750) {
+                    this.level += 1;
+                    this.maxHealth += 2;
+                    this.health = maxHealth;
+                    return "+HP!";
+                }
+            }
+            case (9) -> { // Increases melee and magic defenses by 1
+                if (this.xpCount >= 1000) {
+                    this.level += 1;
+                    this.meleeDefense += 1;
+                    this.magicDefense += 1;
+                    return "+Defenses!";
                 }
             }
             default -> {}

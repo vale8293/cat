@@ -81,13 +81,13 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         // Test Fire Tome
-        for (int i = 0; i < 2; i++) {
-            addNewEntity(new Item(Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.FIRE_TOME_1)));
+        for (int i = 0; i < 1; i++) {
+            addNewEntity(new Item(0, 0, new ItemStack(ItemType.FIRE_TOME_1)));
         }
 
         // Test Aqua Tome
-        for (int i = 0; i < 2; i++) {
-            addNewEntity(new Item(Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.AQUA_TOME_1)));
+        for (int i = 0; i < 1; i++) {
+            addNewEntity(new Item(0, 0, new ItemStack(ItemType.AQUA_TOME_1)));
         }
 
         // Test Potions
