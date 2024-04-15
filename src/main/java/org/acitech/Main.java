@@ -1,13 +1,17 @@
 package org.acitech;
 
 import javax.swing.*;
+import java.util.HashMap;
 
 public class Main {
 
+    private static HashMap<String, Long> profiles = new HashMap<>();
     private static ResourceLoader resources;
     private static GamePanel gamePanel;
 
     public static void main(String[] args) {
+        startProfile("Startup");
+
         // Load the resource loader
         resources = new ResourceLoader();
         boolean resourcesLoaded = resources.load();
@@ -35,6 +39,8 @@ public class Main {
 
         // Initialize the scene
         gamePanel.initScene();
+
+        finishProfile("Startup");
     }
 
     public static ResourceLoader getResources() {
@@ -43,5 +49,21 @@ public class Main {
 
     public static GamePanel getGamePanel() {
         return gamePanel;
+    }
+
+    public static void startProfile(String name) {
+        profiles.put(name.toLowerCase(), System.nanoTime());
+    }
+
+    public static void finishProfile(String name) {
+        Long time = profiles.getOrDefault(name.toLowerCase(), null);
+
+        if (time == null) {
+            System.out.println(name + " took ?ms");
+            return;
+        }
+
+        long timing = System.nanoTime() - time;
+        System.out.println(name + " took " + timing / 1000000f + "ms");
     }
 }
