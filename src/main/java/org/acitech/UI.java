@@ -1,6 +1,5 @@
 package org.acitech;
 
-import org.acitech.entities.Player;
 import org.acitech.inventory.ItemStack;
 
 import java.awt.*;
@@ -186,24 +185,9 @@ public class UI {
 
     // Placeholder: Counts XP in-game (should be polished and repurposed)
     public static void drawXP(Graphics2D ctx) {
-        double scale = getGuiScale();
-
-        int numberScale = (int) (20 * scale);
-        int xpX = 0;
-        int xpY = Main.getGamePanel().getHeight() - (int) (25.0 * scale);
-
         int xpCount = GamePanel.player.xpCount;
-        BufferedImage amountTextureOnes = Main.getResources().getTexture("ui/numbers/" + xpCount % 10 + ":0");
-        ctx.drawImage(amountTextureOnes, xpX + (int) (48 * scale), xpY, numberScale, numberScale, Main.getGamePanel());
 
-        BufferedImage amountTextureTens = Main.getResources().getTexture("ui/numbers/" + (xpCount / 10) % 10 + ":0");
-        ctx.drawImage(amountTextureTens, xpX + (int) (32 * scale), xpY, numberScale, numberScale, Main.getGamePanel());
-
-        BufferedImage amountTextureHunds = Main.getResources().getTexture("ui/numbers/" + (xpCount / 100) % 10 + ":0");
-        ctx.drawImage(amountTextureHunds, xpX + (int) (16 * scale), xpY, numberScale, numberScale, Main.getGamePanel());
-
-        BufferedImage amountTextureThous = Main.getResources().getTexture("ui/numbers/" + (xpCount / 1000) % 10 + ":0");
-        ctx.drawImage(amountTextureThous, xpX, xpY, numberScale, numberScale, Main.getGamePanel());
+        drawText(ctx, 0, Main.getGamePanel().getHeight() - calculateFontSize(4), 4, String.valueOf(xpCount));
     }
 
     public static void drawPauseMenu(Graphics2D ctx) {
@@ -222,10 +206,9 @@ public class UI {
     }
 
     public static void drawText(Graphics2D ctx, int x, int y, int magnitude, String text) {
-        double scale = getGuiScale();
         String matText = text.toUpperCase();
 
-        int size = (int) (7 * magnitude * scale);
+        int size = calculateFontSize(magnitude);
         int sub = size / 7;
 
         for (int i = 0, offset = -sub; i < matText.length(); i++, offset += size - sub) {
@@ -235,6 +218,11 @@ public class UI {
             BufferedImage letterTexture = Main.getResources().getTexture("ui/font/" + charIndex + ":0");
             ctx.drawImage(letterTexture, x + offset, y, size, size, Main.getGamePanel());
         }
+    }
+
+    public static int calculateFontSize(int magnitude) {
+        double scale = getGuiScale();
+        return (int) (7 * magnitude * scale);
     }
 
     private static double getGuiScale() {
