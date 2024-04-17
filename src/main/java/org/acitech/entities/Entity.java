@@ -25,10 +25,10 @@ abstract public class Entity {
         this.tick(delta);
 
         // Calculate the updated velocity and new position
-        this.velocity = this.velocity.add(this.acceleration);
-        this.acceleration = new Vector2d(0, 0);
-        this.velocity = this.velocity.multiply(this.friction);
-        this.position = this.position.add(this.velocity.multiply(delta)); // TODO: check if this is actually the place to use delta time (it's not)
+        this.velocity.add(this.acceleration);
+        this.acceleration.zero();
+        this.velocity.multiply(this.friction);
+        this.position.add(this.velocity.copy().multiply(delta)); // TODO: check if this is actually the place to use delta time (it's not)
     }
 
     abstract protected void tick(double delta);

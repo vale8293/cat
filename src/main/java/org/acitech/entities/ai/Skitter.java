@@ -2,13 +2,16 @@ package org.acitech.entities.ai;
 
 import org.acitech.GamePanel;
 import org.acitech.entities.Enemy;
+import org.acitech.entities.Entity;
+import org.acitech.entities.Scratch;
 import org.acitech.utils.Vector2d;
 
-public class Skitter extends EnemyAI {
+public class Skitter implements AI {
+    private final Enemy enemy;
     private int fleeTimer = 0;
 
     public Skitter(Enemy enemy) {
-        super(enemy);
+        this.enemy = enemy;
     }
 
     // Defines basic AI for enemies like Jordan
@@ -21,15 +24,6 @@ public class Skitter extends EnemyAI {
 
         // Gets the angle between the player and the enemy
         Vector2d direction = playerPos.directionTo(this.enemy.position).multiply(0.5);
-
-        // Checks for scratch & projectile to determine AI state
-        boolean gotScratched = scratchCheck(direction.getX(), direction.getY());
-        boolean gotHitBullet = bulletCheck(direction.getX(), direction.getY());
-        if (gotScratched) {
-            fleeTimer = 90;
-        } else if (gotHitBullet) {
-            fleeTimer = 120;
-        }
 
         // If the enemy is close enough to the player, start Skitter AI
         if (this.enemy.position.distance(playerPos) < this.enemy.aggroDistance) {
@@ -47,12 +41,25 @@ public class Skitter extends EnemyAI {
             if (this.enemy.position.distance(playerPos) < Math.max(this.enemy.width / 2, this.enemy.height / 2)) {
                 // Deal damage w/ elemental effect (none by default)
                 if (GamePanel.player.damageTimer == 0) {
-                    GamePanel.player.damageTaken(this.enemy.damage, this.enemy.damageElement);
+                    GamePanel.player.damageTaken(this.enemy.attackDamage, this.enemy.damageElement);
                 }
 
                 // Knock back the enemy and player
                 this.enemy.velocity.set(this.enemy.kbMult * -direction.getX(), this.enemy.kbMult * -direction.getY());
                 GamePanel.player.velocity = this.enemy.velocity.copy().multiply((double) -GamePanel.player.kbMult / this.enemy.kbMult);
+            }
+        }
+    }
+
+    @Override
+    public void damageHandler(Entity damager) {
+        if (damager == null) return;
+
+        if (damager instanceof Scratch) {
+            fleeTimer = 90;
+        } else if (damager instanceof Enemy enemy) {
+            if (enemy.getAI() instanceof Bullet) {
+                fleeTimer = 120;
             }
         }
     }

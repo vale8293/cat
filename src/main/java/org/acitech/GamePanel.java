@@ -97,8 +97,6 @@ public class GamePanel extends JPanel implements Runnable {
             addNewEntity(new Item(Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.HEALTH_POTION)));
             addNewEntity(new Item(Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.SPEED_POTION)));
         }
-
-
     }
 
     public void addNewEntity(Entity entity) {
@@ -119,7 +117,9 @@ public class GamePanel extends JPanel implements Runnable {
             lastTime = currentTime;
 
             if (delta >= 1) {
+                Main.startProfile("Tick"); // TODO: remove me
                 update(delta);
+                Main.finishProfile("Tick");
                 repaint();
                 delta--;
             }
@@ -127,7 +127,6 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update(double delta) {
-
         if (!paused) {
             ArrayList<Entity> disposedEntities = new ArrayList<>();
             ArrayList<Item> pickupItems = new ArrayList<>();

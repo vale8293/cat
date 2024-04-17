@@ -2,9 +2,8 @@ package org.acitech.entities;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.entities.ai.AI;
 import org.acitech.entities.ai.Bullet;
-import org.acitech.entities.ai.ProjectileAI;
-import org.acitech.entities.effects.Explosion;
 import org.acitech.utils.Vector2d;
 
 import javax.sound.sampled.Clip;
@@ -18,7 +17,7 @@ public class Projectile extends Entity {
     private final String projectileName;
     public final double angle;
     public final Vector2d originPosition;
-    private ProjectileAI projectileAI;
+    private AI projectileAI;
 
     // Animation & Visuals
     private int animationTick = 0;
@@ -39,7 +38,7 @@ public class Projectile extends Entity {
     public int kbMult = 10;
 
     // Load important stuff
-    Clip sndExplo = Main.getResources().getSound("explosion"); // like from splatoon
+    Clip exploSfx = Main.getResources().getSound("explosion"); // like from splatoon
 
     public Projectile(double startX, double startY, double rot, String projectileName, String ai) {
         this.position = new Vector2d(startX, startY);
@@ -58,28 +57,8 @@ public class Projectile extends Entity {
     @Override
     // Do this stuff every frame
     protected void tick(double delta) {
-
         if (this.projectileAI != null) {
             this.projectileAI.execute(delta);
-        }
-
-        deathCheck();
-    }
-
-    // Defines basic AI for when a projectile expires
-    public void deathCheck() {
-        // If the projectile expires, get rid of it
-        if (this.collisions <= 0) {
-            if (this.onDeath.equalsIgnoreCase("explosion")) {
-                switch (this.damageElement) {
-                    case ("fire") -> this.onDeathDamage = this.damage / 2;
-                    case ("aqua") -> this.onDeathDamage = this.damage / 3;
-                }
-
-                Main.getGamePanel().addNewEntity(new Explosion(this.position.getX(), this.position.getY(), this.damageElement, this.onDeathDamage));
-                sndExplo.start();
-            }
-            this.dispose();
         }
     }
 

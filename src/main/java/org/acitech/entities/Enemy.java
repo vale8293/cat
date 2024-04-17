@@ -2,7 +2,7 @@ package org.acitech.entities;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
-import org.acitech.entities.ai.EnemyAI;
+import org.acitech.entities.ai.AI;
 import org.acitech.entities.ai.Fighter;
 import org.acitech.entities.ai.Skitter;
 import org.acitech.inventory.ItemStack;
@@ -18,7 +18,7 @@ abstract public class Enemy extends Entity {
 
     // Identifiers
     private final String enemyName;
-    private final EnemyAI enemyAI;
+    private final AI enemyAI;
     public ArrayList<ItemType> itemPool = new ArrayList<>();
 
     // Animation & Visuals
@@ -31,7 +31,7 @@ abstract public class Enemy extends Entity {
     // Stats & Combat
     protected int health, maxHealth = 1;
     // protected int mana, maxMana = 0; // To be used in the future maybe
-    public int damage = 1;
+    public int attackDamage = 1;
     public String damageElement = "None";
     public int defense = 0;
     public double moveSpeed = 1;
@@ -184,21 +184,15 @@ abstract public class Enemy extends Entity {
         return maskImg;
     }
 
-    public boolean dealDamage(int amount, String damageElement) {
+    public boolean dealDamage(int amount, Entity damager) {
         if (this.damageTimer > 0) return false;
-
-        switch (damageElement) {
-            case ("fire") -> { // Set the enemy on fire
-
-            }
-            case ("aqua") -> { // Make the enemy wet
-
-            }
-            default -> {}
-        }
 
         this.health -= Math.max(0, amount);
         this.damageTimer = this.immunity;
+
+        if (this.enemyAI != null) {
+            this.enemyAI.damageHandler(damager);
+        }
         return true;
     }
 
@@ -208,5 +202,9 @@ abstract public class Enemy extends Entity {
 
     public int getMaxHealth() {
         return maxHealth;
+    }
+
+    public AI getAI() {
+        return enemyAI;
     }
 }

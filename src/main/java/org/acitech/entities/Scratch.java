@@ -29,6 +29,31 @@ public class Scratch extends Entity {
         this.angle = rot;
 
         this.element = element;
+
+        dealAoeDamage();
+    }
+
+    private void dealAoeDamage() {
+        for (Entity entity : GamePanel.entities) {
+            if (!(entity instanceof Enemy enemy)) continue;
+
+            // Gets the position of the scratch
+            double dist = enemy.position.distance(this.position);
+
+            // If the scratch makes contact with the enemy
+            // regain 1 mana
+            // knock it back, lose 1hp, and start i-frames, extend streak
+            if (dist < 100) {
+                // TODO: lets not always assume that the player is the one dealing the scratch
+                boolean dealtDamage = enemy.dealDamage(GamePanel.player.scratchDamage - enemy.defense, this);
+
+                if (dealtDamage) {
+                    enemy.velocity.set(GamePanel.player.position.directionTo(enemy.position).multiply(-0.5).multiply(enemy.kbMult));
+                    GamePanel.player.mana = Math.min(GamePanel.player.mana + 1, GamePanel.player.maxMana);
+                    GamePanel.player.streakTimer = GamePanel.player.streakTimerMax;
+                }
+            }
+        }
     }
 
     @Override
