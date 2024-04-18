@@ -230,6 +230,14 @@ public class Room {
         tilemap[x][y] = tile;
     }
 
+    public Tile getTile(int x, int y) {
+        try { // TODO: do math instead of catch
+            return tilemap[x][y];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return null;
+        }
+    }
+
     public int getWidth() {
         return maxWidth;
     }
