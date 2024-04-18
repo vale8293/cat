@@ -27,23 +27,18 @@ public class Item extends Entity {
     @Override
     // Do this stuff every frame
     protected void tick(double delta) {
-        Vector2d playerPos = GamePanel.player.position;
         if (this.pickupImmunity > 0) {
             this.pickupImmunity--;
         }
 
-        // Gets the angle between the player and the item
-        Vector2d direction = playerPos.directionTo(this.position).multiply(moveSpeed * 0.5);
-
         if (this.pickupImmunity <= 0) {
-            // Sucks up the item if it's close enough to the player
-            if (this.position.distance(playerPos) < 100) {
-                this.acceleration.add(direction);
+            double distance = this.position.distance(GamePanel.player.position);
 
-                this.inPickupRange = true;
-            } else {
-                this.inPickupRange = false;
+            // Sucks up the item if it's close enough to the player
+            if (distance < 250) {
+                this.acceleration.add(GamePanel.player.position.directionTo(this.position).multiply(moveSpeed * 0.5));
             }
+            this.inPickupRange = distance < 100;
         }
 
         // If the entity is disappearing, decrease its size and dispose it
