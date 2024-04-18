@@ -48,7 +48,7 @@ public class Scratch extends Entity {
                 boolean dealtDamage = enemy.dealDamage(GamePanel.player.scratchDamage - enemy.defense, this);
 
                 if (dealtDamage) {
-                    enemy.velocity.set(GamePanel.player.position.directionTo(enemy.position).multiply(-0.5).multiply(enemy.kbMult));
+                    enemy.dealKnockback(enemy.kbMult * 0.5, GamePanel.player.position, true);
                     GamePanel.player.mana = Math.min(GamePanel.player.mana + 1, GamePanel.player.maxMana);
                     GamePanel.player.streakTimer = GamePanel.player.streakTimerMax;
                 }

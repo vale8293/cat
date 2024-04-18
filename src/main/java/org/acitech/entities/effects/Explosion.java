@@ -15,6 +15,7 @@ public class Explosion extends Entity {
     private int animationTick = -1;
     public int aniLength = 4;
     public int aniFrameDuration = 3;
+    public int kbMult = 0;
     public int width = 160;
     public int height = 160;
 
@@ -28,18 +29,21 @@ public class Explosion extends Entity {
         this.explosionType = explosionType;
         this.onDeathDamage = onDeathDamage;
 
-        switch(explosionType) {
+        switch (explosionType) {
             case ("fire") -> {
                 this.aniLength = 4;
                 this.aniFrameDuration = 4;
+                this.kbMult = 15;
             }
             case ("aqua"), ("wind") -> {
                 this.aniLength = 5;
                 this.aniFrameDuration = 3;
+                this.kbMult = 10;
             }
             default -> {
                 this.aniLength = 1;
                 this.aniFrameDuration = 1;
+                this.kbMult = 50;
             }
         }
 
@@ -61,6 +65,7 @@ public class Explosion extends Entity {
 
                 if (this.position.distance(enemy.position) < 130) {
                     enemy.dealDamage(this.onDeathDamage, this);
+                    enemy.dealKnockback(this.kbMult * 0.5, this.position, true);
                 }
             }
 

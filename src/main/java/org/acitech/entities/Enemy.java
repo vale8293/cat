@@ -196,6 +196,16 @@ abstract public class Enemy extends Entity {
         return true;
     }
 
+    public void dealKnockback(double force, Vector2d origin, boolean override) {
+        Vector2d direction = this.position.directionTo(origin).multiply(force);
+
+        if (override) {
+            this.velocity.set(direction);
+        } else {
+            this.acceleration.add(direction);
+        }
+    }
+
     public int getHealth() {
         return health;
     }

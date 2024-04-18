@@ -187,7 +187,7 @@ public class UI {
     public static void drawXP(Graphics2D ctx) {
         int xpCount = GamePanel.player.xpCount;
 
-        drawText(ctx, 0, Main.getGamePanel().getHeight() - calculateFontSize(4), 4, String.valueOf(xpCount));
+        drawText(ctx, calculateFontSize(4), Main.getGamePanel().getHeight() - calculateFontSize(4) * 2, 4, String.valueOf(xpCount));
     }
 
     public static void drawPauseMenu(Graphics2D ctx) {
@@ -209,11 +209,11 @@ public class UI {
         String matText = text.toUpperCase();
 
         int size = calculateFontSize(magnitude);
-        int sub = size / 7;
+        int sub = size / 5;
 
-        for (int i = 0, offset = -sub; i < matText.length(); i++, offset += size - sub) {
+        for (int i = 0, offset = -sub; i < matText.length(); i++, offset += size + sub) {
             char letter = matText.charAt(i);
-            int charIndex = (int) letter - 1;
+            int charIndex = (int) letter;
 
             BufferedImage letterTexture = Main.getResources().getTexture("ui/font/" + charIndex + ":0");
             ctx.drawImage(letterTexture, x + offset, y, size, size, Main.getGamePanel());
@@ -222,7 +222,7 @@ public class UI {
 
     public static int calculateFontSize(int magnitude) {
         double scale = getGuiScale();
-        return (int) (7 * magnitude * scale);
+        return (int) (5 * magnitude * scale);
     }
 
     private static double getGuiScale() {
