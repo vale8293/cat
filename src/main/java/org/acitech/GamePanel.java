@@ -117,9 +117,7 @@ public class GamePanel extends JPanel implements Runnable {
             lastTime = currentTime;
 
             if (delta >= 1) {
-                Main.startProfile("Tick"); // TODO: remove me
                 update(delta);
-                Main.finishProfile("Tick");
                 repaint();
                 delta--;
             }
