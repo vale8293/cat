@@ -21,8 +21,7 @@ public class ResourceLoader {
                 loadSpriteSheet("ui/hearts", "ui/hearts.png", 18, 16) &&
                 loadSpriteSheet("ui/mana", "ui/mana.png", 13, 13) &&
                 loadSpriteSheet("ui/font", "ui/font.png", 5, 5) &&
-                loadSpriteSheet("ui/numbers", "ui/numbers.png", 5, 5) && // todo: delete
-                loadSpriteSheet("ui/streak_bar", "ui/streak_bar.png", 32, 16) &&
+                loadSpriteSheet("ui/streak_bar", "ui/streak_bar.png", 32, 10) &&
 
                 // Player
                 loadSpriteSheet("player/base", "player/base.png", 32, 32) &&
