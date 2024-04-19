@@ -57,10 +57,8 @@ public class Skitter implements AI {
 
         if (damager instanceof Scratch) {
             fleeTimer = 90;
-        } else if (damager instanceof Enemy enemy) {
-            if (enemy.getAI() instanceof Bullet) {
-                fleeTimer = 120;
-            }
+        } else {
+            fleeTimer = 120;
         }
     }
 }
