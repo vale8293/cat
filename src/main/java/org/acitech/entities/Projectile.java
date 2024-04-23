@@ -29,7 +29,6 @@ public class Projectile extends Entity {
     public String onDeath = "none"; // Specifies what happens after the projectile runs out of collisions (ex: explode)
     public int onDeathDamage = 0;
     public int maxCollisions = 1;
-    public int collisions = maxCollisions;
     public int manaCost = 1;
     public int damage = 1;
     public String damageElement = "None";
