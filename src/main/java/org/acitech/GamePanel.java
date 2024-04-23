@@ -59,6 +59,9 @@ public class GamePanel extends JPanel implements Runnable {
         Room room = new Room(40, 40, new Random().nextInt());
         rooms.put(currentRoom, room);
 
+        // Position the player
+        player.position.set(Tile.tileSize * 7.0d, Tile.tileSize * 7.0d);
+
         // Create and start the game loop thread
         gameThread = new Thread(this);
         gameThread.start();
@@ -82,12 +85,12 @@ public class GamePanel extends JPanel implements Runnable {
 
         // Test Fire Tome
         for (int i = 0; i < 1; i++) {
-            addNewEntity(new Item(0, 0, new ItemStack(ItemType.FIRE_TOME_1)));
+            addNewEntity(new Item(Tile.tileSize * 7.0d, Tile.tileSize * 7.0d, new ItemStack(ItemType.FIRE_TOME_1)));
         }
 
         // Test Aqua Tome
         for (int i = 0; i < 1; i++) {
-            addNewEntity(new Item(0, 0, new ItemStack(ItemType.AQUA_TOME_1)));
+            addNewEntity(new Item(Tile.tileSize * 7.0d, Tile.tileSize * 7.0d, new ItemStack(ItemType.AQUA_TOME_1)));
         }
 
         // Test Potions
