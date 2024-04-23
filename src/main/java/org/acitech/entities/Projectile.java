@@ -6,7 +6,6 @@ import org.acitech.entities.ai.AI;
 import org.acitech.entities.ai.Bullet;
 import org.acitech.utils.Vector2d;
 
-import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -36,9 +35,6 @@ public class Projectile extends Entity {
     public String damageElement = "None";
     public double moveSpeed = 1;
     public int kbMult = 10;
-
-    // Load important stuff
-    Clip exploSfx = Main.getResources().getSound("explosion"); // like from splatoon
 
     public Projectile(double startX, double startY, double rot, String projectileName, String ai) {
         this.position = new Vector2d(startX, startY);
