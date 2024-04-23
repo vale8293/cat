@@ -10,15 +10,15 @@ import java.util.Set;
 public enum ItemType {
     WATER(8, "items/water_material", 1, "consumable", "aqua", null),
     STRING(16, "items/string_material", 1, "none", "none", null),
-    BONE(4, "cow", 1,"throwable", "none", null),
+    BONE(4, "cow", 1,"none", "none", null),
     FEATHER(8, "items/feather_material", 1,"none", "none", null),
     FIRE_TOME_1(1, "spells/fire_tome_lv1", 3, "none", "fire", null),
     AQUA_TOME_1(1, "spells/aqua_tome_lv1", 3, "none", "aqua", null),
-    HEALTH_POTION(5, "items/health_potion", 4, "consumable", "none", null),
-    MANA_POTION(5, "items/mana_potion", 4, "consumable", "none", null),
-    ATTACK_POTION(5, "items/attack_potion", 4, "consumable", "none", 60),
-    DEFENSE_POTION(5, "cow", 4, "consumable", "none", 30), // lol
-    SPEED_POTION(5, "items/speed_potion", 4, "consumable", "none", 120);
+    HEALTH_POTION(3, "items/health_potion", 1, "consumable", "none", null),
+    MANA_POTION(3, "items/mana_potion", 1, "consumable", "none", null),
+    ATTACK_POTION(3, "items/attack_potion", 1, "consumable", "none", 60),
+    DEFENSE_POTION(3, "cow", 1, "consumable", "none", 30), // lol
+    SPEED_POTION(3, "items/speed_potion", 1, "consumable", "none", 120);
 
     /*
      * Predefined groups of similar item types

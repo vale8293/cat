@@ -40,6 +40,7 @@ public class Controls implements KeyListener, MouseListener {
     public final static int $10thSlotKey = KeyEvent.VK_0;
     public final static int zKey = KeyEvent.VK_Z;
     public final static int xKey = KeyEvent.VK_X;
+    public final static int useKey = KeyEvent.VK_E;
     public final static int cKey = KeyEvent.VK_C;
     public final static int vKey = KeyEvent.VK_V;
 

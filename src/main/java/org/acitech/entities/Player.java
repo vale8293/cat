@@ -142,6 +142,24 @@ public class Player extends Entity {
                 }
             }
 
+            // Using literally any item in the game
+            if (Controls.isKeyPressed(Controls.useKey)) {
+                ItemStack item = this.defaultInv.getItem(selectedSlot);
+                if (item != null) {
+                    if (item.getType().getUseMod().equals("consumable")) {
+                        item.setCount(item.getCount() - 1);
+
+                        switch (item.getType()) {
+                            case WATER -> this.health++;
+                            case HEALTH_POTION -> this.health += 4;
+                            case MANA_POTION -> this.mana += 12;
+                            case ATTACK_POTION -> this.scratchDamage++;
+                            case SPEED_POTION -> this.moveSpeed += 0.2;
+                        }
+                    }
+                }
+            }
+
             this.deathCheck();
 
             // Checks for which spell effects to use
@@ -187,14 +205,6 @@ public class Player extends Entity {
                                 sndScratch.start();
                                 this.scratchTimer = this.scratchCooldown;
                             }
-                        }
-
-                        // Middle Click
-                        case (2) -> {
-                            System.out.print("middle click");
-//                            if (Check if there is an item in that slot, check what it does when used (in ItemType)) {
-//                              todo: hey julian this is for using an item after you add the cursor in, doesn't have to be middle click but it can be, have fun :D
-//                            }
                         }
 
                         // Right Click
@@ -409,21 +419,6 @@ public class Player extends Entity {
      */
     public ArrayList<Item> pickupItems(ArrayList<Item> items) {
         for (Item item : new ArrayList<>(items)) {
-
-            switch (item.getItemStack().getType()) {
-                case HEALTH_POTION -> {
-                    this.health++;
-                }
-                case MANA_POTION -> {
-                    this.mana += 12;
-                }
-                case ATTACK_POTION -> {
-                    this.scratchDamage++;
-                }
-                case SPEED_POTION -> {
-                    this.moveSpeed += 0.2;
-                }
-            }
 
             ItemStack remaining;
 
