@@ -16,9 +16,8 @@ public enum ItemType {
     AQUA_TOME_1(1, "spells/aqua_tome_lv1", 3, "none", "aqua", null),
     HEALTH_POTION(3, "items/health_potion", 1, "consumable", "none", null),
     MANA_POTION(3, "items/mana_potion", 1, "consumable", "none", null),
-    ATTACK_POTION(3, "items/attack_potion", 1, "consumable", "none", 60),
-    DEFENSE_POTION(3, "cow", 1, "consumable", "none", 30), // lol
-    SPEED_POTION(3, "items/speed_potion", 1, "consumable", "none", 120);
+    ATTACK_POTION(3, "items/attack_potion", 1, "consumable", "none", 1800),
+    SPEED_POTION(3, "items/speed_potion", 1, "consumable", "none", 3600);
 
     /*
      * Predefined groups of similar item types
@@ -28,7 +27,7 @@ public enum ItemType {
     }
 
     public static Set<ItemType> getPotionTypes() {
-        return new HashSet<>(Arrays.asList(HEALTH_POTION, MANA_POTION, ATTACK_POTION, DEFENSE_POTION, SPEED_POTION));
+        return new HashSet<>(Arrays.asList(HEALTH_POTION, MANA_POTION, ATTACK_POTION, SPEED_POTION));
     }
 
     /** How many items can be in one stack */

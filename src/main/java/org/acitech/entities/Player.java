@@ -27,7 +27,7 @@ public class Player extends Entity {
     public int height = 160;
 
     // Stats
-    // UI
+        // UI
     public int maxHealth = 6; // Can be changed in gameplay (Default: 6)
     public int health = this.maxHealth; // Can be changed in gameplay
     public boolean alive = true;
@@ -39,7 +39,7 @@ public class Player extends Entity {
     public int streakTimerMax = 180; // Can be changed in gameplay (Default: 180)
     public int streakTimer = 0;
 
-    // Combat & Movement
+        // Combat & Movement
     public int scratchDamage = 1; // Can be changed in gameplay (Default: 1)
     public int scratchCooldown = 20; // Can be changed in gameplay (Default: 20)
     public int scratchTimer = this.scratchCooldown;
@@ -50,7 +50,9 @@ public class Player extends Entity {
     public int magicDefense = 0; // Can be changed in gameplay (Default: 0)
     public int kbMult = 20; // Can be changed in gameplay (Default: 20)
     public int immunity = 30; // Can be changed in gameplay (Default: 30)
-    public int damageTimer;
+    public int damageTimer;    public int effectTimer1;
+    public int effectTimer2;
+
     public String elementState = "base";
 
     // public boolean bufferInput = false; // For implementing a buffer system later maybe
@@ -61,7 +63,6 @@ public class Player extends Entity {
     // Inventory
     public Inventory defaultInv = new Inventory(8);
     public Inventory spellInv = new Inventory(2);
-    public Inventory potionInv = new Inventory(4);
     public int selectedSlot = 0;
 
     // Misc.
@@ -84,6 +85,13 @@ public class Player extends Entity {
             }
             if (this.spellTimer > 0) {
                 this.spellTimer--;
+            }
+
+            if (this.effectTimer1 > 0) {
+                this.effectTimer1--;
+            }
+            if (this.effectTimer2 > 0) {
+                this.effectTimer2--;
             }
 
             if (this.streakTimer > 0) {
@@ -143,18 +151,49 @@ public class Player extends Entity {
             }
 
             // Using literally any item in the game
-            if (Controls.isKeyPressed(Controls.useKey)) {
-                ItemStack item = this.defaultInv.getItem(selectedSlot);
+            if (Controls.isKeyPressed(Controls.useKey) && this.selectedSlot > 1) {
+                ItemStack item = this.defaultInv.getItem(this.selectedSlot - 2);
                 if (item != null) {
                     if (item.getType().getUseMod().equals("consumable")) {
-                        item.setCount(item.getCount() - 1);
-
-                        switch (item.getType()) {
-                            case WATER -> this.health++;
-                            case HEALTH_POTION -> this.health += 4;
-                            case MANA_POTION -> this.mana += 12;
-                            case ATTACK_POTION -> this.scratchDamage++;
-                            case SPEED_POTION -> this.moveSpeed += 0.2;
+                        if (this.defaultInv.getItem(this.selectedSlot - 2).getCount() <= 1) {
+                            this.defaultInv.setItem(this.selectedSlot - 2, null);
+                        } else {
+                            switch (item.getType()) {
+                                case WATER -> { // Heals 1hp if not at full health
+                                    if (this.health != maxHealth) {
+                                        item.setCount(item.getCount() - 1);
+                                        this.health ++;
+                                    }
+                                }
+                                case HEALTH_POTION -> { // Heals 4hp if not at full health
+                                    if (this.health != maxHealth) {
+                                        item.setCount(item.getCount() - 1);
+                                        this.health += 4;
+                                    }
+                                    if (this.health > this.maxHealth) {
+                                        this.health = this.maxHealth;
+                                    }
+                                }
+                                case MANA_POTION -> { // Heals 12 mana if not at full mana
+                                    if (this.mana != maxMana) {
+                                        item.setCount(item.getCount() - 1);
+                                        this.mana += 12;
+                                    }
+                                    if (this.mana > this.maxMana) {
+                                        this.mana = this.maxMana;
+                                    }
+                                }
+                                case ATTACK_POTION -> { // Increases Scratch damage by 1 for 30 seconds
+                                    item.setCount(item.getCount() - 1);
+                                    this.scratchDamage++;
+                                    this.effectTimer1 += 1800;
+                                }
+                                case SPEED_POTION -> { // Increases move speed by 1 for one minute
+                                    item.setCount(item.getCount() - 1);
+                                    this.moveSpeed += 0.2;
+                                    this.effectTimer1 += 3600;
+                                }
+                            }
                         }
                     }
                 }
@@ -424,8 +463,6 @@ public class Player extends Entity {
 
             if (ItemType.getSpellTypes().contains(item.getItemStack().getType())) {
                 remaining = spellInv.addItem(item.getItemStack());
-            } else if (ItemType.getPotionTypes().contains(item.getItemStack().getType())) {
-                remaining = potionInv.addItem(item.getItemStack());
             } else {
                 remaining = defaultInv.addItem(item.getItemStack());
             }
