@@ -50,8 +50,10 @@ public class Player extends Entity {
     public int magicDefense = 0; // Can be changed in gameplay (Default: 0)
     public int kbMult = 20; // Can be changed in gameplay (Default: 20)
     public int immunity = 30; // Can be changed in gameplay (Default: 30)
-    public int damageTimer;    public int effectTimer1;
+    public int damageTimer;
+    public int effectTimer1;
     public int effectTimer2;
+    public int actionTimer;
 
     public String elementState = "base";
 
@@ -87,6 +89,9 @@ public class Player extends Entity {
                 this.spellTimer--;
             }
 
+            if (this.actionTimer > 0) {
+                this.actionTimer--;
+            }
             if (this.effectTimer1 > 0) {
                 this.effectTimer1--;
             }
@@ -151,49 +156,43 @@ public class Player extends Entity {
             }
 
             // Using literally any item in the game
-            if (Controls.isKeyPressed(Controls.useKey) && this.selectedSlot > 1) {
+            if (Controls.isKeyPressed(Controls.useKey) && this.selectedSlot > 1 && this.actionTimer <= 0) {
                 ItemStack item = this.defaultInv.getItem(this.selectedSlot - 2);
                 if (item != null) {
                     if (item.getType().getUseMod().equals("consumable")) {
-                        if (this.defaultInv.getItem(this.selectedSlot - 2).getCount() <= 1) {
-                            this.defaultInv.setItem(this.selectedSlot - 2, null);
-                        } else {
-                            switch (item.getType()) {
-                                case WATER -> { // Heals 1hp if not at full health
-                                    if (this.health != maxHealth) {
-                                        item.setCount(item.getCount() - 1);
-                                        this.health ++;
-                                    }
-                                }
-                                case HEALTH_POTION -> { // Heals 4hp if not at full health
-                                    if (this.health != maxHealth) {
-                                        item.setCount(item.getCount() - 1);
-                                        this.health += 4;
-                                    }
-                                    if (this.health > this.maxHealth) {
-                                        this.health = this.maxHealth;
-                                    }
-                                }
-                                case MANA_POTION -> { // Heals 12 mana if not at full mana
-                                    if (this.mana != maxMana) {
-                                        item.setCount(item.getCount() - 1);
-                                        this.mana += 12;
-                                    }
-                                    if (this.mana > this.maxMana) {
-                                        this.mana = this.maxMana;
-                                    }
-                                }
-                                case ATTACK_POTION -> { // Increases Scratch damage by 1 for 30 seconds
+                        switch (item.getType()) {
+                            case WATER -> { // Heals 1hp if not at full health
+                                if (this.health != this.maxHealth) {
+                                    this.health = Math.min(this.maxHealth, this.health + 1);
                                     item.setCount(item.getCount() - 1);
-                                    this.scratchDamage++;
-                                    this.effectTimer1 += 1800;
-                                }
-                                case SPEED_POTION -> { // Increases move speed by 1 for one minute
-                                    item.setCount(item.getCount() - 1);
-                                    this.moveSpeed += 0.2;
-                                    this.effectTimer1 += 3600;
                                 }
                             }
+                            case HEALTH_POTION -> { // Heals 4hp if not at full health
+                                if (this.health != this.maxHealth) {
+                                    this.health = Math.min(this.maxHealth, this.health + 4);
+                                    item.setCount(item.getCount() - 1);
+                                }
+                            }
+                            case MANA_POTION -> { // Heals 12 mana if not at full mana
+                                if (this.mana != this.maxMana) {
+                                    this.mana = Math.min(this.maxMana, this.mana + 12);
+                                    item.setCount(item.getCount() - 1);
+                                }
+                            }
+                            case ATTACK_POTION -> { // Increases Scratch damage by 1 for 30 seconds
+                                this.scratchDamage++;
+                                this.effectTimer1 += 1800;
+                                item.setCount(item.getCount() - 1);
+                            }
+                            case SPEED_POTION -> { // Increases move speed by 1 for one minute
+                                this.moveSpeed += 0.2;
+                                this.effectTimer1 += 3600;
+                                item.setCount(item.getCount() - 1);
+                            }
+                        }
+                        this.actionTimer = 15;
+                        if (this.defaultInv.getItem(this.selectedSlot - 2).getCount() < 1) {
+                            this.defaultInv.setItem(this.selectedSlot - 2, null);
                         }
                     }
                 }
