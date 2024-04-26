@@ -1,30 +1,37 @@
 package org.acitech.tilemap;
 
+import org.acitech.utils.Vector2d;
+
 public enum Connector {
     /**
      * The side on top of a full tile
      */
-    TOP_SIDE(1, 0),
-    BOTTOM_SIDE(1, 2),
-    LEFT_SIDE(0, 1),
-    RIGHT_SIDE(2, 1),
-    UR_EDGE(2, 0),
-    UL_EDGE(0, 0),
-    DR_EDGE(2, 2),
-    DL_EDGE(0, 2);
+    TOP_SIDE(1, 0, 0, -1),
+    BOTTOM_SIDE(1, 2, 0, 1),
+    LEFT_SIDE(0, 1, -1, 0),
+    RIGHT_SIDE(2, 1, 1, 0),
+    UR_EDGE(2, 0, 1, -1),
+    UL_EDGE(0, 0, -1, -1),
+    DR_EDGE(2, 2, 1, 1),
+    DL_EDGE(0, 2, -1, 1);
 
-    private final int x;
-    private final int y;
+    private final int textureX;
+    private final int textureY;
+    private final Vector2d offset;
 
-    Connector(int x, int y) {
-        this.x = x;
-        this.y = y;
+    Connector(int textureX, int textureY, int offsetX, int offsetY) {
+        this.textureX = textureX;
+        this.textureY = textureY;
+        this.offset = new Vector2d(offsetX, offsetY);
     }
 
-    public int getX() {
-        return x;
+    public int getTextureX() {
+        return textureX;
     }
-    public int getY() {
-        return y;
+    public int getTextureY() {
+        return textureY;
+    }
+    public Vector2d getOffset() {
+        return offset.copy();
     }
 }
