@@ -2,6 +2,7 @@ package org.acitech.entities;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.UI;
 import org.acitech.entities.ai.AI;
 import org.acitech.entities.ai.Fighter;
 import org.acitech.entities.ai.Skitter;
@@ -161,27 +162,9 @@ abstract public class Enemy extends Entity {
 
         // If an enemy gets hit, tint it red and have it fade until its immunity frames run out
         if (this.damageTimer > 0) {
-            BufferedImage wow = tint(texture, 1, 0, 0, ((float) this.damageTimer / this.immunity * 0.8f) / 2);
+            BufferedImage wow = UI.tintImage(texture, 1, 0, 0, ((float) this.damageTimer / this.immunity * 0.8f) / 2);
             ctx.drawImage(wow, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
         }
-    }
-
-    // Configures the tint used above
-    public static BufferedImage tint(BufferedImage sprite, float red, float green, float blue, float alpha) {
-        BufferedImage maskImg = new BufferedImage(sprite.getWidth(), sprite.getHeight(), BufferedImage.TRANSLUCENT);
-        int rgb = new Color(red, green, blue, alpha).getRGB();
-
-        for (int i = 0; i < sprite.getWidth(); i++) {
-            for (int j = 0; j < sprite.getHeight(); j++) {
-                int color = sprite.getRGB(i, j);
-
-                if (color != 0) {
-                    maskImg.setRGB(i, j, rgb);
-                }
-            }
-        }
-
-        return maskImg;
     }
 
     public boolean dealDamage(int amount, Entity damager) {

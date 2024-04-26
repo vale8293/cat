@@ -193,15 +193,42 @@ public class UI {
     }
 
     public static void drawText(Graphics2D ctx, int x, int y, int size, String text) {
+        BufferedImage textImg = generateText(size, text);
+
+        ctx.drawImage(textImg, x, y, textImg.getWidth(), textImg.getHeight(), Main.getGamePanel());
+    }
+
+    public static BufferedImage generateText(int size, String text) {
         String matText = text.toUpperCase();
         int sub = size / 5; // Unit for a sub pixel of a letter
+        BufferedImage textImg = new BufferedImage(size * matText.length() + sub * (matText.length() - 1), size, BufferedImage.TRANSLUCENT);
+        Graphics2D ctx = (Graphics2D) textImg.getGraphics();
 
-        for (int i = 0, offset = -sub; i < matText.length(); i++, offset += size + sub) {
+        for (int i = 0; i < matText.length(); i++) {
             char letter = matText.charAt(i);
 
             BufferedImage letterTexture = Main.getResources().getTexture("ui/font/" + (int) letter + ":0");
-            ctx.drawImage(letterTexture, x + offset, y, size, size, Main.getGamePanel());
+            ctx.drawImage(letterTexture, i * size + i * sub, 0, size, size, Main.getGamePanel());
         }
+
+        return textImg;
+    }
+
+    public static BufferedImage tintImage(BufferedImage sprite, float red, float green, float blue, float alpha) {
+        BufferedImage maskImg = new BufferedImage(sprite.getWidth(), sprite.getHeight(), BufferedImage.TRANSLUCENT);
+        int rgb = new Color(red, green, blue, alpha).getRGB();
+
+        for (int i = 0; i < sprite.getWidth(); i++) {
+            for (int j = 0; j < sprite.getHeight(); j++) {
+                int color = sprite.getRGB(i, j);
+
+                if (color != 0) {
+                    maskImg.setRGB(i, j, rgb);
+                }
+            }
+        }
+
+        return maskImg;
     }
 
     public static void drawCenteredText(Graphics2D ctx, int x, int y, int size, String text) {
