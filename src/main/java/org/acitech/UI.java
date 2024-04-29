@@ -131,7 +131,7 @@ public class UI {
             ctx.drawImage(itemTexture, itemPos, invY + itemYOffset, itemScale, itemScale, Main.getGamePanel());
 
             int itemCount = item.getCount();
-            drawCenteredText(ctx, itemPos + itemScale, invY + (int) (itemScale * 0.8d) + itemYOffset, textSize, String.valueOf(itemCount));
+            drawCenteredText(ctx, itemPos + itemScale, invY + (int) (itemScale * 0.8d) + itemYOffset, textSize, String.valueOf(itemCount), Color.WHITE);
         }
 
         for (int slot = 0; slot < GamePanel.player.defaultInv.getMaxSlots(); slot++) {
@@ -144,7 +144,7 @@ public class UI {
             ctx.drawImage(itemTexture, itemPos, invY + itemYOffset, itemScale, itemScale, Main.getGamePanel());
 
             int itemCount = item.getCount();
-            drawCenteredText(ctx, itemPos + itemScale, invY + (int) (itemScale * 0.8d) + itemYOffset, textSize, String.valueOf(itemCount));
+            drawCenteredText(ctx, itemPos + itemScale, invY + (int) (itemScale * 0.8d) + itemYOffset, textSize, String.valueOf(itemCount), Color.WHITE);
         }
 
         BufferedImage cursorTexture = Main.getResources().getTexture("ui/cursor");
@@ -165,7 +165,7 @@ public class UI {
         BufferedImage streakTexture = Main.getResources().getTexture("ui/streak_bar/" + ((3 - (GamePanel.player.streakTimer + (GamePanel.player.streakTimerMax / 3) - 1) / (GamePanel.player.streakTimerMax / 3))) + ":0");
         ctx.drawImage(streakTexture, streakX, streakY, streakWidth, streakHeight, Main.getGamePanel());
 
-        drawCenteredText(ctx, streakX + streakWidth / 2, streakY - textSize, textSize, "Streak " + GamePanel.player.currentStreak);
+        drawCenteredText(ctx, streakX + streakWidth / 2, streakY - textSize, textSize, "Streak " + GamePanel.player.currentStreak, Color.WHITE);
     }
 
     // Placeholder: Counts XP in-game (should be polished and repurposed)
@@ -174,7 +174,7 @@ public class UI {
         double scale = getGuiScale();
         int size = (int) (20 * scale);
 
-        drawText(ctx, size, Main.getGamePanel().getHeight() - size * 2, size, String.valueOf(xpCount));
+        drawText(ctx, size, Main.getGamePanel().getHeight() - size * 2, size, String.valueOf(xpCount), Color.WHITE);
     }
 
     public static void drawPauseMenu(Graphics2D ctx) {
@@ -190,15 +190,22 @@ public class UI {
 
         BufferedImage menuTexture = Main.getResources().getTexture("ui/menu");
         ctx.drawImage(menuTexture, menuX, menuY, menuWidth, menuHeight, Main.getGamePanel());
+
+        drawCenteredText(ctx, menuX + menuWidth / 2, menuY + menuHeight / 2, (int) (20.0f * scale), "Paused", new Color(0xff3399));
     }
 
-    public static void drawText(Graphics2D ctx, int x, int y, int size, String text) {
-        BufferedImage textImg = generateText(size, text);
+    public static void drawText(Graphics2D ctx, int x, int y, int size, String text, Color color) {
+        BufferedImage textImg = tintImage(generateText(size, text), color);
 
         ctx.drawImage(textImg, x, y, textImg.getWidth(), textImg.getHeight(), Main.getGamePanel());
     }
 
-    public static BufferedImage generateText(int size, String text) {
+    public static void drawCenteredText(Graphics2D ctx, int x, int y, int size, String text, Color color) {
+        int sub = size / 5; // Unit for a sub pixel of a letter
+        drawText(ctx, (int) (x - (size + sub) / 2d * text.length() + (size + sub) / 4d), y - (int) (size / 2d), size, text, color);
+    }
+
+    private static BufferedImage generateText(int size, String text) {
         String matText = text.toUpperCase();
         int sub = size / 5; // Unit for a sub pixel of a letter
         BufferedImage textImg = new BufferedImage(size * matText.length() + sub * (matText.length() - 1), size, BufferedImage.TRANSLUCENT);
@@ -231,9 +238,13 @@ public class UI {
         return maskImg;
     }
 
-    public static void drawCenteredText(Graphics2D ctx, int x, int y, int size, String text) {
-        int sub = size / 5; // Unit for a sub pixel of a letter
-        drawText(ctx, (int) (x - (size + sub) / 2d * text.length() + (size + sub) / 4d), y - (int) (size / 2d), size, text);
+    public static BufferedImage tintImage(BufferedImage sprite, Color color) {
+        float r = color.getRed() / 255.0f;
+        float g = color.getGreen() / 255.0f;
+        float b = color.getBlue() / 255.0f;
+        float a = color.getAlpha() / 255.0f;
+
+        return tintImage(sprite, r, g, b, a);
     }
 
     private static double getGuiScale() {
