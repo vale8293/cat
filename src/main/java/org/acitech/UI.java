@@ -209,21 +209,21 @@ public class UI {
     }
 
     public static void drawCenteredText(Graphics2D ctx, int x, int y, int size, String text, Color color) {
-        int sub = size / 5; // Unit for a sub pixel of a letter
-        drawText(ctx, (int) (x - (size + sub) / 2d * text.length() + (size + sub) / 4d), y - (int) (size / 2d), size, text, color);
+        double sub = size / 5.0d; // Unit for a sub pixel of a letter
+        drawText(ctx, (int) (x - (size + sub) / 2.0d * text.length() + (size + sub) / 4.0d), (int) (y - size / 2.0d), size, text, color);
     }
 
     private static BufferedImage generateText(int size, String text) {
         String matText = text.toUpperCase();
-        int sub = size / 5; // Unit for a sub pixel of a letter
-        BufferedImage textImg = new BufferedImage(size * matText.length() + sub * (matText.length() - 1), size, BufferedImage.TRANSLUCENT);
+        double sub = size / 5.0d; // Unit for a sub pixel of a letter
+        BufferedImage textImg = new BufferedImage(size * matText.length() + (int) (sub * matText.length() - 1), size, BufferedImage.TRANSLUCENT);
         Graphics2D ctx = (Graphics2D) textImg.getGraphics();
 
         for (int i = 0; i < matText.length(); i++) {
             char letter = matText.charAt(i);
 
             BufferedImage letterTexture = Main.getResources().getTexture("ui/font/" + (int) letter + ":0");
-            ctx.drawImage(letterTexture, i * size + i * sub, 0, size, size, Main.getGamePanel());
+            ctx.drawImage(letterTexture, (int) (i * size + i * sub), 0, size, size, Main.getGamePanel());
         }
 
         return textImg;
