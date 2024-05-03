@@ -2,17 +2,19 @@ package org.acitech.tilemap;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.utils.Caboodle;
 import org.acitech.utils.Vector2d;
 import org.spongepowered.noise.module.source.Simplex;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.*;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class Room {
 
     private final Tile[][] tilemap;
+    private final Connector[][][] ctmmap;
     private Vector2d cloudOffset;
     private double cloudAngle;
     private Random cloudRng;
@@ -25,6 +27,7 @@ public class Room {
 
     public Room(int maxWidth, int maxHeight, int seed) {
         this.tilemap = new Tile[maxWidth][maxHeight];
+        this.ctmmap = new Connector[maxWidth][maxHeight][];
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
         this.skyColor = new Color(0x413552);
@@ -59,6 +62,17 @@ public class Room {
                 }
             }
         }
+
+        setTile(0, 0, Tile.grass);
+
+        setTile(3, 0, Tile.grass);
+        setTile(2, 0, Tile.grass);
+
+        setTile(3, 3, Tile.grass);
+        setTile(2, 2, Tile.grass);
+
+        setTile(0, 3, Tile.grass);
+        setTile(0, 2, Tile.grass);
     }
 
     private void drawBackground(Graphics2D ctx) {
@@ -69,7 +83,7 @@ public class Room {
         int size = Math.max(Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight());
         int span = size / Tile.tileSize * Tile.tileSize / 4;
 
-        cloudOffset.set(wrap(cloudOffset.getX(), 0, image.getWidth() - span), wrap(cloudOffset.getY(), 0, image.getHeight() - span));
+        cloudOffset.set(Caboodle.wrap(cloudOffset.getX(), 0, image.getWidth() - span), Caboodle.wrap(cloudOffset.getY(), 0, image.getHeight() - span));
 
         ctx.drawImage(image, 0, 0, size, size, (int) cloudOffset.getX(), (int) cloudOffset.getY(), (int) cloudOffset.getX() + span, (int) cloudOffset.getY() + span, Main.getGamePanel());
 
@@ -81,33 +95,24 @@ public class Room {
         cloudAngle = cloudAngle % (Math.PI * 2);
     }
 
-    private double wrap(double value, double lower, double upper) {
-        double range = upper - lower;
-        return ((value - lower) % range + range) % range + lower;
-    }
-
-    private double clamp(double value, double lower, double upper) {
-        return Math.max(Math.min(value, upper), lower);
-    }
-
     public void draw(Graphics2D ctx) {
         drawBackground(ctx);
 
         Vector2d upperBounds = Main.getGamePanel().getUpperFrameBounds();
         Vector2d lowerBounds = Main.getGamePanel().getLowerFrameBounds();
 
-        int widthP = (int) clamp(Math.ceil(upperBounds.getX() / Tile.tileSize), 0, maxWidth);
-        int widthN = (int) clamp(Math.floor(lowerBounds.getX() / Tile.tileSize), 0, maxWidth);
-        int heightP = (int) clamp(Math.ceil(upperBounds.getY() / Tile.tileSize), 0, maxHeight);
-        int heightN = (int) clamp(Math.floor(lowerBounds.getY() / Tile.tileSize), 0, maxHeight);
+        int widthP = (int) Caboodle.clamp(Math.ceil(upperBounds.getX() / Tile.tileSize), 0, maxWidth);
+        int widthN = (int) Caboodle.clamp(Math.floor(lowerBounds.getX() / Tile.tileSize), 0, maxWidth);
+        int heightP = (int) Caboodle.clamp(Math.ceil(upperBounds.getY() / Tile.tileSize), 0, maxHeight);
+        int heightN = (int) Caboodle.clamp(Math.floor(lowerBounds.getY() / Tile.tileSize), 0, maxHeight);
 
         // Create a collection of tile id's mapped to secondary tile-maps
-        HashMap<String, Connector[][][]> connCache = new HashMap<>();
+//        HashMap<String, Connector[][][]> connCache = new HashMap<>();
 
         // Initialize the collection of tile-maps for each connectable tile type
-        for (Tile tile : Tile.getConnectedTiles()) {
-            connCache.put(tile.getId(), new Connector[maxWidth][maxHeight][]);
-        }
+//        for (Tile tile : Tile.getConnectedTiles()) {
+//            connCache.put(tile.getId(), new Connector[maxWidth][maxHeight][]);
+//        }
 
         // Loop over the room's tilemap
         for (int x = widthN; x < widthP; x++) {
@@ -139,71 +144,70 @@ public class Room {
                 }
 
                 // Loop through each connectable tile type
-                for (String connTileId : connCache.keySet()) {
-                    if (tile != null && tile.getId().equals(connTileId)) continue; // Skip iteration if tile is the same type as the iterated connectable tile type
-
-                    ArrayList<Connector> connectorPossibilities = new ArrayList<>(List.of(Connector.values()));
-
-                    if (!checkTileType(connTileId, x, y + 1)) {
-                        connectorPossibilities.remove(Connector.TOP_SIDE);
-                    }
-                    if (!checkTileType(connTileId, x, y - 1)) {
-                        connectorPossibilities.remove(Connector.BOTTOM_SIDE);
-                    }
-                    if (!checkTileType(connTileId, x - 1, y)) {
-                        connectorPossibilities.remove(Connector.RIGHT_SIDE);
-                    }
-                    if (!checkTileType(connTileId, x + 1, y)) {
-                        connectorPossibilities.remove(Connector.LEFT_SIDE);
-                    }
-
-                    if (!checkTileType(connTileId, x + 1, y - 1)) {
-                        connectorPossibilities.remove(Connector.DL_EDGE);
-                    }
-                    if (!checkTileType(connTileId, x + 1, y + 1)) {
-                        connectorPossibilities.remove(Connector.UL_EDGE);
-                    }
-                    if (!checkTileType(connTileId, x - 1, y - 1)) {
-                        connectorPossibilities.remove(Connector.DR_EDGE);
-                    }
-                    if (!checkTileType(connTileId, x - 1, y + 1)) {
-                        connectorPossibilities.remove(Connector.UR_EDGE);
-                    }
-
-                    // If there is only one connector possibility left then append it to the connector map
-                    if (connectorPossibilities.size() > 0) {
-                        Connector[][][] connMap = connCache.get(connTileId);
-
-                        // Convert the arraylist of connectors to a multidimensional array
-                        Connector[] connectors = new Connector[connectorPossibilities.size()];
-                        int i = 0;
-                        for (Connector con : connectorPossibilities) {
-                            connectors[i] = con;
-                            i++;
-                        }
-                        connMap[x][y] = connectors;
-
-                        // Set the connector map
-                        connCache.put(connTileId, connMap);
-                    }
-                }
+//                for (String connTileId : connCache.keySet()) {
+//                    if (tile != null && tile.getId().equals(connTileId)) continue; // Skip iteration if tile is the same type as the iterated connectable tile type
+//
+//                    ArrayList<Connector> connectorPossibilities = new ArrayList<>(List.of(Connector.values()));
+//
+//                    if (!checkTileType(connTileId, x, y + 1)) {
+//                        connectorPossibilities.remove(Connector.TOP_SIDE);
+//                    }
+//                    if (!checkTileType(connTileId, x, y - 1)) {
+//                        connectorPossibilities.remove(Connector.BOTTOM_SIDE);
+//                    }
+//                    if (!checkTileType(connTileId, x - 1, y)) {
+//                        connectorPossibilities.remove(Connector.RIGHT_SIDE);
+//                    }
+//                    if (!checkTileType(connTileId, x + 1, y)) {
+//                        connectorPossibilities.remove(Connector.LEFT_SIDE);
+//                    }
+//
+//                    if (!checkTileType(connTileId, x + 1, y - 1)) {
+//                        connectorPossibilities.remove(Connector.DL_EDGE);
+//                    }
+//                    if (!checkTileType(connTileId, x + 1, y + 1)) {
+//                        connectorPossibilities.remove(Connector.UL_EDGE);
+//                    }
+//                    if (!checkTileType(connTileId, x - 1, y - 1)) {
+//                        connectorPossibilities.remove(Connector.DR_EDGE);
+//                    }
+//                    if (!checkTileType(connTileId, x - 1, y + 1)) {
+//                        connectorPossibilities.remove(Connector.UR_EDGE);
+//                    }
+//
+//                    // If there is only one connector possibility left then append it to the connector map
+//                    if (connectorPossibilities.size() > 0) {
+//                        Connector[][][] connMap = connCache.get(connTileId);
+//
+//                        // Convert the arraylist of connectors to a multidimensional array
+//                        Connector[] connectors = new Connector[connectorPossibilities.size()];
+//                        int i = 0;
+//                        for (Connector con : connectorPossibilities) {
+//                            connectors[i] = con;
+//                            i++;
+//                        }
+//                        connMap[x][y] = connectors;
+//
+//                        // Set the connector map
+//                        connCache.put(connTileId, connMap);
+//                    }
+//                }
             }
         }
 
-        for (String connTileId : connCache.keySet()) {
-            Tile connTile = Tile.getTileById(connTileId);
-            Connector[][][] connMap = connCache.get(connTileId);
+        for (int x = widthN; x < widthP; x++) {
+            for (int y = heightN; y < heightP; y++) {
+                Tile tile = tilemap[x][y]; // Get the tile at the iterated coordinate
+                Connector[] connectors = ctmmap[x][y];
 
-            for (int x = widthN; x < widthP; x++) {
-                for (int y = heightN; y < heightP; y++) {
-                    Connector[] connectors = connMap[x][y];
+                if (connectors == null) continue;
 
-                    if (connectors == null) continue;
+                // Loop through every connector on the tile
+                for (Connector connector : connectors) {
+                    BufferedImage image = tile.getTexture(connector);
+                    Vector2d position = connector.getOffset().add(x, y).multiply(Tile.tileSize);
 
-                    for (Connector connector : connectors) {
-                        BufferedImage image = connTile.getTexture(connector);
-                        ctx.drawImage(image, x * Tile.tileSize - (int) GamePanel.camera.getX(), y * Tile.tileSize - (int) GamePanel.camera.getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
-                    }
+                    ctx.drawImage(image, (int) position.getX() - (int) GamePanel.camera.getX(), (int) position.getY() - (int) GamePanel.camera.getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
                 }
             }
         }
@@ -212,22 +216,67 @@ public class Room {
     /**
      * Checks if a specific tile type is at specific coordinates
      */
-    private boolean checkTileType(String tileId, int x, int y) {
-        Tile tile;
+    private boolean matchConnector(String tileId, int x, int y) {
+        Tile tile = getTile(x, y);
 
-        try {
-            tile = tilemap[x][y];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            tile = null;
+        return tile == null || !tile.getId().equals(tileId);
+    }
+
+    private void computeCtm(int x, int y) {
+        Tile tile = getTile(x, y);
+
+        if (tile == null) return;
+
+        String tileId = tile.getId();
+        ArrayList<Connector> connectorPossibilities = new ArrayList<>();
+
+        if (matchConnector(tileId, x, y - 1)) {
+            connectorPossibilities.add(Connector.TOP_SIDE);
+        }
+        if (matchConnector(tileId, x, y + 1)) {
+            connectorPossibilities.add(Connector.BOTTOM_SIDE);
+        }
+        if (matchConnector(tileId, x + 1, y)) {
+            connectorPossibilities.add(Connector.RIGHT_SIDE);
+        }
+        if (matchConnector(tileId, x - 1, y)) {
+            connectorPossibilities.add(Connector.LEFT_SIDE);
         }
 
-        if (tile == null) return tileId == null;
+        if (matchConnector(tileId, x - 1, y + 1)) {
+            connectorPossibilities.add(Connector.DL_EDGE);
+        }
+        if (matchConnector(tileId, x - 1, y - 1)) {
+            connectorPossibilities.add(Connector.UL_EDGE);
+        }
+        if (matchConnector(tileId, x + 1, y + 1)) {
+            connectorPossibilities.add(Connector.DR_EDGE);
+        }
+        if (matchConnector(tileId, x + 1, y - 1)) {
+            connectorPossibilities.add(Connector.UR_EDGE);
+        }
 
-        return tile.getId().equals(tileId);
+        // If there is only one connector possibility left then append it to the connector map
+        if (connectorPossibilities.size() > 0) {
+            Connector[] nodes = new Connector[connectorPossibilities.size()];
+
+            for (int i = 0; i < connectorPossibilities.size(); i++) {
+                nodes[i] = connectorPossibilities.get(i);
+            }
+
+            ctmmap[x][y] = nodes;
+        }
     }
 
     public void setTile(int x, int y, Tile tile) {
         tilemap[x][y] = tile;
+
+        // Calculate the nearby connected textures
+        for (int cx = x - 2; cx < x + 2; cx++) { // TODO: figure out why a expansion of 2 works instead of just 1
+            for (int cy = y - 2; cy < y + 2; cy++) {
+                computeCtm(cx, cy);
+            }
+        }
     }
 
     public Tile getTile(int x, int y) {
