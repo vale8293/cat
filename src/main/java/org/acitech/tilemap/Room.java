@@ -2,6 +2,7 @@ package org.acitech.tilemap;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.utils.Caboodle;
 import org.acitech.utils.Vector2d;
 import org.spongepowered.noise.module.source.Simplex;
 
@@ -82,7 +83,7 @@ public class Room {
         int size = Math.max(Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight());
         int span = size / Tile.tileSize * Tile.tileSize / 4;
 
-        cloudOffset.set(wrap(cloudOffset.getX(), 0, image.getWidth() - span), wrap(cloudOffset.getY(), 0, image.getHeight() - span));
+        cloudOffset.set(Caboodle.wrap(cloudOffset.getX(), 0, image.getWidth() - span), Caboodle.wrap(cloudOffset.getY(), 0, image.getHeight() - span));
 
         ctx.drawImage(image, 0, 0, size, size, (int) cloudOffset.getX(), (int) cloudOffset.getY(), (int) cloudOffset.getX() + span, (int) cloudOffset.getY() + span, Main.getGamePanel());
 
@@ -94,25 +95,16 @@ public class Room {
         cloudAngle = cloudAngle % (Math.PI * 2);
     }
 
-    private double wrap(double value, double lower, double upper) {
-        double range = upper - lower;
-        return ((value - lower) % range + range) % range + lower;
-    }
-
-    private double clamp(double value, double lower, double upper) {
-        return Math.max(Math.min(value, upper), lower);
-    }
-
     public void draw(Graphics2D ctx) {
         drawBackground(ctx);
 
         Vector2d upperBounds = Main.getGamePanel().getUpperFrameBounds();
         Vector2d lowerBounds = Main.getGamePanel().getLowerFrameBounds();
 
-        int widthP = (int) clamp(Math.ceil(upperBounds.getX() / Tile.tileSize), 0, maxWidth);
-        int widthN = (int) clamp(Math.floor(lowerBounds.getX() / Tile.tileSize), 0, maxWidth);
-        int heightP = (int) clamp(Math.ceil(upperBounds.getY() / Tile.tileSize), 0, maxHeight);
-        int heightN = (int) clamp(Math.floor(lowerBounds.getY() / Tile.tileSize), 0, maxHeight);
+        int widthP = (int) Caboodle.clamp(Math.ceil(upperBounds.getX() / Tile.tileSize), 0, maxWidth);
+        int widthN = (int) Caboodle.clamp(Math.floor(lowerBounds.getX() / Tile.tileSize), 0, maxWidth);
+        int heightP = (int) Caboodle.clamp(Math.ceil(upperBounds.getY() / Tile.tileSize), 0, maxHeight);
+        int heightN = (int) Caboodle.clamp(Math.floor(lowerBounds.getY() / Tile.tileSize), 0, maxHeight);
 
         // Create a collection of tile id's mapped to secondary tile-maps
 //        HashMap<String, Connector[][][]> connCache = new HashMap<>();

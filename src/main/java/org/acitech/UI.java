@@ -1,5 +1,8 @@
 package org.acitech;
 
+import org.acitech.inputs.Controls;
+import org.acitech.utils.Caboodle;
+import org.acitech.utils.EventHandler;
 import org.acitech.inventory.ItemStack;
 
 import java.awt.*;
@@ -8,11 +11,12 @@ import java.awt.image.BufferedImage;
 public class UI {
 
     private static final int heightOfHearts = 64;
-
     /** Top padding of the stats area */
     private static final int paddingOfStats = 16;
-
     private static final int heightOfInventory = 64;
+    private static int pauseMenuSelection = 0;
+    private static final Color pauseMenuSelectColor = new Color(0xff3399);
+    private static final Color pauseMenuDefaultColor = new Color(0xffffff);
 
     // Draws all UI elements
     public static void draw(Graphics2D ctx) {
@@ -191,7 +195,11 @@ public class UI {
         BufferedImage menuTexture = Main.getResources().getTexture("ui/menu");
         ctx.drawImage(menuTexture, menuX, menuY, menuWidth, menuHeight, Main.getGamePanel());
 
-        drawCenteredText(ctx, menuX + menuWidth / 2, menuY + menuHeight / 2, (int) (20.0f * scale), "Paused", new Color(0xff3399));
+        drawCenteredText(ctx, menuX + menuWidth / 2, menuY + menuHeight / 2 - (int) (80.0f * scale), (int) (20.0f * scale), "Resume", pauseMenuSelection == 0 ? pauseMenuSelectColor : pauseMenuDefaultColor);
+        drawCenteredText(ctx, menuX + menuWidth / 2, menuY + menuHeight / 2 - (int) (40.0f * scale), (int) (20.0f * scale), "Stay Paused", pauseMenuSelection == 1 ? pauseMenuSelectColor : pauseMenuDefaultColor);
+        drawCenteredText(ctx, menuX + menuWidth / 2, menuY + menuHeight / 2 /*    Random  Spacer    */, (int) (20.0f * scale), "Be Paused", pauseMenuSelection == 2 ? pauseMenuSelectColor : pauseMenuDefaultColor);
+        drawCenteredText(ctx, menuX + menuWidth / 2, menuY + menuHeight / 2 + (int) (40.0f * scale), (int) (20.0f * scale), "Keep Pausing", pauseMenuSelection == 3 ? pauseMenuSelectColor : pauseMenuDefaultColor);
+        drawCenteredText(ctx, menuX + menuWidth / 2, menuY + menuHeight / 2 + (int) (80.0f * scale), (int) (20.0f * scale), "Exit Game", pauseMenuSelection == 4 ? pauseMenuSelectColor : pauseMenuDefaultColor);
     }
 
     public static void drawText(Graphics2D ctx, int x, int y, int size, String text, Color color) {
@@ -250,4 +258,19 @@ public class UI {
     private static double getGuiScale() {
         return Math.min(Math.min(Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight()), 800.0) / 800.0;
     }
+
+    @EventHandler(eventName = "keyDown")
+    public static void onPauseMenuUpdate() {
+        if (Controls.isKeyPressed(Controls.downKey)) {
+            pauseMenuSelection = (int) Caboodle.wrap(pauseMenuSelection + 1, 0, 5);
+        } else if (Controls.isKeyPressed(Controls.upKey)) {
+            pauseMenuSelection = (int) Caboodle.wrap(pauseMenuSelection - 1, 0, 5);
+        } else if (Controls.isKeyPressed(Controls.selectKey)) {
+            switch (pauseMenuSelection) {
+                case 0 -> Main.getGamePanel().setPaused(false);
+                case 4 -> System.exit(0);
+            }
+        }
+    }
+
 }

@@ -11,6 +11,7 @@ import org.acitech.inventory.ItemStack;
 import org.acitech.inventory.ItemType;
 import org.acitech.tilemap.Room;
 import org.acitech.tilemap.Tile;
+import org.acitech.utils.Broadcast;
 import org.acitech.utils.Vector2d;
 
 import javax.swing.*;
@@ -25,7 +26,6 @@ public class GamePanel extends JPanel implements Runnable {
     private boolean unEscaped = false;
     private ArrayList<Entity> newEntities = new ArrayList<>();
 
-    Controls keys = new Controls();
     Thread gameThread;
 
     public static ArrayList<Entity> entities = new ArrayList<>();
@@ -48,8 +48,12 @@ public class GamePanel extends JPanel implements Runnable {
         this.setFocusable(true);
 
         // Register keyboard and mouse listeners
+        Controls keys = new Controls();
+
         this.addKeyListener(keys);
         this.addMouseListener(keys);
+
+        Broadcast.registerClass(UI.class);
 
         initGame();
     }
@@ -252,5 +256,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     public Vector2d getLowerFrameBounds() {
         return lowerBounds;
+    }
+
+    public void setPaused(boolean paused) {
+        this.paused = paused;
     }
 }
