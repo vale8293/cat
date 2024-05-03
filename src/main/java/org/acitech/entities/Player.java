@@ -78,232 +78,13 @@ public class Player extends Entity {
     // Do this stuff every frame
     protected void tick(double delta) {
         if (this.alive) {
-            // Decrements cooldowns
-            if (this.damageTimer > 0) {
-                this.damageTimer--;
-            }
-            if (this.scratchTimer > 0) {
-                this.scratchTimer--;
-            }
-            if (this.spellTimer > 0) {
-                this.spellTimer--;
-            }
-
-            if (this.actionTimer > 0) {
-                this.actionTimer--;
-            }
-            if (this.effectTimer1 > 0) {
-                this.effectTimer1--;
-            }
-            if (this.effectTimer2 > 0) {
-                this.effectTimer2--;
-            }
-
-            if (this.streakTimer > 0) {
-                this.streakTimer--;
-            }
-            if (this.streakTimer <= 0) {
-                this.currentStreak = 0;
-            }
-
-            // Checks all the possible keys
-            if (Controls.isKeyPressed(Controls.upKey)) {
-                this.acceleration = this.acceleration.add(new Vector2d(0, -this.moveSpeed));
-            }
-            if (Controls.isKeyPressed(Controls.leftKey)) {
-                this.acceleration = this.acceleration.add(new Vector2d(-this.moveSpeed, 0));
-            }
-            if (Controls.isKeyPressed(Controls.downKey)) {
-                this.acceleration = this.acceleration.add(new Vector2d(0, this.moveSpeed));
-            }
-            if (Controls.isKeyPressed(Controls.rightKey)) {
-                this.acceleration = this.acceleration.add(new Vector2d(this.moveSpeed, 0));
-            }
-
-            // Check all cursor keys
-            if (Controls.isKeyPressed(Controls.$1stSlotKey)) {
-                selectedSlot = 0;
-            } else if (Controls.isKeyPressed(Controls.$2ndSlotKey)) {
-                selectedSlot = 1;
-            } else if (Controls.isKeyPressed(Controls.$3rdSlotKey)) {
-                selectedSlot = 2;
-            } else if (Controls.isKeyPressed(Controls.$4thSlotKey)) {
-                selectedSlot = 3;
-            } else if (Controls.isKeyPressed(Controls.$5thSlotKey)) {
-                selectedSlot = 4;
-            } else if (Controls.isKeyPressed(Controls.$6thSlotKey)) {
-                selectedSlot = 5;
-            } else if (Controls.isKeyPressed(Controls.$7thSlotKey)) {
-                selectedSlot = 6;
-            } else if (Controls.isKeyPressed(Controls.$8thSlotKey)) {
-                selectedSlot = 7;
-            } else if (Controls.isKeyPressed(Controls.$9thSlotKey)) {
-                selectedSlot = 8;
-            } else if (Controls.isKeyPressed(Controls.$10thSlotKey)) {
-                selectedSlot = 9;
-            }
-
-            // Placeholders for testing
-            if (Controls.isKeyPressed(Controls.zKey)) {
-                if (this.health > 0) {
-                    this.health -= 1;
-                }
-            }
-            if (Controls.isKeyPressed(Controls.xKey)) {
-                if (this.mana > 0) {
-                    this.mana -= 1;
-                }
-            }
-
-            // Using literally any item in the game
-            if (Controls.isKeyPressed(Controls.useKey) && this.selectedSlot > 1 && this.actionTimer <= 0) {
-                ItemStack item = this.defaultInv.getItem(this.selectedSlot - 2);
-                if (item != null) {
-                    if (item.getType().getUseMod().equals("consumable")) {
-                        switch (item.getType()) {
-                            case WATER -> { // Heals 1hp if not at full health
-                                if (this.health != this.maxHealth) {
-                                    this.health = Math.min(this.maxHealth, this.health + 1);
-                                    item.setCount(item.getCount() - 1);
-                                }
-                            }
-                            case HEALTH_POTION -> { // Heals 4hp if not at full health
-                                if (this.health != this.maxHealth) {
-                                    this.health = Math.min(this.maxHealth, this.health + 4);
-                                    item.setCount(item.getCount() - 1);
-                                }
-                            }
-                            case MANA_POTION -> { // Heals 12 mana if not at full mana
-                                if (this.mana != this.maxMana) {
-                                    this.mana = Math.min(this.maxMana, this.mana + 12);
-                                    item.setCount(item.getCount() - 1);
-                                }
-                            }
-                            case ATTACK_POTION -> { // Increases Scratch damage by 1 for 30 seconds
-                                this.scratchDamage++;
-                                this.effectTimer1 += 1800;
-                                item.setCount(item.getCount() - 1);
-                            }
-                            case SPEED_POTION -> { // Increases move speed by 1 for one minute
-                                this.moveSpeed += 0.2;
-                                this.effectTimer1 += 3600;
-                                item.setCount(item.getCount() - 1);
-                            }
-                        }
-                        this.actionTimer = 15;
-                        if (this.defaultInv.getItem(this.selectedSlot - 2).getCount() < 1) {
-                            this.defaultInv.setItem(this.selectedSlot - 2, null);
-                        }
-                    }
-                }
-            }
-
             this.deathCheck();
 
-            // Checks for which spell effects to use
-            if (Controls.isKeyPressed(Controls.leftElemKey) && Controls.isKeyPressed(Controls.rightElemKey)) {
-                if ((this.spellInv.getItem(0) != null) && (this.spellInv.getItem(1) != null)) {
-                    if (!this.spellInv.getItem(0).getType().equals(this.spellInv.getItem(1).getType())) {
-                        elementState = "wind";
-                    }
-                }
-            } else if (Controls.isKeyPressed(Controls.leftElemKey)) {
-                if (this.spellInv.getItem(0) != null) {
-                    switch (this.spellInv.getItem(0).getType()) {
-                        case FIRE_TOME_1 -> elementState = "fire";
-                        case AQUA_TOME_1 -> elementState = "aqua";
-                    }
-                }
-            } else if (Controls.isKeyPressed(Controls.rightElemKey)) {
-                if (this.spellInv.getItem(1) != null) {
-                    switch (this.spellInv.getItem(1).getType()) {
-                        case FIRE_TOME_1 -> elementState = "fire";
-                        case AQUA_TOME_1 -> elementState = "aqua";
-                    }
-                }
-            } else {
-                elementState = "base";
-            }
+            this.timersAndKeys();
+            this.itemUse();
 
-            // Checks for mouse input
-            if (Controls.hasMouseClicks()) {
-                for (Click click : Controls.getMouseClicks()) {
-                    // Checks for clicks (Scratch / Other thing)
-                    switch (click.getButton()) {
-
-                        // Left Click
-                        case (1) -> { // Scratches
-                            if (this.scratchTimer == 0) {
-                                clickPos.set(click.getX(), click.getY());
-                                double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
-                                Scratch scratch = new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle, this.elementState);
-                                sndScratch.setFramePosition(0);
-                                sndScratch.loop(0);
-                                Main.getGamePanel().addNewEntity(scratch);
-                                sndScratch.start();
-                                this.scratchTimer = this.scratchCooldown;
-                            }
-                        }
-
-                        // Right Click
-                        case (3) -> {
-                            switch (elementState) {
-                                case ("base") -> { // todo: Pounces
-                                    System.out.print("hello");
-                                }
-
-                                case ("fire") -> { // Uses a fireball
-                                    if (this.spellTimer == 0) { // If spells are off cooldown
-                                        double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
-                                        Fireball fireball = new Fireball(this.position.getX(), this.position.getY(), angle);
-
-                                        if (this.mana >= fireball.manaCost) {
-                                            Main.getGamePanel().addNewEntity(fireball);
-                                            sndFire.setFramePosition(0);
-                                            sndFire.loop(0);
-                                            sndFire.start();
-                                            this.mana -= fireball.manaCost;
-                                            this.spellTimer = this.spellCooldown;
-                                        }
-                                    }
-                                }
-
-                                case ("aqua") -> { // Uses a aquaball
-                                    if (this.spellTimer == 0) {
-                                        double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
-                                        Aquaball aquaball = new Aquaball(this.position.getX(), this.position.getY(), angle);
-
-                                        if (this.mana >= aquaball.manaCost) {
-                                            Main.getGamePanel().addNewEntity(aquaball);
-                                            sndFire.setFramePosition(0);
-                                            sndFire.loop(0);
-                                            sndFire.start();
-                                            this.mana -= aquaball.manaCost;
-                                            this.spellTimer = this.spellCooldown;
-                                        }
-                                    }
-                                }
-
-                                case ("wind") -> { // Uses a windball
-                                    if (this.spellTimer == 0) {
-                                        double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
-                                        Windball windball = new Windball(this.position.getX(), this.position.getY(), angle);
-
-                                        if (this.mana >= windball.manaCost) {
-                                            Main.getGamePanel().addNewEntity(windball);
-                                            sndFire.setFramePosition(0);
-                                            sndFire.loop(0);
-                                            sndFire.start();
-                                            this.mana -= windball.manaCost;
-                                            this.spellTimer = this.spellCooldown;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            this.elementCheck();
+            this.clickCheck();
         }
     }
 
@@ -321,7 +102,7 @@ public class Player extends Entity {
         }
     }
 
-    public String levelUpCheck() {
+    public String levelUpCheck() { // Used in Experience, return type for later use
         switch (this.level) {
             case (1) -> { // Raise mana cap by 1 star, restore mana
                 if (this.xpCount >= 20) {
@@ -473,5 +254,241 @@ public class Player extends Entity {
         }
 
         return items;
+    }
+
+    public void timersAndKeys() {
+        // Decrements cooldowns
+        if (this.damageTimer > 0) {
+            this.damageTimer--;
+        }
+        if (this.scratchTimer > 0) {
+            this.scratchTimer--;
+        }
+        if (this.spellTimer > 0) {
+            this.spellTimer--;
+        }
+
+        if (this.actionTimer > 0) {
+            this.actionTimer--;
+        }
+        if (this.effectTimer1 > 0) {
+            this.effectTimer1--;
+        }
+        if (this.effectTimer2 > 0) {
+            this.effectTimer2--;
+        }
+
+        if (this.streakTimer > 0) {
+            this.streakTimer--;
+        }
+        if (this.streakTimer <= 0) {
+            this.currentStreak = 0;
+        }
+
+        // Checks all the possible keys
+        if (Controls.isKeyPressed(Controls.upKey)) {
+            this.acceleration = this.acceleration.add(new Vector2d(0, -this.moveSpeed));
+        }
+        if (Controls.isKeyPressed(Controls.leftKey)) {
+            this.acceleration = this.acceleration.add(new Vector2d(-this.moveSpeed, 0));
+        }
+        if (Controls.isKeyPressed(Controls.downKey)) {
+            this.acceleration = this.acceleration.add(new Vector2d(0, this.moveSpeed));
+        }
+        if (Controls.isKeyPressed(Controls.rightKey)) {
+            this.acceleration = this.acceleration.add(new Vector2d(this.moveSpeed, 0));
+        }
+
+        // Check all cursor keys
+        if (Controls.isKeyPressed(Controls.$1stSlotKey)) {
+            selectedSlot = 0;
+        } else if (Controls.isKeyPressed(Controls.$2ndSlotKey)) {
+            selectedSlot = 1;
+        } else if (Controls.isKeyPressed(Controls.$3rdSlotKey)) {
+            selectedSlot = 2;
+        } else if (Controls.isKeyPressed(Controls.$4thSlotKey)) {
+            selectedSlot = 3;
+        } else if (Controls.isKeyPressed(Controls.$5thSlotKey)) {
+            selectedSlot = 4;
+        } else if (Controls.isKeyPressed(Controls.$6thSlotKey)) {
+            selectedSlot = 5;
+        } else if (Controls.isKeyPressed(Controls.$7thSlotKey)) {
+            selectedSlot = 6;
+        } else if (Controls.isKeyPressed(Controls.$8thSlotKey)) {
+            selectedSlot = 7;
+        } else if (Controls.isKeyPressed(Controls.$9thSlotKey)) {
+            selectedSlot = 8;
+        } else if (Controls.isKeyPressed(Controls.$10thSlotKey)) {
+            selectedSlot = 9;
+        }
+
+        // Placeholders for testing
+        if (Controls.isKeyPressed(Controls.zKey)) {
+            if (this.health > 0) {
+                this.health -= 1;
+            }
+        }
+        if (Controls.isKeyPressed(Controls.xKey)) {
+            if (this.mana > 0) {
+                this.mana -= 1;
+            }
+        }
+    }
+
+    public void itemUse() {
+        // Using literally any item in the game
+        if (Controls.isKeyPressed(Controls.useKey) && this.selectedSlot > 1 && this.actionTimer <= 0) {
+            ItemStack item = this.defaultInv.getItem(this.selectedSlot - 2);
+            if (item != null && item.getType().getUseMod().equals("consumable")) {
+
+                switch (item.getType()) {
+                    case WATER -> { // Heals 1hp if not at full health
+                        if (this.health != this.maxHealth) {
+                            this.health = Math.min(this.maxHealth, this.health + 1);
+                            item.setCount(item.getCount() - 1);
+                        }
+                    }
+                    case HEALTH_POTION -> { // Heals 4hp if not at full health
+                        if (this.health != this.maxHealth) {
+                            this.health = Math.min(this.maxHealth, this.health + 4);
+                            item.setCount(item.getCount() - 1);
+                        }
+                    }
+                    case MANA_POTION -> { // Heals 12 mana if not at full mana
+                        if (this.mana != this.maxMana) {
+                            this.mana = Math.min(this.maxMana, this.mana + 12);
+                            item.setCount(item.getCount() - 1);
+                        }
+                    }
+                    case ATTACK_POTION -> { // Increases Scratch damage by 1 for 30 seconds
+                        this.scratchDamage++;
+                        this.effectTimer1 += 1800;
+                        item.setCount(item.getCount() - 1);
+                    }
+                    case SPEED_POTION -> { // Increases move speed by 1 for one minute
+                        this.moveSpeed += 0.2;
+                        this.effectTimer1 += 3600;
+                        item.setCount(item.getCount() - 1);
+                    }
+                }
+
+                this.actionTimer = 15;
+                if (this.defaultInv.getItem(this.selectedSlot - 2).getCount() < 1) {
+                    this.defaultInv.setItem(this.selectedSlot - 2, null);
+                }
+            }
+        }
+    }
+
+    public void elementCheck() {
+        // Checks for which spell effects to use
+        if (Controls.isKeyPressed(Controls.leftElemKey) && Controls.isKeyPressed(Controls.rightElemKey)) {
+            if ((this.spellInv.getItem(0) != null) && (this.spellInv.getItem(1) != null)) {
+                if (!this.spellInv.getItem(0).getType().equals(this.spellInv.getItem(1).getType())) {
+                    elementState = "wind";
+                }
+            }
+        } else if (Controls.isKeyPressed(Controls.leftElemKey)) {
+            if (this.spellInv.getItem(0) != null) {
+                switch (this.spellInv.getItem(0).getType()) {
+                    case FIRE_TOME_1 -> elementState = "fire";
+                    case AQUA_TOME_1 -> elementState = "aqua";
+                }
+            }
+        } else if (Controls.isKeyPressed(Controls.rightElemKey)) {
+            if (this.spellInv.getItem(1) != null) {
+                switch (this.spellInv.getItem(1).getType()) {
+                    case FIRE_TOME_1 -> elementState = "fire";
+                    case AQUA_TOME_1 -> elementState = "aqua";
+                }
+            }
+        } else {
+            elementState = "base";
+        }
+    }
+
+    public void clickCheck() {
+        // Checks for mouse input
+        if (Controls.hasMouseClicks()) {
+            for (Click click : Controls.getMouseClicks()) {
+                // Checks for clicks (Scratch / Other thing)
+                switch (click.getButton()) {
+
+                    // Left Click
+                    case (1) -> { // Scratches
+                        if (this.scratchTimer == 0) {
+                            clickPos.set(click.getX(), click.getY());
+                            double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
+                            Scratch scratch = new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle, this.elementState);
+                            sndScratch.setFramePosition(0);
+                            sndScratch.loop(0);
+                            Main.getGamePanel().addNewEntity(scratch);
+                            sndScratch.start();
+                            this.scratchTimer = this.scratchCooldown;
+                        }
+                    }
+
+                    // Right Click
+                    case (3) -> {
+                        switch (elementState) {
+                            case ("base") -> { // todo: Pounces
+                                System.out.print("hello");
+                            }
+
+                            /* Uses a fireball */
+                            case ("fire") -> {
+                                if (this.spellTimer == 0) { // If spells are off cooldown
+                                    double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
+                                    Fireball fireball = new Fireball(this.position.getX(), this.position.getY(), angle);
+
+                                    if (this.mana >= fireball.manaCost) {
+                                        Main.getGamePanel().addNewEntity(fireball);
+                                        sndFire.setFramePosition(0);
+                                        sndFire.loop(0);
+                                        sndFire.start();
+                                        this.mana -= fireball.manaCost;
+                                        this.spellTimer = this.spellCooldown;
+                                    }
+                                }
+                            }
+
+                            /* Uses a aquaball */
+                            case ("aqua") -> {
+                                if (this.spellTimer == 0) {
+                                    double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
+                                    Aquaball aquaball = new Aquaball(this.position.getX(), this.position.getY(), angle);
+
+                                    if (this.mana >= aquaball.manaCost) {
+                                        Main.getGamePanel().addNewEntity(aquaball);
+                                        sndFire.setFramePosition(0);
+                                        sndFire.loop(0);
+                                        sndFire.start();
+                                        this.mana -= aquaball.manaCost;
+                                        this.spellTimer = this.spellCooldown;
+                                    }
+                                }
+                            }
+
+                            /* Uses a windball */
+                            case ("wind") -> {
+                                if (this.spellTimer == 0) {
+                                    double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
+                                    Windball windball = new Windball(this.position.getX(), this.position.getY(), angle);
+
+                                    if (this.mana >= windball.manaCost) {
+                                        Main.getGamePanel().addNewEntity(windball);
+                                        sndFire.setFramePosition(0);
+                                        sndFire.loop(0);
+                                        sndFire.start();
+                                        this.mana -= windball.manaCost;
+                                        this.spellTimer = this.spellCooldown;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
