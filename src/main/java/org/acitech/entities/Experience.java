@@ -2,6 +2,7 @@ package org.acitech.entities;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.tilemap.Room;
 import org.acitech.utils.Vector2d;
 
 import java.awt.*;
@@ -17,7 +18,9 @@ public class Experience extends Entity {
     public double moveSpeed = 2;
     public int xpValue;
 
-    public Experience(double startX, double startY, int xpValue) {
+    public Experience(Room room, double startX, double startY, int xpValue) {
+        super(room);
+
         this.position = new Vector2d(startX, startY);
         this.xpValue = xpValue;
         this.friction = 0.9;

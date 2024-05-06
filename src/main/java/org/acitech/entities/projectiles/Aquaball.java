@@ -1,11 +1,12 @@
 package org.acitech.entities.projectiles;
 
 import org.acitech.entities.Projectile;
+import org.acitech.tilemap.Room;
 
 public class Aquaball extends Projectile {
 
-    public Aquaball(double startX, double startY, double rot) {
-        super(startX, startY, rot, "aquaball", "bullet");
+    public Aquaball(Room room, double startX, double startY, double rot) {
+        super(room, startX, startY, rot, "aquaball", "bullet");
 
         // Animation & Visuals
         this.aniLength = 5;
@@ -17,7 +18,6 @@ public class Aquaball extends Projectile {
         this.damageElement = "aqua";
         this.onDeath = "explosion";
         this.moveSpeed = 8;
-        this.manaCost = 2;
         this.damage = 3;
         this.maxCollisions = 2;
         this.kbMult = 2;

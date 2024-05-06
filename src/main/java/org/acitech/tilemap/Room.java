@@ -2,6 +2,13 @@ package org.acitech.tilemap;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.entities.Entity;
+import org.acitech.entities.Item;
+import org.acitech.entities.enemies.Jordan;
+import org.acitech.entities.enemies.Pepto;
+import org.acitech.entities.enemies.Rico;
+import org.acitech.inventory.ItemStack;
+import org.acitech.inventory.ItemType;
 import org.acitech.utils.Caboodle;
 import org.acitech.utils.Vector2d;
 import org.spongepowered.noise.module.source.Simplex;
@@ -25,6 +32,9 @@ public class Room {
     private final Simplex tuftSimplex;
     private final Simplex terrainSimplex;
 
+    private ArrayList<Entity> newEntities = new ArrayList<>();
+    public static ArrayList<Entity> entities = new ArrayList<>();
+
     public Room(int maxWidth, int maxHeight, int seed) {
         this.tilemap = new Tile[maxWidth][maxHeight];
         this.ctmmap = new Connector[maxWidth][maxHeight][];
@@ -42,11 +52,14 @@ public class Room {
         this.terrainSimplex = new Simplex();
         this.terrainSimplex.setSeed(seedRng.nextInt());
 
-        // Generate the map
-        generate();
+        // Generate the tilemap
+        generateTilemap();
+
+        // Generate the entities
+        generateEntities();
     }
 
-    private void generate() {
+    private void generateTilemap() {
         Vector2d centerMap = new Vector2d(this.maxWidth / 2d, this.maxHeight / 2d);
 
         for (int x = 0; x < this.maxWidth; x++) {
@@ -75,12 +88,96 @@ public class Room {
         setTile(0, 2, Tile.grass);
     }
 
+    private void generateEntities() {
+        // Create test enemies for no reason ¯\_(ツ)_/¯
+        for (int i = 0; i < 5; i++) {
+            addNewEntity(new Rico(this, Math.random() * getWidth() + 600, Math.random() * getHeight()));
+        }
+
+        // Test Pepto
+        for (int i = 0; i < 5; i++) {
+            addNewEntity(new Pepto(this, Math.random() * getWidth() + 600, Math.random() * getHeight()));
+        }
+
+        // Test Jordan
+        for (int i = 0; i < 5; i++) {
+            addNewEntity(new Jordan(this, Math.random() * getWidth() + 600, Math.random() * getHeight()));
+        }
+
+        // Test Fire Tome
+        for (int i = 0; i < 1; i++) {
+            addNewEntity(new Item(this, Tile.tileSize * 7.0d, Tile.tileSize * 7.0d, new ItemStack(ItemType.FIRE_TOME_1)));
+        }
+
+        // Test Aqua Tome
+        for (int i = 0; i < 1; i++) {
+            addNewEntity(new Item(this, Tile.tileSize * 7.0d, Tile.tileSize * 7.0d, new ItemStack(ItemType.AQUA_TOME_1)));
+        }
+
+        // Test Potions
+        for (int i = 0; i < 2; i++) {
+            addNewEntity(new Item(this, Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.ATTACK_POTION)));
+            addNewEntity(new Item(this, Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.MANA_POTION)));
+            addNewEntity(new Item(this, Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.HEALTH_POTION)));
+            addNewEntity(new Item(this, Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.SPEED_POTION)));
+        }
+    }
+    
+    public void tick(double delta) {
+        ArrayList<Entity> disposedEntities = new ArrayList<>();
+        ArrayList<Item> pickupItems = new ArrayList<>();
+
+        // Add newly created entities
+        entities.addAll(newEntities);
+        newEntities.clear();
+
+        // Loop through each entity and tick them
+        for (Entity entity : entities) {
+            entity.tickEntity(delta);
+
+            // Check if entity is disposed and add them to a list
+            if (entity.isDisposed()) {
+                disposedEntities.add(entity);
+            }
+
+            // Check if the entity is an item and is getting picked up
+            if (entity instanceof Item itemEntity) {
+                if (itemEntity.isInPickupRange() && !itemEntity.isDisappearing()) {
+                    pickupItems.add(itemEntity);
+                }
+            }
+        }
+
+        // Tick the player
+        GamePanel.player.tickEntity(delta);
+
+        // Pick up items and make them disappear
+        ArrayList<Item> itemsPickedUp = GamePanel.player.pickupItems(pickupItems);
+
+        for (Item item : itemsPickedUp) {
+            item.disappear();
+        }
+
+        // Loop through each disposed entity/item and remove them
+        for (Entity entity : disposedEntities) {
+            entities.remove(entity);
+        }
+    }
+
+    public void addNewEntity(Entity entity) {
+        newEntities.add(entity);
+    }
+
+    public ArrayList<Entity> getEntities() {
+        return entities;
+    }
+
     private void drawBackground(Graphics2D ctx) {
         ctx.setColor(this.skyColor);
-        ctx.fillRect(0, 0, Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight());
+        ctx.fillRect(0, 0, getWidth(), getHeight());
 
         BufferedImage image = Main.getResources().getTexture("environment/clouds");
-        int size = Math.max(Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight());
+        int size = Math.max(getWidth(), getHeight());
         int span = size / Tile.tileSize * Tile.tileSize / 4;
 
         cloudOffset.set(Caboodle.wrap(cloudOffset.getX(), 0, image.getWidth() - span), Caboodle.wrap(cloudOffset.getY(), 0, image.getHeight() - span));
@@ -105,14 +202,6 @@ public class Room {
         int widthN = (int) Caboodle.clamp(Math.floor(lowerBounds.getX() / Tile.tileSize), 0, maxWidth);
         int heightP = (int) Caboodle.clamp(Math.ceil(upperBounds.getY() / Tile.tileSize), 0, maxHeight);
         int heightN = (int) Caboodle.clamp(Math.floor(lowerBounds.getY() / Tile.tileSize), 0, maxHeight);
-
-        // Create a collection of tile id's mapped to secondary tile-maps
-//        HashMap<String, Connector[][][]> connCache = new HashMap<>();
-
-        // Initialize the collection of tile-maps for each connectable tile type
-//        for (Tile tile : Tile.getConnectedTiles()) {
-//            connCache.put(tile.getId(), new Connector[maxWidth][maxHeight][]);
-//        }
 
         // Loop over the room's tilemap
         for (int x = widthN; x < widthP; x++) {
@@ -142,56 +231,6 @@ public class Room {
                         }
                     }
                 }
-
-                // Loop through each connectable tile type
-//                for (String connTileId : connCache.keySet()) {
-//                    if (tile != null && tile.getId().equals(connTileId)) continue; // Skip iteration if tile is the same type as the iterated connectable tile type
-//
-//                    ArrayList<Connector> connectorPossibilities = new ArrayList<>(List.of(Connector.values()));
-//
-//                    if (!checkTileType(connTileId, x, y + 1)) {
-//                        connectorPossibilities.remove(Connector.TOP_SIDE);
-//                    }
-//                    if (!checkTileType(connTileId, x, y - 1)) {
-//                        connectorPossibilities.remove(Connector.BOTTOM_SIDE);
-//                    }
-//                    if (!checkTileType(connTileId, x - 1, y)) {
-//                        connectorPossibilities.remove(Connector.RIGHT_SIDE);
-//                    }
-//                    if (!checkTileType(connTileId, x + 1, y)) {
-//                        connectorPossibilities.remove(Connector.LEFT_SIDE);
-//                    }
-//
-//                    if (!checkTileType(connTileId, x + 1, y - 1)) {
-//                        connectorPossibilities.remove(Connector.DL_EDGE);
-//                    }
-//                    if (!checkTileType(connTileId, x + 1, y + 1)) {
-//                        connectorPossibilities.remove(Connector.UL_EDGE);
-//                    }
-//                    if (!checkTileType(connTileId, x - 1, y - 1)) {
-//                        connectorPossibilities.remove(Connector.DR_EDGE);
-//                    }
-//                    if (!checkTileType(connTileId, x - 1, y + 1)) {
-//                        connectorPossibilities.remove(Connector.UR_EDGE);
-//                    }
-//
-//                    // If there is only one connector possibility left then append it to the connector map
-//                    if (connectorPossibilities.size() > 0) {
-//                        Connector[][][] connMap = connCache.get(connTileId);
-//
-//                        // Convert the arraylist of connectors to a multidimensional array
-//                        Connector[] connectors = new Connector[connectorPossibilities.size()];
-//                        int i = 0;
-//                        for (Connector con : connectorPossibilities) {
-//                            connectors[i] = con;
-//                            i++;
-//                        }
-//                        connMap[x][y] = connectors;
-//
-//                        // Set the connector map
-//                        connCache.put(connTileId, connMap);
-//                    }
-//                }
             }
         }
 
@@ -210,6 +249,11 @@ public class Room {
                     ctx.drawImage(image, (int) position.getX() - (int) GamePanel.camera.getX(), (int) position.getY() - (int) GamePanel.camera.getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
                 }
             }
+        }
+
+        // Loop through each entity in a cloned list of entities and draw them
+        for (Entity entity : new ArrayList<>(entities)) {
+            entity.draw(ctx);
         }
     }
 
@@ -294,4 +338,5 @@ public class Room {
     public int getHeight() {
         return maxHeight;
     }
+
 }

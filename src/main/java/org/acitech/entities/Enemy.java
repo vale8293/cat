@@ -8,6 +8,7 @@ import org.acitech.entities.ai.Fighter;
 import org.acitech.entities.ai.Skitter;
 import org.acitech.inventory.ItemStack;
 import org.acitech.inventory.ItemType;
+import org.acitech.tilemap.Room;
 import org.acitech.utils.Vector2d;
 
 import java.awt.*;
@@ -49,7 +50,9 @@ abstract public class Enemy extends Entity {
     public int itemDrop = 1;
     public int itemScatter = 5;
 
-    public Enemy(double startX, double startY, String enemyName, String ai) {
+    public Enemy(Room room, double startX, double startY, String enemyName, String ai) {
+        super(room);
+
         this.position = new Vector2d(startX, startY);
         this.friction = 0.9;
         this.enemyName = enemyName;
@@ -88,9 +91,8 @@ abstract public class Enemy extends Entity {
                     double rngY = new Random().nextDouble(-xpScatter, xpScatter);
 
                     // Drops the XP with the random velocities added
-                    Experience experience = new Experience(this.position.getX(), this.position.getY(), this.xpValue);
+                    Experience experience = new Experience(this.getRoom(), this.position.getX(), this.position.getY(), this.xpValue);
                     experience.velocity.set(rngX, rngY);
-                    Main.getGamePanel().addNewEntity(experience);
                 }
             }
 
@@ -108,9 +110,8 @@ abstract public class Enemy extends Entity {
                     ItemType droppedItemType = itemPool.get(rngIndex);
 
                     // Spawn the item of the enemy based on the pool
-                    Item item = new Item(this.position.getX(), this.position.getY(), new ItemStack(droppedItemType, 1));
+                    Item item = new Item(getRoom(), this.position.getX(), this.position.getY(), new ItemStack(droppedItemType, 1));
                     item.velocity.set(rngX, rngY);
-                    Main.getGamePanel().addNewEntity(item);
                 }
             }
         }

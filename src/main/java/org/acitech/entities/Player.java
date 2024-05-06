@@ -10,6 +10,7 @@ import org.acitech.inputs.Controls;
 import org.acitech.inventory.Inventory;
 import org.acitech.inventory.ItemStack;
 import org.acitech.inventory.ItemType;
+import org.acitech.tilemap.Room;
 import org.acitech.utils.Vector2d;
 
 import javax.sound.sampled.Clip;
@@ -26,8 +27,7 @@ public class Player extends Entity {
     public int width = 160;
     public int height = 160;
 
-    // Stats
-        // UI
+    // Stats & UI
     public int maxHealth = 6; // Can be changed in gameplay (Default: 6)
     public int health = this.maxHealth; // Can be changed in gameplay
     public boolean alive = true;
@@ -39,7 +39,7 @@ public class Player extends Entity {
     public int streakTimerMax = 180; // Can be changed in gameplay (Default: 180)
     public int streakTimer = 0;
 
-        // Combat & Movement
+    // Combat & Movement
     public int scratchDamage = 1; // Can be changed in gameplay (Default: 1)
     public int scratchCooldown = 20; // Can be changed in gameplay (Default: 20)
     public int scratchTimer = this.scratchCooldown;
@@ -54,11 +54,16 @@ public class Player extends Entity {
     public int effectTimer1;
     public int effectTimer2;
     public int actionTimer;
+    public int fireballManaCost = 3;
+    public int aquaballManaCost = 2;
+    public int windballManaCost = 2;
 
     public String elementState = "base";
 
     // public boolean bufferInput = false; // For implementing a buffer system later maybe
-    public Player() {
+    public Player(Room room) {
+        super(room);
+
         this.friction = 0.9;
     }
 
@@ -419,10 +424,9 @@ public class Player extends Entity {
                         if (this.scratchTimer == 0) {
                             clickPos.set(click.getX(), click.getY());
                             double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
-                            Scratch scratch = new Scratch((int) this.position.getX(), (int) this.position.getY(), 120, angle, this.elementState);
+                            new Scratch(this.getRoom(), (int) this.position.getX(), (int) this.position.getY(), 120, angle, this.elementState);
                             sndScratch.setFramePosition(0);
                             sndScratch.loop(0);
-                            Main.getGamePanel().addNewEntity(scratch);
                             sndScratch.start();
                             this.scratchTimer = this.scratchCooldown;
                         }
@@ -438,15 +442,14 @@ public class Player extends Entity {
                             /* Uses a fireball */
                             case ("fire") -> {
                                 if (this.spellTimer == 0) { // If spells are off cooldown
-                                    double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
-                                    Fireball fireball = new Fireball(this.position.getX(), this.position.getY(), angle);
 
-                                    if (this.mana >= fireball.manaCost) {
-                                        Main.getGamePanel().addNewEntity(fireball);
+                                    if (this.mana >= this.fireballManaCost) {
+                                        double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
+                                        new Fireball(this.getRoom(), this.position.getX(), this.position.getY(), angle);
                                         sndFire.setFramePosition(0);
                                         sndFire.loop(0);
                                         sndFire.start();
-                                        this.mana -= fireball.manaCost;
+                                        this.mana -= this.fireballManaCost;
                                         this.spellTimer = this.spellCooldown;
                                     }
                                 }
@@ -455,15 +458,13 @@ public class Player extends Entity {
                             /* Uses a aquaball */
                             case ("aqua") -> {
                                 if (this.spellTimer == 0) {
-                                    double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
-                                    Aquaball aquaball = new Aquaball(this.position.getX(), this.position.getY(), angle);
-
-                                    if (this.mana >= aquaball.manaCost) {
-                                        Main.getGamePanel().addNewEntity(aquaball);
+                                    if (this.mana >= this.aquaballManaCost) {
+                                        double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
+                                        new Aquaball(this.getRoom(), this.position.getX(), this.position.getY(), angle);
                                         sndFire.setFramePosition(0);
                                         sndFire.loop(0);
                                         sndFire.start();
-                                        this.mana -= aquaball.manaCost;
+                                        this.mana -= this.aquaballManaCost;
                                         this.spellTimer = this.spellCooldown;
                                     }
                                 }
@@ -472,15 +473,14 @@ public class Player extends Entity {
                             /* Uses a windball */
                             case ("wind") -> {
                                 if (this.spellTimer == 0) {
-                                    double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
-                                    Windball windball = new Windball(this.position.getX(), this.position.getY(), angle);
 
-                                    if (this.mana >= windball.manaCost) {
-                                        Main.getGamePanel().addNewEntity(windball);
+                                    if (this.mana >= this.windballManaCost) {
+                                        double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
+                                        new Windball(this.getRoom(), this.position.getX(), this.position.getY(), angle);
                                         sndFire.setFramePosition(0);
                                         sndFire.loop(0);
                                         sndFire.start();
-                                        this.mana -= windball.manaCost;
+                                        this.mana -= this.windballManaCost;
                                         this.spellTimer = this.spellCooldown;
                                     }
                                 }

@@ -4,6 +4,7 @@ import org.acitech.GamePanel;
 import org.acitech.Main;
 import org.acitech.entities.Enemy;
 import org.acitech.entities.Entity;
+import org.acitech.tilemap.Room;
 import org.acitech.utils.Vector2d;
 
 import java.awt.*;
@@ -24,7 +25,9 @@ public class Explosion extends Entity {
     public int lifetime;
     public int onDeathDamage;
 
-    public Explosion(double startX, double startY, String explosionType, int onDeathDamage) {
+    public Explosion(Room room, double startX, double startY, String explosionType, int onDeathDamage) {
+        super(room);
+
         this.position = new Vector2d(startX, startY);
         this.explosionType = explosionType;
         this.onDeathDamage = onDeathDamage;
@@ -60,7 +63,7 @@ public class Explosion extends Entity {
 
         if (!this.hasDealtAOE) {
             // Looks for any instances of enemies
-            for (Entity entity : GamePanel.entities) {
+            for (Entity entity : this.getRoom().getEntities()) {
                 if (!(entity instanceof Enemy enemy)) continue;
 
                 if (this.position.distance(enemy.position) < 130) {

@@ -1,14 +1,8 @@
 package org.acitech;
 
-import org.acitech.entities.Entity;
-import org.acitech.entities.Item;
 import org.acitech.entities.Player;
-import org.acitech.entities.enemies.Jordan;
-import org.acitech.entities.enemies.Pepto;
-import org.acitech.entities.enemies.Rico;
 import org.acitech.inputs.Controls;
-import org.acitech.inventory.ItemStack;
-import org.acitech.inventory.ItemType;
+import org.acitech.tilemap.Map;
 import org.acitech.tilemap.Room;
 import org.acitech.tilemap.Tile;
 import org.acitech.utils.Broadcast;
@@ -16,7 +10,6 @@ import org.acitech.utils.Vector2d;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -24,16 +17,15 @@ public class GamePanel extends JPanel implements Runnable {
     final int fps = 60;
     private boolean paused = false;
     private boolean unEscaped = false;
-    private ArrayList<Entity> newEntities = new ArrayList<>();
+    private Map map;
 
     Thread gameThread;
 
-    public static ArrayList<Entity> entities = new ArrayList<>();
-    public static Player player = new Player();
+    public static Player player;
     public static Vector2d camera = new Vector2d(0, 0);
     private static Vector2d upperBounds = new Vector2d(0, 0);
     private static Vector2d lowerBounds = new Vector2d(0, 0);
-    public static HashMap<String, Room> rooms = new HashMap<>();
+    private static HashMap<String, Room> rooms = new HashMap<>();
     public static String currentRoom = "default";
 
     public GamePanel() {
@@ -59,55 +51,21 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void initGame() {
+        // Create a map
+        map = new Map(new Random().nextInt());
+        map.generateRooms(3);
+
         // Create a room
         Room room = new Room(40, 40, new Random().nextInt());
         rooms.put(currentRoom, room);
 
         // Position the player
+        player = new Player(map.getRoom(0));
         player.position.set(Tile.tileSize * 7.0d, Tile.tileSize * 7.0d);
 
         // Create and start the game loop thread
         gameThread = new Thread(this);
         gameThread.start();
-    }
-
-    public void initScene() {
-        // Create test enemies for no reason ¯\_(ツ)_/¯
-        for (int i = 0; i < 5; i++) {
-            addNewEntity(new Rico(Math.random() * getWidth() + 600, Math.random() * getHeight()));
-        }
-
-        // Test Pepto
-        for (int i = 0; i < 5; i++) {
-            addNewEntity(new Pepto(Math.random() * getWidth() + 600, Math.random() * getHeight()));
-        }
-
-        // Test Jordan
-        for (int i = 0; i < 5; i++) {
-            addNewEntity(new Jordan(Math.random() * getWidth() + 600, Math.random() * getHeight()));
-        }
-
-        // Test Fire Tome
-        for (int i = 0; i < 1; i++) {
-            addNewEntity(new Item(Tile.tileSize * 7.0d, Tile.tileSize * 7.0d, new ItemStack(ItemType.FIRE_TOME_1)));
-        }
-
-        // Test Aqua Tome
-        for (int i = 0; i < 1; i++) {
-            addNewEntity(new Item(Tile.tileSize * 7.0d, Tile.tileSize * 7.0d, new ItemStack(ItemType.AQUA_TOME_1)));
-        }
-
-        // Test Potions
-        for (int i = 0; i < 2; i++) {
-            addNewEntity(new Item(Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.ATTACK_POTION)));
-            addNewEntity(new Item(Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.MANA_POTION)));
-            addNewEntity(new Item(Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.HEALTH_POTION)));
-            addNewEntity(new Item(Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.SPEED_POTION)));
-        }
-    }
-
-    public void addNewEntity(Entity entity) {
-        newEntities.add(entity);
     }
 
     @Override
@@ -133,44 +91,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update(double delta) {
         if (!paused) {
-            ArrayList<Entity> disposedEntities = new ArrayList<>();
-            ArrayList<Item> pickupItems = new ArrayList<>();
-
-            // Add newly created entities
-            entities.addAll(newEntities);
-            newEntities.clear();
-
-            // Loop through each entity and tick them
-            for (Entity entity : entities) {
-                entity.tickEntity(delta);
-
-                // Check if entity is disposed and add them to a list
-                if (entity.isDisposed()) {
-                    disposedEntities.add(entity);
-                }
-
-                // Check if the entity is an item and is getting picked up
-                if (entity instanceof Item itemEntity) {
-                    if (itemEntity.isInPickupRange() && !itemEntity.isDisappearing()) {
-                        pickupItems.add(itemEntity);
-                    }
-                }
-            }
-
-            // Tick the player
-            player.tickEntity(delta);
-
-            // Pick up items and make them disappear
-            ArrayList<Item> itemsPickedUp = player.pickupItems(pickupItems);
-
-            for (Item item : itemsPickedUp) {
-                item.disappear();
-            }
-
-            // Loop through each disposed entity/item and remove them
-            for (Entity entity : disposedEntities) {
-                entities.remove(entity);
-            }
+            map.getCurrentRoom().tick(delta);
 
             // Clear the list of mouse clicks
             Controls.flushClicks();
@@ -203,12 +124,7 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D ctx = (Graphics2D) g;
 
         // Draw the current room
-        rooms.get(currentRoom).draw(ctx);
-
-        // Loop through each entity in a cloned list of entities and draw them
-        for (Entity entity : new ArrayList<>(entities)) {
-            entity.draw(ctx);
-        }
+        map.getCurrentRoom().draw(ctx);
 
         // Draw the player & ui
         player.draw(ctx);

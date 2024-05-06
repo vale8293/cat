@@ -3,6 +3,7 @@ package org.acitech.entities;
 import org.acitech.GamePanel;
 import org.acitech.Main;
 import org.acitech.inventory.ItemStack;
+import org.acitech.tilemap.Room;
 import org.acitech.utils.Vector2d;
 
 import java.awt.*;
@@ -18,7 +19,9 @@ public class Item extends Entity {
     private boolean inPickupRange = false;
     private ItemStack itemStack;
 
-    public Item(double startX, double startY, ItemStack itemStack) {
+    public Item(Room room, double startX, double startY, ItemStack itemStack) {
+        super(room);
+
         this.position = new Vector2d(startX, startY);
         this.friction = 0.95;
         this.itemStack = itemStack;

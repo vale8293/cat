@@ -2,6 +2,7 @@ package org.acitech.entities;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.tilemap.Room;
 import org.acitech.utils.Vector2d;
 
 import java.awt.*;
@@ -18,7 +19,9 @@ public class Scratch extends Entity {
     private int animationTick = 0;
     private String element = "base";
 
-    public Scratch(int originX, int originY, int distance, double rot, String element) {
+    public Scratch(Room room, int originX, int originY, int distance, double rot, String element) {
+        super(room);
+
         this.originPosition = new Vector2d(originX, originY);
 
         double y = this.originPosition.getY() + Math.sin(rot) * -distance;
@@ -34,7 +37,7 @@ public class Scratch extends Entity {
     }
 
     private void dealAoeDamage() {
-        for (Entity entity : GamePanel.entities) {
+        for (Entity entity : this.getRoom().getEntities()) {
             if (!(entity instanceof Enemy enemy)) continue;
 
             // Gets the position of the scratch
