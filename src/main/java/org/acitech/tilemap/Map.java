@@ -15,7 +15,7 @@ public class Map {
 
     public void generateRooms(int amount) {
         for (int i = 0; i < amount; i++) {
-            Room room = new Room(20, 20, this.seedRng.nextInt());
+            Room room = new Room(21, 21, this.seedRng.nextInt());
             rooms.add(room);
         }
 

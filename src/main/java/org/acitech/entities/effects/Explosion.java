@@ -84,6 +84,6 @@ public class Explosion extends Entity {
         int aniFrame = animationTick / (aniFrameDuration);
 
         BufferedImage texture = Main.getResources().getTexture("effect/explosion_" + explosionType + "/" + aniFrame + ":" + 0);
-        ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
+        ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.getCamera().getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.getCamera().getY(), width, height, Main.getGamePanel());
     }
 }

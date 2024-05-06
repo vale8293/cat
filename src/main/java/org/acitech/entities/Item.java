@@ -35,11 +35,11 @@ public class Item extends Entity {
         }
 
         if (this.pickupImmunity <= 0) {
-            double distance = this.position.distance(GamePanel.player.position);
+            double distance = this.position.distance(GamePanel.getPlayer().position);
 
             // Sucks up the item if it's close enough to the player
             if (distance < 250) {
-                this.acceleration.add(GamePanel.player.position.directionTo(this.position).multiply(moveSpeed * 0.5));
+                this.acceleration.add(GamePanel.getPlayer().position.directionTo(this.position).multiply(moveSpeed * 0.5));
             }
             this.inPickupRange = distance < 100;
         }
@@ -59,7 +59,7 @@ public class Item extends Entity {
     // Handles graphics
     public void draw(Graphics2D ctx) {
         BufferedImage texture = this.itemStack.getType().getTexture();
-        ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
+        ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.getCamera().getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.getCamera().getY(), width, height, Main.getGamePanel());
     }
 
     public boolean isInPickupRange() {

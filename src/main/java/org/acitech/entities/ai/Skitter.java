@@ -17,7 +17,7 @@ public class Skitter implements AI {
     // Defines basic AI for enemies like Jordan
     @Override
     public void execute(double delta) {
-        Vector2d playerPos = GamePanel.player.position;
+        Vector2d playerPos = GamePanel.getPlayer().position;
         if (fleeTimer > 0) {
             fleeTimer--;
         }
@@ -40,13 +40,13 @@ public class Skitter implements AI {
             // If the enemy makes contact with the player
             if (this.enemy.position.distance(playerPos) < Math.max(this.enemy.width / 2, this.enemy.height / 2)) {
                 // Deal damage w/ elemental effect (none by default)
-                if (GamePanel.player.damageTimer == 0) {
-                    GamePanel.player.damageTaken(this.enemy.attackDamage, this.enemy.damageElement);
+                if (GamePanel.getPlayer().damageTimer == 0) {
+                    GamePanel.getPlayer().damageTaken(this.enemy.attackDamage, this.enemy.damageElement);
                 }
 
                 // Knock back the enemy and player
                 this.enemy.velocity.set(this.enemy.kbMult * -direction.getX(), this.enemy.kbMult * -direction.getY());
-                GamePanel.player.velocity = this.enemy.velocity.copy().multiply((double) -GamePanel.player.kbMult / this.enemy.kbMult);
+                GamePanel.getPlayer().velocity = this.enemy.velocity.copy().multiply((double) -GamePanel.getPlayer().kbMult / this.enemy.kbMult);
             }
         }
     }

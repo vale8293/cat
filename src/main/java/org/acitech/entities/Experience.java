@@ -29,14 +29,14 @@ public class Experience extends Entity {
     @Override
     // Do this stuff every frame
     protected void tick(double delta) {
-        Vector2d playerPos = GamePanel.player.position;
+        Vector2d playerPos = GamePanel.getPlayer().position;
 
         // Gets the angle between the player and the XP Orb
         this.acceleration.add(playerPos.directionTo(this.position).multiply(moveSpeed * 0.5));
 
         if (this.position.distance(playerPos) < Math.max(this.width / 2, this.height / 2)) {
-            GamePanel.player.xpCount += 1; // Increases xp by 1
-            GamePanel.player.levelUpCheck(); // Checks if this pushes the player past a lv up threshold
+            GamePanel.getPlayer().xpCount += 1; // Increases xp by 1
+            GamePanel.getPlayer().levelUpCheck(); // Checks if this pushes the player past a lv up threshold
             this.dispose();
         }
     }
@@ -52,6 +52,6 @@ public class Experience extends Entity {
         int aniFrame = animationTick / (aniFrameDuration);
 
         texture = Main.getResources().getTexture("items/experience/" + aniFrame + ":0");
-        ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
+        ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.getCamera().getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.getCamera().getY(), width, height, Main.getGamePanel());
     }
 }

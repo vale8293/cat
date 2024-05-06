@@ -7,8 +7,6 @@ import org.acitech.entities.Item;
 import org.acitech.entities.enemies.Jordan;
 import org.acitech.entities.enemies.Pepto;
 import org.acitech.entities.enemies.Rico;
-import org.acitech.inventory.ItemStack;
-import org.acitech.inventory.ItemType;
 import org.acitech.utils.Caboodle;
 import org.acitech.utils.Vector2d;
 import org.spongepowered.noise.module.source.Simplex;
@@ -16,24 +14,24 @@ import org.spongepowered.noise.module.source.Simplex;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 
 public class Room {
 
     private final Tile[][] tilemap;
     private final Connector[][][] ctmmap;
-    private Vector2d cloudOffset;
+    private final Vector2d cloudOffset;
     private double cloudAngle;
-    private Random cloudRng;
+    private final Random cloudRng;
     private final int maxWidth;
     private final int maxHeight;
     private final Color skyColor;
     private final Random seedRng;
     private final Simplex tuftSimplex;
     private final Simplex terrainSimplex;
-
-    private ArrayList<Entity> newEntities = new ArrayList<>();
-    public static ArrayList<Entity> entities = new ArrayList<>();
+    private final HashSet<Entity> newEntities = new HashSet<>();
+    private final HashSet<Entity> entities = new HashSet<>();
 
     public Room(int maxWidth, int maxHeight, int seed) {
         this.tilemap = new Tile[maxWidth][maxHeight];
@@ -75,51 +73,22 @@ public class Room {
                 }
             }
         }
-
-        setTile(0, 0, Tile.grass);
-
-        setTile(3, 0, Tile.grass);
-        setTile(2, 0, Tile.grass);
-
-        setTile(3, 3, Tile.grass);
-        setTile(2, 2, Tile.grass);
-
-        setTile(0, 3, Tile.grass);
-        setTile(0, 2, Tile.grass);
     }
 
     private void generateEntities() {
-        // Create test enemies for no reason ¯\_(ツ)_/¯
+        // Test Rico
         for (int i = 0; i < 5; i++) {
-            addNewEntity(new Rico(this, Math.random() * getWidth() + 600, Math.random() * getHeight()));
+            new Rico(this, Math.random() * getWidth() * Tile.tileSize, Math.random() * getHeight() * Tile.tileSize);
         }
 
         // Test Pepto
         for (int i = 0; i < 5; i++) {
-            addNewEntity(new Pepto(this, Math.random() * getWidth() + 600, Math.random() * getHeight()));
+            new Pepto(this, Math.random() * getWidth() * Tile.tileSize, Math.random() * getHeight() * Tile.tileSize);
         }
 
         // Test Jordan
         for (int i = 0; i < 5; i++) {
-            addNewEntity(new Jordan(this, Math.random() * getWidth() + 600, Math.random() * getHeight()));
-        }
-
-        // Test Fire Tome
-        for (int i = 0; i < 1; i++) {
-            addNewEntity(new Item(this, Tile.tileSize * 7.0d, Tile.tileSize * 7.0d, new ItemStack(ItemType.FIRE_TOME_1)));
-        }
-
-        // Test Aqua Tome
-        for (int i = 0; i < 1; i++) {
-            addNewEntity(new Item(this, Tile.tileSize * 7.0d, Tile.tileSize * 7.0d, new ItemStack(ItemType.AQUA_TOME_1)));
-        }
-
-        // Test Potions
-        for (int i = 0; i < 2; i++) {
-            addNewEntity(new Item(this, Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.ATTACK_POTION)));
-            addNewEntity(new Item(this, Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.MANA_POTION)));
-            addNewEntity(new Item(this, Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.HEALTH_POTION)));
-            addNewEntity(new Item(this, Math.random() * getWidth() + 600, Math.random() * getHeight(), new ItemStack(ItemType.SPEED_POTION)));
+            new Jordan(this, Math.random() * getWidth() * Tile.tileSize, Math.random() * getHeight() * Tile.tileSize);
         }
     }
     
@@ -148,11 +117,8 @@ public class Room {
             }
         }
 
-        // Tick the player
-        GamePanel.player.tickEntity(delta);
-
         // Pick up items and make them disappear
-        ArrayList<Item> itemsPickedUp = GamePanel.player.pickupItems(pickupItems);
+        ArrayList<Item> itemsPickedUp = GamePanel.getPlayer().pickupItems(pickupItems);
 
         for (Item item : itemsPickedUp) {
             item.disappear();
@@ -168,16 +134,20 @@ public class Room {
         newEntities.add(entity);
     }
 
-    public ArrayList<Entity> getEntities() {
+    public void removeEntity(Entity entity) {
+        entities.remove(entity);
+    }
+
+    public HashSet<Entity> getEntities() {
         return entities;
     }
 
     private void drawBackground(Graphics2D ctx) {
         ctx.setColor(this.skyColor);
-        ctx.fillRect(0, 0, getWidth(), getHeight());
+        ctx.fillRect(0, 0, Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight());
 
         BufferedImage image = Main.getResources().getTexture("environment/clouds");
-        int size = Math.max(getWidth(), getHeight());
+        int size = Math.max(Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight());
         int span = size / Tile.tileSize * Tile.tileSize / 4;
 
         cloudOffset.set(Caboodle.wrap(cloudOffset.getX(), 0, image.getWidth() - span), Caboodle.wrap(cloudOffset.getY(), 0, image.getHeight() - span));
@@ -211,14 +181,14 @@ public class Room {
                 // If the tile is defined, draw it
                 if (tile != null) {
                     BufferedImage image = tile.getFullTexture();
-                    ctx.drawImage(image, x * Tile.tileSize - (int) GamePanel.camera.getX(), y * Tile.tileSize - (int) GamePanel.camera.getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
+                    ctx.drawImage(image, x * Tile.tileSize - (int) GamePanel.getCamera().getX(), y * Tile.tileSize - (int) GamePanel.getCamera().getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
 
                     if (tile.getId().equals(Tile.grass.getId())) {
                         double tuftValue = this.tuftSimplex.get(x * 10, y * 10, 0);
 
                         if (tuftValue > 0.15) {
                             BufferedImage imageTufts = Main.getResources().getTexture("environment/grass_tufts/" + ((int) (tuftValue * 10e7) % 8) + ":0");
-                            ctx.drawImage(imageTufts, x * Tile.tileSize - (int) GamePanel.camera.getX(), y * Tile.tileSize - (int) GamePanel.camera.getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
+                            ctx.drawImage(imageTufts, x * Tile.tileSize - (int) GamePanel.getCamera().getX(), y * Tile.tileSize - (int) GamePanel.getCamera().getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
                         }
                     }
 
@@ -227,7 +197,7 @@ public class Room {
 
                         if (tuftValue > 0.15) {
                             BufferedImage imageTufts = Main.getResources().getTexture("environment/pebbles/" + ((int) (tuftValue * 10e7) % 4) + ":0");
-                            ctx.drawImage(imageTufts, x * Tile.tileSize - (int) GamePanel.camera.getX(), y * Tile.tileSize - (int) GamePanel.camera.getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
+                            ctx.drawImage(imageTufts, x * Tile.tileSize - (int) GamePanel.getCamera().getX(), y * Tile.tileSize - (int) GamePanel.getCamera().getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
                         }
                     }
                 }
@@ -246,7 +216,7 @@ public class Room {
                     BufferedImage image = tile.getTexture(connector);
                     Vector2d position = connector.getOffset().add(x, y).multiply(Tile.tileSize);
 
-                    ctx.drawImage(image, (int) position.getX() - (int) GamePanel.camera.getX(), (int) position.getY() - (int) GamePanel.camera.getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
+                    ctx.drawImage(image, (int) position.getX() - (int) GamePanel.getCamera().getX(), (int) position.getY() - (int) GamePanel.getCamera().getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
                 }
             }
         }
@@ -257,9 +227,7 @@ public class Room {
         }
     }
 
-    /**
-     * Checks if a specific tile type is at specific coordinates
-     */
+    /** Checks if a specific tile type is at specific coordinates */
     private boolean matchConnector(String tileId, int x, int y) {
         Tile tile = getTile(x, y);
 
@@ -301,7 +269,7 @@ public class Room {
         }
 
         // If there is only one connector possibility left then append it to the connector map
-        if (connectorPossibilities.size() > 0) {
+        if (!connectorPossibilities.isEmpty()) {
             Connector[] nodes = new Connector[connectorPossibilities.size()];
 
             for (int i = 0; i < connectorPossibilities.size(); i++) {
@@ -332,11 +300,11 @@ public class Room {
     }
 
     public int getWidth() {
-        return maxWidth;
+        return this.maxWidth;
     }
 
     public int getHeight() {
-        return maxHeight;
+        return this.maxHeight;
     }
 
 }

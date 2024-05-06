@@ -2,31 +2,27 @@ package org.acitech;
 
 import org.acitech.entities.Player;
 import org.acitech.inputs.Controls;
+import org.acitech.inventory.ItemStack;
+import org.acitech.inventory.ItemType;
 import org.acitech.tilemap.Map;
-import org.acitech.tilemap.Room;
 import org.acitech.tilemap.Tile;
 import org.acitech.utils.Broadcast;
 import org.acitech.utils.Vector2d;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
 import java.util.Random;
 
 public class GamePanel extends JPanel implements Runnable {
-    final int fps = 60;
+    private final int fps = 60;
     private boolean paused = false;
     private boolean unEscaped = false;
     private Map map;
-
-    Thread gameThread;
-
-    public static Player player;
-    public static Vector2d camera = new Vector2d(0, 0);
+    private Thread gameThread;
+    private static Player player;
+    private static Vector2d camera = new Vector2d(0, 0);
     private static Vector2d upperBounds = new Vector2d(0, 0);
     private static Vector2d lowerBounds = new Vector2d(0, 0);
-    private static HashMap<String, Room> rooms = new HashMap<>();
-    public static String currentRoom = "default";
 
     public GamePanel() {
         // Configure the JPanel
@@ -50,18 +46,24 @@ public class GamePanel extends JPanel implements Runnable {
         initGame();
     }
 
-    public void initGame() {
+    private void initGame() {
         // Create a map
         map = new Map(new Random().nextInt());
         map.generateRooms(3);
 
-        // Create a room
-        Room room = new Room(40, 40, new Random().nextInt());
-        rooms.put(currentRoom, room);
-
         // Position the player
-        player = new Player(map.getRoom(0));
+        player = new Player(map.getCurrentRoom());
         player.position.set(Tile.tileSize * 7.0d, Tile.tileSize * 7.0d);
+
+        // Give spell tomes
+        player.spellInv.addItem(new ItemStack(ItemType.FIRE_TOME_1));
+        player.spellInv.addItem(new ItemStack(ItemType.AQUA_TOME_1));
+
+        // Give test potions
+        player.defaultInv.addItem(new ItemStack(ItemType.ATTACK_POTION));
+        player.defaultInv.addItem(new ItemStack(ItemType.MANA_POTION));
+        player.defaultInv.addItem(new ItemStack(ItemType.HEALTH_POTION));
+        player.defaultInv.addItem(new ItemStack(ItemType.SPEED_POTION));
 
         // Create and start the game loop thread
         gameThread = new Thread(this);
@@ -89,7 +91,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    public void update(double delta) {
+    private void update(double delta) {
         if (!paused) {
             map.getCurrentRoom().tick(delta);
 
@@ -127,7 +129,6 @@ public class GamePanel extends JPanel implements Runnable {
         map.getCurrentRoom().draw(ctx);
 
         // Draw the player & ui
-        player.draw(ctx);
         UI.draw(ctx);
 
         // Update the camera position
@@ -159,6 +160,10 @@ public class GamePanel extends JPanel implements Runnable {
         );
     }
 
+    public static Vector2d getCamera() {
+        return camera;
+    }
+
     public Vector2d getCameraCenter() {
         return new Vector2d(
                 player.position.getX() - player.width / 2d - camera.getX(),
@@ -176,5 +181,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void setPaused(boolean paused) {
         this.paused = paused;
+    }
+
+    public static Player getPlayer() {
+        return player;
     }
 }

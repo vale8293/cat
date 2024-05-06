@@ -73,7 +73,7 @@ public class Projectile extends Entity {
 
         AffineTransform oldXForm = ctx.getTransform();
 
-        ctx.translate(this.originPosition.getX() - (int) GamePanel.camera.getX(), this.originPosition.getY() - (int) GamePanel.camera.getY());
+        ctx.translate(this.originPosition.getX() - (int) GamePanel.getCamera().getX(), this.originPosition.getY() - (int) GamePanel.getCamera().getY());
         ctx.rotate(this.angle - Math.PI / 2);
         ctx.drawImage(texture, -width / 2, (int) -this.originPosition.distance(this.position) - height / 2, width, height, Main.getGamePanel());
 

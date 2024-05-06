@@ -48,12 +48,12 @@ public class Scratch extends Entity {
             // knock it back, lose 1hp, and start i-frames, extend streak
             if (dist < 100) {
                 // TODO: lets not always assume that the player is the one dealing the scratch
-                boolean dealtDamage = enemy.dealDamage(GamePanel.player.scratchDamage - enemy.defense, this);
+                boolean dealtDamage = enemy.dealDamage(GamePanel.getPlayer().scratchDamage - enemy.defense, this);
 
                 if (dealtDamage) {
-                    enemy.dealKnockback(enemy.kbMult * 0.5, GamePanel.player.position, true);
-                    GamePanel.player.mana = Math.min(GamePanel.player.mana + 1, GamePanel.player.maxMana);
-                    GamePanel.player.streakTimer = GamePanel.player.streakTimerMax;
+                    enemy.dealKnockback(enemy.kbMult * 0.5, GamePanel.getPlayer().position, true);
+                    GamePanel.getPlayer().mana = Math.min(GamePanel.getPlayer().mana + 1, GamePanel.getPlayer().maxMana);
+                    GamePanel.getPlayer().streakTimer = GamePanel.getPlayer().streakTimerMax;
                 }
             }
         }
@@ -75,7 +75,7 @@ public class Scratch extends Entity {
 
         AffineTransform oldXForm = ctx.getTransform();
 
-        ctx.translate(this.originPosition.getX() - (int) GamePanel.camera.getX(), this.originPosition.getY() - (int) GamePanel.camera.getY());
+        ctx.translate(this.originPosition.getX() - (int) GamePanel.getCamera().getX(), this.originPosition.getY() - (int) GamePanel.getCamera().getY());
         ctx.rotate(this.angle - Math.PI / 2);
         ctx.drawImage(texture, -width / 2, -this.distance - height / 2, width, height, Main.getGamePanel());
 

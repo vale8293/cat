@@ -74,10 +74,13 @@ abstract public class Entity {
 
     /** @return The room the entity belongs to */
     public Room getRoom() {
-        return room;
+        return this.room;
     }
     public void changeRoom(Room room) {
         // TODO: remove the entity from the current room and add it to the new room
+        this.room.removeEntity(this);
+        this.room = room;
+        room.addNewEntity(this);
     }
 
     /** Marks the entity up for disposal */
