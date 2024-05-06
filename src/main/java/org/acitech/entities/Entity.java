@@ -1,6 +1,5 @@
 package org.acitech.entities;
 
-import org.acitech.GamePanel;
 import org.acitech.tilemap.Room;
 import org.acitech.tilemap.Tile;
 import org.acitech.utils.Vector2d;
@@ -14,13 +13,17 @@ abstract public class Entity {
     public Vector2d acceleration;
     protected double friction;
     protected boolean disposed = false;
+    private Room room;
 
-    public Entity() {
+    public Entity(Room room) {
+        room.addNewEntity(this);
+
         // Initialize the variables
         this.position = new Vector2d(0, 0);
         this.velocity = new Vector2d(0, 0);
         this.acceleration = new Vector2d(0, 0);
         this.friction = 0.9;
+        this.room = room;
     }
 
     public void tickEntity(double delta) {
@@ -35,9 +38,8 @@ abstract public class Entity {
         this.velocity.multiply(this.friction);
         this.position.add(this.velocity.copy().multiply(delta)); // TODO: check if this is actually the place to use delta time (it's not)
 
-        Room room = GamePanel.rooms.get(GamePanel.currentRoom);
         Vector2d expectedTilePos = this.position.copy().divide(Tile.tileSize).floor();
-        Tile expectedTile = room.getTile((int) expectedTilePos.getX(), (int) expectedTilePos.getY());
+        Tile expectedTile = this.room.getTile((int) expectedTilePos.getX(), (int) expectedTilePos.getY());
 
         if (expectedTile == null) {
             Vector2d diffPos = rubberBand
@@ -70,9 +72,18 @@ abstract public class Entity {
     abstract protected void tick(double delta);
     abstract public void draw(Graphics2D ctx);
 
-    /**
-     * Marks the entity up for disposal
-     */
+    /** @return The room the entity belongs to */
+    public Room getRoom() {
+        return this.room;
+    }
+    public void changeRoom(Room room) {
+        // TODO: remove the entity from the current room and add it to the new room
+        this.room.removeEntity(this);
+        this.room = room;
+        room.addNewEntity(this);
+    }
+
+    /** Marks the entity up for disposal */
     public void dispose() {
         this.disposed = true;
     }

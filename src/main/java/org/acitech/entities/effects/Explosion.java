@@ -4,6 +4,7 @@ import org.acitech.GamePanel;
 import org.acitech.Main;
 import org.acitech.entities.Enemy;
 import org.acitech.entities.Entity;
+import org.acitech.tilemap.Room;
 import org.acitech.utils.Vector2d;
 
 import java.awt.*;
@@ -24,7 +25,9 @@ public class Explosion extends Entity {
     public int lifetime;
     public int onDeathDamage;
 
-    public Explosion(double startX, double startY, String explosionType, int onDeathDamage) {
+    public Explosion(Room room, double startX, double startY, String explosionType, int onDeathDamage) {
+        super(room);
+
         this.position = new Vector2d(startX, startY);
         this.explosionType = explosionType;
         this.onDeathDamage = onDeathDamage;
@@ -60,7 +63,7 @@ public class Explosion extends Entity {
 
         if (!this.hasDealtAOE) {
             // Looks for any instances of enemies
-            for (Entity entity : GamePanel.entities) {
+            for (Entity entity : this.getRoom().getEntities()) {
                 if (!(entity instanceof Enemy enemy)) continue;
 
                 if (this.position.distance(enemy.position) < 130) {
@@ -81,6 +84,6 @@ public class Explosion extends Entity {
         int aniFrame = animationTick / (aniFrameDuration);
 
         BufferedImage texture = Main.getResources().getTexture("effect/explosion_" + explosionType + "/" + aniFrame + ":" + 0);
-        ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
+        ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.getCamera().getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.getCamera().getY(), width, height, Main.getGamePanel());
     }
 }

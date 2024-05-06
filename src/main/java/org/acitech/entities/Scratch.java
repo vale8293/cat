@@ -2,6 +2,7 @@ package org.acitech.entities;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.tilemap.Room;
 import org.acitech.utils.Vector2d;
 
 import java.awt.*;
@@ -18,7 +19,9 @@ public class Scratch extends Entity {
     private int animationTick = 0;
     private String element = "base";
 
-    public Scratch(int originX, int originY, int distance, double rot, String element) {
+    public Scratch(Room room, int originX, int originY, int distance, double rot, String element) {
+        super(room);
+
         this.originPosition = new Vector2d(originX, originY);
 
         double y = this.originPosition.getY() + Math.sin(rot) * -distance;
@@ -34,7 +37,7 @@ public class Scratch extends Entity {
     }
 
     private void dealAoeDamage() {
-        for (Entity entity : GamePanel.entities) {
+        for (Entity entity : this.getRoom().getEntities()) {
             if (!(entity instanceof Enemy enemy)) continue;
 
             // Gets the position of the scratch
@@ -45,12 +48,12 @@ public class Scratch extends Entity {
             // knock it back, lose 1hp, and start i-frames, extend streak
             if (dist < 100) {
                 // TODO: lets not always assume that the player is the one dealing the scratch
-                boolean dealtDamage = enemy.dealDamage(GamePanel.player.scratchDamage - enemy.defense, this);
+                boolean dealtDamage = enemy.dealDamage(GamePanel.getPlayer().scratchDamage - enemy.defense, this);
 
                 if (dealtDamage) {
-                    enemy.dealKnockback(enemy.kbMult * 0.5, GamePanel.player.position, true);
-                    GamePanel.player.mana = Math.min(GamePanel.player.mana + 1, GamePanel.player.maxMana);
-                    GamePanel.player.streakTimer = GamePanel.player.streakTimerMax;
+                    enemy.dealKnockback(enemy.kbMult * 0.5, GamePanel.getPlayer().position, true);
+                    GamePanel.getPlayer().mana = Math.min(GamePanel.getPlayer().mana + 1, GamePanel.getPlayer().maxMana);
+                    GamePanel.getPlayer().streakTimer = GamePanel.getPlayer().streakTimerMax;
                 }
             }
         }
@@ -72,7 +75,7 @@ public class Scratch extends Entity {
 
         AffineTransform oldXForm = ctx.getTransform();
 
-        ctx.translate(this.originPosition.getX() - (int) GamePanel.camera.getX(), this.originPosition.getY() - (int) GamePanel.camera.getY());
+        ctx.translate(this.originPosition.getX() - (int) GamePanel.getCamera().getX(), this.originPosition.getY() - (int) GamePanel.getCamera().getY());
         ctx.rotate(this.angle - Math.PI / 2);
         ctx.drawImage(texture, -width / 2, -this.distance - height / 2, width, height, Main.getGamePanel());
 

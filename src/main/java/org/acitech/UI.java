@@ -32,13 +32,13 @@ public class UI {
         double scale = getGuiScale();
 
         int x = 0;
-        int cobalt = GamePanel.player.health; // thanks cobalt :)
+        int cobalt = GamePanel.getPlayer().health; // thanks cobalt :)
         int statsPadding = (int) (paddingOfStats * scale);
         int heartWidth = (int) (72.0 * scale);
         int heartHeight = (int) (heightOfHearts * scale);
         int heartGap = (int) (4.0 * scale);
 
-        for (int i = 0; i < GamePanel.player.maxHealth / 2; i++) {
+        for (int i = 0; i < GamePanel.getPlayer().maxHealth / 2; i++) {
             BufferedImage texture;
 
             // Draws a full heart for every 2 health you have
@@ -69,7 +69,7 @@ public class UI {
         double scale = getGuiScale();
 
         int x = 0;
-        int cobalt = GamePanel.player.mana; // thanks cobalt :)
+        int cobalt = GamePanel.getPlayer().mana; // thanks cobalt :)
         int statsPadding = (int) (paddingOfStats * scale);
         int heartHeight = (int) (heightOfHearts * scale);
         int manaSize = (int) (16.0 * scale);
@@ -77,7 +77,7 @@ public class UI {
         int manaHeight = (int) (52.0 * scale);
         int manaGap = (int) (4.0 * scale);
 
-        for (int i = 0; i < GamePanel.player.maxMana / 6; i++) {
+        for (int i = 0; i < GamePanel.getPlayer().maxMana / 6; i++) {
             BufferedImage texture;
 
             if (cobalt >= 6) {
@@ -125,8 +125,8 @@ public class UI {
         int itemYOffset = (int) (invHeight * 0.1);
         int textSize = (int) (20.0 * scale);
 
-        for (int slot = 0; slot < GamePanel.player.spellInv.getMaxSlots(); slot++) {
-            ItemStack item = GamePanel.player.spellInv.getItem(slot);
+        for (int slot = 0; slot < GamePanel.getPlayer().spellInv.getMaxSlots(); slot++) {
+            ItemStack item = GamePanel.getPlayer().spellInv.getItem(slot);
             if (item == null) continue;
 
             BufferedImage itemTexture = item.getType().getTexture();
@@ -138,13 +138,13 @@ public class UI {
             drawCenteredText(ctx, itemPos + itemScale, invY + (int) (itemScale * 0.8d) + itemYOffset, textSize, String.valueOf(itemCount), Color.WHITE);
         }
 
-        for (int slot = 0; slot < GamePanel.player.defaultInv.getMaxSlots(); slot++) {
-            ItemStack item = GamePanel.player.defaultInv.getItem(slot);
+        for (int slot = 0; slot < GamePanel.getPlayer().defaultInv.getMaxSlots(); slot++) {
+            ItemStack item = GamePanel.getPlayer().defaultInv.getItem(slot);
             if (item == null) continue;
 
             BufferedImage itemTexture = item.getType().getTexture();
 
-            int itemPos = invX + invLeftPadding + (int) (itemScale * 1.25d) * (slot + GamePanel.player.spellInv.getMaxSlots());
+            int itemPos = invX + invLeftPadding + (int) (itemScale * 1.25d) * (slot + GamePanel.getPlayer().spellInv.getMaxSlots());
             ctx.drawImage(itemTexture, itemPos, invY + itemYOffset, itemScale, itemScale, Main.getGamePanel());
 
             int itemCount = item.getCount();
@@ -152,7 +152,7 @@ public class UI {
         }
 
         BufferedImage cursorTexture = Main.getResources().getTexture("ui/cursor");
-        ctx.drawImage(cursorTexture, (int) (invX + invLeftPadding + itemScale * 1.25d * GamePanel.player.selectedSlot), invY + itemScale + itemYOffset, itemScale, (int) ((5d / 22d) * itemScale), Main.getGamePanel());
+        ctx.drawImage(cursorTexture, (int) (invX + invLeftPadding + itemScale * 1.25d * GamePanel.getPlayer().selectedSlot), invY + itemScale + itemYOffset, itemScale, (int) ((5d / 22d) * itemScale), Main.getGamePanel());
     }
 
     public static void drawStreak(Graphics2D ctx) {
@@ -166,15 +166,15 @@ public class UI {
         int streakY = invY - invHeight + (int) (10.0 * scale);
         int textSize = (int) (20.0 * scale);
 
-        BufferedImage streakTexture = Main.getResources().getTexture("ui/streak_bar/" + ((3 - (GamePanel.player.streakTimer + (GamePanel.player.streakTimerMax / 3) - 1) / (GamePanel.player.streakTimerMax / 3))) + ":0");
+        BufferedImage streakTexture = Main.getResources().getTexture("ui/streak_bar/" + ((3 - (GamePanel.getPlayer().streakTimer + (GamePanel.getPlayer().streakTimerMax / 3) - 1) / (GamePanel.getPlayer().streakTimerMax / 3))) + ":0");
         ctx.drawImage(streakTexture, streakX, streakY, streakWidth, streakHeight, Main.getGamePanel());
 
-        drawCenteredText(ctx, streakX + streakWidth / 2, streakY - textSize, textSize, "Streak " + GamePanel.player.currentStreak, Color.WHITE);
+        drawCenteredText(ctx, streakX + streakWidth / 2, streakY - textSize, textSize, "Streak " + GamePanel.getPlayer().currentStreak, Color.WHITE);
     }
 
     // Placeholder: Counts XP in-game (should be polished and repurposed)
     public static void drawXP(Graphics2D ctx) {
-        int xpCount = GamePanel.player.xpCount;
+        int xpCount = GamePanel.getPlayer().xpCount;
         double scale = getGuiScale();
         int size = (int) (20 * scale);
 

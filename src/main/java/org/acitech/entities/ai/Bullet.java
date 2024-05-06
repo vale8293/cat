@@ -1,6 +1,5 @@
 package org.acitech.entities.ai;
 
-import org.acitech.GamePanel;
 import org.acitech.Main;
 import org.acitech.entities.Enemy;
 import org.acitech.entities.Entity;
@@ -32,7 +31,7 @@ public class Bullet implements AI {
                     case ("aqua") -> this.projectile.onDeathDamage = this.projectile.damage / 3;
                 }
 
-                Main.getGamePanel().addNewEntity(new Explosion(this.projectile.position.getX(), this.projectile.position.getY(), this.projectile.damageElement, this.projectile.onDeathDamage));
+                new Explosion(this.projectile.getRoom(), this.projectile.position.getX(), this.projectile.position.getY(), this.projectile.damageElement, this.projectile.onDeathDamage);
                 exploSfx.start();
             }
 
@@ -46,7 +45,7 @@ public class Bullet implements AI {
     private int collisionCheck(double radius) {
         int collisions = 0;
 
-        for (Entity entity : GamePanel.entities) {
+        for (Entity entity : this.projectile.getRoom().getEntities()) {
             if (!(entity instanceof Enemy enemy)) continue;
 
             if (this.projectile.position.distance(enemy.position) < radius) {

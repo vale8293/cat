@@ -8,6 +8,7 @@ import org.acitech.entities.ai.Fighter;
 import org.acitech.entities.ai.Skitter;
 import org.acitech.inventory.ItemStack;
 import org.acitech.inventory.ItemType;
+import org.acitech.tilemap.Room;
 import org.acitech.utils.Vector2d;
 
 import java.awt.*;
@@ -49,7 +50,9 @@ abstract public class Enemy extends Entity {
     public int itemDrop = 1;
     public int itemScatter = 5;
 
-    public Enemy(double startX, double startY, String enemyName, String ai) {
+    public Enemy(Room room, double startX, double startY, String enemyName, String ai) {
+        super(room);
+
         this.position = new Vector2d(startX, startY);
         this.friction = 0.9;
         this.enemyName = enemyName;
@@ -81,21 +84,20 @@ abstract public class Enemy extends Entity {
 
             // Drops XP based on the streak
             if (this.xpDrop > 0) {
-                for (int i = 0; i < Math.ceil((xpDrop - 1) * (2 * (0.5 + GamePanel.player.currentStreak / 10.0))); i++) {
+                for (int i = 0; i < Math.ceil((xpDrop - 1) * (2 * (0.5 + GamePanel.getPlayer().currentStreak / 10.0))); i++) {
 
                     // Gets some random X & Y velocities to add to the drop velocity to scatter XP
                     double rngX = new Random().nextDouble(-xpScatter, xpScatter);
                     double rngY = new Random().nextDouble(-xpScatter, xpScatter);
 
                     // Drops the XP with the random velocities added
-                    Experience experience = new Experience(this.position.getX(), this.position.getY(), this.xpValue);
+                    Experience experience = new Experience(this.getRoom(), this.position.getX(), this.position.getY(), this.xpValue);
                     experience.velocity.set(rngX, rngY);
-                    Main.getGamePanel().addNewEntity(experience);
                 }
             }
 
             // Increments the streak
-            GamePanel.player.currentStreak += 1;
+            GamePanel.getPlayer().currentStreak += 1;
 
             // cause there do be stuff in the item pool
             if (!itemPool.isEmpty()) {
@@ -108,9 +110,8 @@ abstract public class Enemy extends Entity {
                     ItemType droppedItemType = itemPool.get(rngIndex);
 
                     // Spawn the item of the enemy based on the pool
-                    Item item = new Item(this.position.getX(), this.position.getY(), new ItemStack(droppedItemType, 1));
+                    Item item = new Item(getRoom(), this.position.getX(), this.position.getY(), new ItemStack(droppedItemType, 1));
                     item.velocity.set(rngX, rngY);
-                    Main.getGamePanel().addNewEntity(item);
                 }
             }
         }
@@ -158,12 +159,12 @@ abstract public class Enemy extends Entity {
             }
         }
 
-        ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
+        ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.getCamera().getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.getCamera().getY(), width, height, Main.getGamePanel());
 
         // If an enemy gets hit, tint it red and have it fade until its immunity frames run out
         if (this.damageTimer > 0) {
             BufferedImage wow = UI.tintImage(texture, 1, 0, 0, ((float) this.damageTimer / this.immunity * 0.8f) / 2);
-            ctx.drawImage(wow, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
+            ctx.drawImage(wow, (int) this.position.getX() - width / 2 - (int) GamePanel.getCamera().getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.getCamera().getY(), width, height, Main.getGamePanel());
         }
     }
 
