@@ -3,10 +3,10 @@ package org.acitech.entities.projectiles;
 import org.acitech.entities.Projectile;
 import org.acitech.tilemap.Room;
 
-public class Fireball extends Projectile {
+public class Windball extends Projectile {
 
-    public Fireball(Room room, double startX, double startY, double rot) {
-        super(room, startX, startY, rot, "fireball", "bullet");
+    public Windball(Room room, double startX, double startY, double rot) {
+        super(room, startX, startY, rot, "windball", "bullet");
 
         // Animation & Visuals
         this.aniLength = 5;
@@ -15,12 +15,12 @@ public class Fireball extends Projectile {
         this.height = 160;
 
         // Stats
-        this.damageElement = "fire";
+        this.damageElement = "wind";
         this.onDeath = "explosion";
-        this.onDeathDamage = 3;
-        this.moveSpeed = 12;
-        this.damage = 5;
+        this.onDeathDamage = 1;
+        this.moveSpeed = 18;
+        this.damage = 2;
         this.maxCollisions = 1;
-        this.kbMult = 3;
+        this.kbMult = 35;
     }
 }

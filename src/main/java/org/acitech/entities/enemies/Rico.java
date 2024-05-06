@@ -2,11 +2,12 @@ package org.acitech.entities.enemies;
 
 import org.acitech.entities.Enemy;
 import org.acitech.inventory.ItemType;
+import org.acitech.tilemap.Room;
 
 public class Rico extends Enemy {
 
-    public Rico(double startX, double startY) {
-        super(startX, startY, "Rico", "Fighter");
+    public Rico(Room room, double startX, double startY) {
+        super(room, startX, startY, "Rico", "Fighter");
 
         // Animation & Visuals
         this.aniLength = 6;

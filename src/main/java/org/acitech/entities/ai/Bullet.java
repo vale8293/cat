@@ -1,10 +1,19 @@
 package org.acitech.entities.ai;
 
+import org.acitech.Main;
+import org.acitech.entities.Enemy;
+import org.acitech.entities.Entity;
 import org.acitech.entities.Projectile;
+import org.acitech.entities.effects.Explosion;
 
-public class Bullet extends ProjectileAI {
+import javax.sound.sampled.Clip;
+
+public class Bullet implements AI {
+    private final Projectile projectile;
+    private static final Clip exploSfx = Main.getResources().getSound("explosion"); // like from splatoon
+
     public Bullet(Projectile projectile) {
-        super(projectile);
+        this.projectile = projectile;
     }
 
     // Defines basic AI for projectiles like Fireball
@@ -13,7 +22,37 @@ public class Bullet extends ProjectileAI {
         double angle = this.projectile.angle;
         this.projectile.velocity.set(Math.cos(angle + Math.PI), Math.sin(angle + Math.PI));
         this.projectile.velocity.multiply(this.projectile.moveSpeed);
-        this.projectile.deathCheck();
 
+        if (collisionCheck(65) >= this.projectile.maxCollisions) {
+            // Self destruct
+            if (this.projectile.onDeath.equalsIgnoreCase("explosion")) {
+                switch (this.projectile.damageElement) {
+                    case ("fire") -> this.projectile.onDeathDamage = this.projectile.damage / 2;
+                    case ("aqua") -> this.projectile.onDeathDamage = this.projectile.damage / 3;
+                }
+
+                new Explosion(this.projectile.getRoom(), this.projectile.position.getX(), this.projectile.position.getY(), this.projectile.damageElement, this.projectile.onDeathDamage);
+                exploSfx.start();
+            }
+
+            this.projectile.dispose();
+        }
+    }
+
+    @Override
+    public void damageHandler(Entity damager) {}
+
+    private int collisionCheck(double radius) {
+        int collisions = 0;
+
+        for (Entity entity : this.projectile.getRoom().getEntities()) {
+            if (!(entity instanceof Enemy enemy)) continue;
+
+            if (this.projectile.position.distance(enemy.position) < radius) {
+                collisions += 1;
+            }
+        }
+
+        return collisions;
     }
 }

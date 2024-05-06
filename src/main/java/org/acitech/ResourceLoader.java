@@ -20,14 +20,14 @@ public class ResourceLoader {
                 loadTexture("ui/cursor", "ui/cursor.png") &&
                 loadSpriteSheet("ui/hearts", "ui/hearts.png", 18, 16) &&
                 loadSpriteSheet("ui/mana", "ui/mana.png", 13, 13) &&
-                loadSpriteSheet("ui/font", "ui/font.png", 7, 7) &&
-                loadSpriteSheet("ui/numbers", "ui/numbers.png", 5, 5) && // todo: delete
-                loadSpriteSheet("ui/streak_bar", "ui/streak_bar.png", 32, 16) &&
+                loadSpriteSheet("ui/font", "ui/font.png", 5, 5) &&
+                loadSpriteSheet("ui/streak_bar", "ui/streak_bar.png", 32, 10) &&
 
                 // Player
                 loadSpriteSheet("player/base", "player/base.png", 32, 32) &&
                 loadSpriteSheet("player/fire", "player/fire.png", 32, 32) &&
-                loadSpriteSheet("player/aqua", "player/aqua.png", 32, 32) && // todo: PLACEHOLDER
+                loadSpriteSheet("player/aqua", "player/aqua.png", 32, 32) &&
+                loadSpriteSheet("player/wind", "player/wind.png", 32, 32) &&
                 loadTexture("player/death", "player/death.png") &&
 
                 // Enemies
@@ -52,8 +52,8 @@ public class ResourceLoader {
                 // Spells
                 loadSpriteSheet("projectiles/fireball", "projectiles/fireball.png", 32, 32) &&
                 loadSpriteSheet("projectiles/aquaball", "projectiles/aquaball.png", 32, 32) &&
+                loadSpriteSheet("projectiles/windball", "projectiles/windball.png", 32, 32) &&
                 loadSound("fireball", "player/fireCast.wav") &&
-                loadSound("explosion", "player/explosion.wav") &&
 
                 // Other Projectiles
 
@@ -61,6 +61,8 @@ public class ResourceLoader {
                 // Effects
                 loadSpriteSheet("effect/explosion_fire", "effect/explosion_fire.png", 32, 32) &&
                 loadSpriteSheet("effect/explosion_aqua", "effect/explosion_aqua.png", 32, 32) &&
+                loadSpriteSheet("effect/explosion_wind", "effect/explosion_wind.png", 32, 32) &&
+                loadSound("explosion", "player/explosion.wav") &&
 
                 // Environment
                 loadSpriteSheet("environment/grass", "environment/grass.png", 32, 32) &&

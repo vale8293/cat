@@ -2,11 +2,13 @@ package org.acitech.entities;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
-import org.acitech.entities.ai.EnemyAI;
+import org.acitech.UI;
+import org.acitech.entities.ai.AI;
 import org.acitech.entities.ai.Fighter;
 import org.acitech.entities.ai.Skitter;
 import org.acitech.inventory.ItemStack;
 import org.acitech.inventory.ItemType;
+import org.acitech.tilemap.Room;
 import org.acitech.utils.Vector2d;
 
 import java.awt.*;
@@ -18,7 +20,7 @@ abstract public class Enemy extends Entity {
 
     // Identifiers
     private final String enemyName;
-    private final EnemyAI enemyAI;
+    private final AI enemyAI;
     public ArrayList<ItemType> itemPool = new ArrayList<>();
 
     // Animation & Visuals
@@ -30,8 +32,8 @@ abstract public class Enemy extends Entity {
 
     // Stats & Combat
     protected int health, maxHealth = 1;
-    protected int mana, maxMana = 0; // To be used in the future maybe
-    public int damage = 1;
+    // protected int mana, maxMana = 0; // To be used in the future maybe
+    public int attackDamage = 1;
     public String damageElement = "None";
     public int defense = 0;
     public double moveSpeed = 1;
@@ -48,7 +50,9 @@ abstract public class Enemy extends Entity {
     public int itemDrop = 1;
     public int itemScatter = 5;
 
-    public Enemy(double startX, double startY, String enemyName, String ai) {
+    public Enemy(Room room, double startX, double startY, String enemyName, String ai) {
+        super(room);
+
         this.position = new Vector2d(startX, startY);
         this.friction = 0.9;
         this.enemyName = enemyName;
@@ -80,21 +84,20 @@ abstract public class Enemy extends Entity {
 
             // Drops XP based on the streak
             if (this.xpDrop > 0) {
-                for (int i = 0; i < Math.ceil((xpDrop - 1) * (2 * (0.5 + GamePanel.player.currentStreak / 10.0))); i++) {
+                for (int i = 0; i < Math.ceil((xpDrop - 1) * (2 * (0.5 + GamePanel.getPlayer().currentStreak / 10.0))); i++) {
 
                     // Gets some random X & Y velocities to add to the drop velocity to scatter XP
                     double rngX = new Random().nextDouble(-xpScatter, xpScatter);
                     double rngY = new Random().nextDouble(-xpScatter, xpScatter);
 
                     // Drops the XP with the random velocities added
-                    Experience experience = new Experience(this.position.getX(), this.position.getY(), this.xpValue);
+                    Experience experience = new Experience(this.getRoom(), this.position.getX(), this.position.getY(), this.xpValue);
                     experience.velocity.set(rngX, rngY);
-                    Main.getGamePanel().addNewEntity(experience);
                 }
             }
 
             // Increments the streak
-            GamePanel.player.currentStreak += 1;
+            GamePanel.getPlayer().currentStreak += 1;
 
             // cause there do be stuff in the item pool
             if (!itemPool.isEmpty()) {
@@ -107,9 +110,8 @@ abstract public class Enemy extends Entity {
                     ItemType droppedItemType = itemPool.get(rngIndex);
 
                     // Spawn the item of the enemy based on the pool
-                    Item item = new Item(this.position.getX(), this.position.getY(), new ItemStack(droppedItemType, 1));
+                    Item item = new Item(getRoom(), this.position.getX(), this.position.getY(), new ItemStack(droppedItemType, 1));
                     item.velocity.set(rngX, rngY);
-                    Main.getGamePanel().addNewEntity(item);
                 }
             }
         }
@@ -157,49 +159,35 @@ abstract public class Enemy extends Entity {
             }
         }
 
-        ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
+        ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.getCamera().getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.getCamera().getY(), width, height, Main.getGamePanel());
 
         // If an enemy gets hit, tint it red and have it fade until its immunity frames run out
         if (this.damageTimer > 0) {
-            BufferedImage wow = tint(texture, 1, 0, 0, ((float) this.damageTimer / this.immunity * 0.8f) / 2);
-            ctx.drawImage(wow, (int) this.position.getX() - width / 2 - (int) GamePanel.camera.getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.camera.getY(), width, height, Main.getGamePanel());
+            BufferedImage wow = UI.tintImage(texture, 1, 0, 0, ((float) this.damageTimer / this.immunity * 0.8f) / 2);
+            ctx.drawImage(wow, (int) this.position.getX() - width / 2 - (int) GamePanel.getCamera().getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.getCamera().getY(), width, height, Main.getGamePanel());
         }
     }
 
-    // Configures the tint used above
-    public static BufferedImage tint(BufferedImage sprite, float red, float green, float blue, float alpha) {
-        BufferedImage maskImg = new BufferedImage(sprite.getWidth(), sprite.getHeight(), BufferedImage.TRANSLUCENT);
-        int rgb = new Color(red, green, blue, alpha).getRGB();
-
-        for (int i = 0; i < sprite.getWidth(); i++) {
-            for (int j = 0; j < sprite.getHeight(); j++) {
-                int color = sprite.getRGB(i, j);
-
-                if (color != 0) {
-                    maskImg.setRGB(i, j, rgb);
-                }
-            }
-        }
-
-        return maskImg;
-    }
-
-    public boolean dealDamage(int amount, String damageElement) {
+    public boolean dealDamage(int amount, Entity damager) {
         if (this.damageTimer > 0) return false;
-
-        switch (damageElement) {
-            case ("fire") -> { // Set the enemy on fire
-
-            }
-            case ("aqua") -> { // Make the enemy wet
-
-            }
-            default -> {}
-        }
 
         this.health -= Math.max(0, amount);
         this.damageTimer = this.immunity;
+
+        if (this.enemyAI != null) {
+            this.enemyAI.damageHandler(damager);
+        }
         return true;
+    }
+
+    public void dealKnockback(double force, Vector2d origin, boolean override) {
+        Vector2d direction = this.position.directionTo(origin).multiply(force);
+
+        if (override) {
+            this.velocity.set(direction);
+        } else {
+            this.acceleration.add(direction);
+        }
     }
 
     public int getHealth() {
@@ -208,5 +196,9 @@ abstract public class Enemy extends Entity {
 
     public int getMaxHealth() {
         return maxHealth;
+    }
+
+    public AI getAI() {
+        return enemyAI;
     }
 }

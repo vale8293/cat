@@ -1,5 +1,7 @@
 package org.acitech.inputs;
 
+import org.acitech.utils.Broadcast;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -28,6 +30,7 @@ public class Controls implements KeyListener, MouseListener {
     public final static int leftElemKey = KeyEvent.VK_SHIFT;
     public final static int rightElemKey = KeyEvent.VK_SPACE;
     public final static int pauseKey = KeyEvent.VK_ESCAPE;
+    public final static int selectKey = KeyEvent.VK_ENTER;
     public final static int $1stSlotKey = KeyEvent.VK_1;
     public final static int $2ndSlotKey = KeyEvent.VK_2;
     public final static int $3rdSlotKey = KeyEvent.VK_3;
@@ -40,6 +43,7 @@ public class Controls implements KeyListener, MouseListener {
     public final static int $10thSlotKey = KeyEvent.VK_0;
     public final static int zKey = KeyEvent.VK_Z;
     public final static int xKey = KeyEvent.VK_X;
+    public final static int useKey = KeyEvent.VK_E;
     public final static int cKey = KeyEvent.VK_C;
     public final static int vKey = KeyEvent.VK_V;
 
@@ -76,11 +80,17 @@ public class Controls implements KeyListener, MouseListener {
     @Override
     public void keyPressed(KeyEvent event) {
         keysPressed.put(event.getKeyCode(), true);
+
+        Broadcast.emit("keyDown");
+        Broadcast.emit("keyUpdate");
     }
 
     @Override
     public void keyReleased(KeyEvent event) {
         keysPressed.put(event.getKeyCode(), false);
+
+        Broadcast.emit("keyUp");
+        Broadcast.emit("keyUpdate");
     }
 
     @Override
@@ -90,11 +100,17 @@ public class Controls implements KeyListener, MouseListener {
     public void mousePressed(MouseEvent e) {
         mousePressed = true;
         mouseClicks.add(new Click(e));
+
+        Broadcast.emit("mouseDown");
+        Broadcast.emit("mouseUpdate");
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         mousePressed = false;
+
+        Broadcast.emit("mouseUp");
+        Broadcast.emit("mouseUpdate");
     }
 
     @Override

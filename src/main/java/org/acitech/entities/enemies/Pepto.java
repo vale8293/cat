@@ -2,11 +2,12 @@ package org.acitech.entities.enemies;
 
 import org.acitech.entities.Enemy;
 import org.acitech.inventory.ItemType;
+import org.acitech.tilemap.Room;
 
 public class Pepto extends Enemy {
 
-    public Pepto(double startX, double startY) {
-        super(startX, startY, "Pepto", "Fighter");
+    public Pepto(Room room, double startX, double startY) {
+        super(room, startX, startY, "Pepto", "Fighter");
 
         // Animation & Visuals
         this.aniLength = 3;

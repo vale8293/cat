@@ -1,6 +1,8 @@
 package org.acitech;
 
-import org.acitech.entities.Player;
+import org.acitech.inputs.Controls;
+import org.acitech.utils.Caboodle;
+import org.acitech.utils.EventHandler;
 import org.acitech.inventory.ItemStack;
 
 import java.awt.*;
@@ -9,11 +11,12 @@ import java.awt.image.BufferedImage;
 public class UI {
 
     private static final int heightOfHearts = 64;
-
     /** Top padding of the stats area */
     private static final int paddingOfStats = 16;
-
     private static final int heightOfInventory = 64;
+    private static int pauseMenuSelection = 0;
+    private static final Color pauseMenuSelectColor = new Color(0xff3399);
+    private static final Color pauseMenuDefaultColor = new Color(0xffffff);
 
     // Draws all UI elements
     public static void draw(Graphics2D ctx) {
@@ -29,13 +32,13 @@ public class UI {
         double scale = getGuiScale();
 
         int x = 0;
-        int cobalt = GamePanel.player.health; // thanks cobalt :)
+        int cobalt = GamePanel.getPlayer().health; // thanks cobalt :)
         int statsPadding = (int) (paddingOfStats * scale);
         int heartWidth = (int) (72.0 * scale);
         int heartHeight = (int) (heightOfHearts * scale);
         int heartGap = (int) (4.0 * scale);
 
-        for (int i = 0; i < GamePanel.player.maxHealth / 2; i++) {
+        for (int i = 0; i < GamePanel.getPlayer().maxHealth / 2; i++) {
             BufferedImage texture;
 
             // Draws a full heart for every 2 health you have
@@ -66,7 +69,7 @@ public class UI {
         double scale = getGuiScale();
 
         int x = 0;
-        int cobalt = GamePanel.player.mana; // thanks cobalt :)
+        int cobalt = GamePanel.getPlayer().mana; // thanks cobalt :)
         int statsPadding = (int) (paddingOfStats * scale);
         int heartHeight = (int) (heightOfHearts * scale);
         int manaSize = (int) (16.0 * scale);
@@ -74,7 +77,7 @@ public class UI {
         int manaHeight = (int) (52.0 * scale);
         int manaGap = (int) (4.0 * scale);
 
-        for (int i = 0; i < GamePanel.player.maxMana / 6; i++) {
+        for (int i = 0; i < GamePanel.getPlayer().maxMana / 6; i++) {
             BufferedImage texture;
 
             if (cobalt >= 6) {
@@ -120,90 +123,62 @@ public class UI {
 
         int itemScale = (int) (invHeight * 0.8);
         int itemYOffset = (int) (invHeight * 0.1);
+        int textSize = (int) (20.0 * scale);
 
-        for (int slot = 0; slot < GamePanel.player.spellInv.getMaxSlots(); slot++) {
-            ItemStack item = GamePanel.player.spellInv.getItem(slot);
+        for (int slot = 0; slot < GamePanel.getPlayer().spellInv.getMaxSlots(); slot++) {
+            ItemStack item = GamePanel.getPlayer().spellInv.getItem(slot);
             if (item == null) continue;
 
             BufferedImage itemTexture = item.getType().getTexture();
 
-            int itemPos = invX + invLeftPadding + (int) (itemScale * 1.25) * (slot);
+            int itemPos = invX + invLeftPadding + (int) (itemScale * 1.25d) * slot;
             ctx.drawImage(itemTexture, itemPos, invY + itemYOffset, itemScale, itemScale, Main.getGamePanel());
 
             int itemCount = item.getCount();
-            BufferedImage amountTextureOnes = Main.getResources().getTexture("ui/numbers/" + itemCount % 10 + ":0");
-            ctx.drawImage(amountTextureOnes, itemPos + itemScale / 2, invY + itemScale / 2 + itemYOffset, itemScale / 2, itemScale / 2, Main.getGamePanel());
-
-            if (itemCount / 10 > 0) {
-                BufferedImage amountTextureTens = Main.getResources().getTexture("ui/numbers/" + (itemCount / 10) % 10 + ":0");
-                ctx.drawImage(amountTextureTens, itemPos, invY + itemScale / 2 + itemYOffset, itemScale / 2, itemScale / 2, Main.getGamePanel());
-            }
+            drawCenteredText(ctx, itemPos + itemScale, invY + (int) (itemScale * 0.8d) + itemYOffset, textSize, String.valueOf(itemCount), Color.WHITE);
         }
 
-        for (int slot = 0; slot < GamePanel.player.defaultInv.getMaxSlots(); slot++) {
-            ItemStack item = GamePanel.player.defaultInv.getItem(slot);
+        for (int slot = 0; slot < GamePanel.getPlayer().defaultInv.getMaxSlots(); slot++) {
+            ItemStack item = GamePanel.getPlayer().defaultInv.getItem(slot);
             if (item == null) continue;
 
             BufferedImage itemTexture = item.getType().getTexture();
 
-            int itemPos = invX + invLeftPadding + (int) (itemScale * 1.25) * (slot + GamePanel.player.spellInv.getMaxSlots());
+            int itemPos = invX + invLeftPadding + (int) (itemScale * 1.25d) * (slot + GamePanel.getPlayer().spellInv.getMaxSlots());
             ctx.drawImage(itemTexture, itemPos, invY + itemYOffset, itemScale, itemScale, Main.getGamePanel());
 
             int itemCount = item.getCount();
-            BufferedImage amountTextureOnes = Main.getResources().getTexture("ui/numbers/" + itemCount % 10 + ":0");
-            ctx.drawImage(amountTextureOnes, itemPos + itemScale / 2, invY + itemScale / 2 + itemYOffset, itemScale / 2, itemScale / 2, Main.getGamePanel());
-
-            if (itemCount / 10 > 0) {
-                BufferedImage amountTextureTens = Main.getResources().getTexture("ui/numbers/" + (itemCount / 10) % 10 + ":0");
-                ctx.drawImage(amountTextureTens, itemPos, invY + itemScale / 2 + itemYOffset, itemScale / 2, itemScale / 2, Main.getGamePanel());
-            }
+            drawCenteredText(ctx, itemPos + itemScale, invY + (int) (itemScale * 0.8d) + itemYOffset, textSize, String.valueOf(itemCount), Color.WHITE);
         }
 
         BufferedImage cursorTexture = Main.getResources().getTexture("ui/cursor");
-        ctx.drawImage(cursorTexture, (int) (invX + invLeftPadding + GamePanel.player.selectedSlot * itemScale * 1.258), invY + itemScale / 2 + itemYOffset * 4, itemScale, (int) (20 * scale), Main.getGamePanel());
+        ctx.drawImage(cursorTexture, (int) (invX + invLeftPadding + itemScale * 1.25d * GamePanel.getPlayer().selectedSlot), invY + itemScale + itemYOffset, itemScale, (int) ((5d / 22d) * itemScale), Main.getGamePanel());
     }
 
     public static void drawStreak(Graphics2D ctx) {
         double scale = getGuiScale();
 
         int streakWidth = (int) (128.0 * scale);
-        int streakHeight = (int) (streakWidth * 0.5);
+        int streakHeight = (int) (40.0 * scale);
         int invHeight = (int) (heightOfInventory * scale);
         int invY = Main.getGamePanel().getHeight() - (int) (invHeight * 1.5d);
         int streakX = Main.getGamePanel().getWidth() / 2 - streakWidth / 2;
-        int streakY = invY - invHeight - (int) (24.0 * scale);
+        int streakY = invY - invHeight + (int) (10.0 * scale);
+        int textSize = (int) (20.0 * scale);
 
-        BufferedImage streakTexture = Main.getResources().getTexture("ui/streak_bar/" + ((3 - (GamePanel.player.streakTimer + (GamePanel.player.streakTimerMax / 3) - 1) / (GamePanel.player.streakTimerMax / 3))) + ":0");
+        BufferedImage streakTexture = Main.getResources().getTexture("ui/streak_bar/" + ((3 - (GamePanel.getPlayer().streakTimer + (GamePanel.getPlayer().streakTimerMax / 3) - 1) / (GamePanel.getPlayer().streakTimerMax / 3))) + ":0");
         ctx.drawImage(streakTexture, streakX, streakY, streakWidth, streakHeight, Main.getGamePanel());
 
-        int streakCount = GamePanel.player.currentStreak;
-        BufferedImage amountTextureOnes = Main.getResources().getTexture("ui/numbers/" + streakCount % 10 + ":0");
-        ctx.drawImage(amountTextureOnes, streakX + (int) (112.0 * scale), streakY, (int) (20.0 * scale), (int) (20.0 * scale), Main.getGamePanel());
-
-        BufferedImage amountTextureTens = Main.getResources().getTexture("ui/numbers/" + (streakCount / 10) % 10 + ":0");
-        ctx.drawImage(amountTextureTens, streakX + (int) (96.0 * scale), streakY, (int) (20.0 * scale), (int) (20.0 * scale), Main.getGamePanel());
+        drawCenteredText(ctx, streakX + streakWidth / 2, streakY - textSize, textSize, "Streak " + GamePanel.getPlayer().currentStreak, Color.WHITE);
     }
 
     // Placeholder: Counts XP in-game (should be polished and repurposed)
     public static void drawXP(Graphics2D ctx) {
+        int xpCount = GamePanel.getPlayer().xpCount;
         double scale = getGuiScale();
+        int size = (int) (20 * scale);
 
-        int numberScale = (int) (20 * scale);
-        int xpX = 0;
-        int xpY = Main.getGamePanel().getHeight() - (int) (25.0 * scale);
-
-        int xpCount = GamePanel.player.xpCount;
-        BufferedImage amountTextureOnes = Main.getResources().getTexture("ui/numbers/" + xpCount % 10 + ":0");
-        ctx.drawImage(amountTextureOnes, xpX + (int) (48 * scale), xpY, numberScale, numberScale, Main.getGamePanel());
-
-        BufferedImage amountTextureTens = Main.getResources().getTexture("ui/numbers/" + (xpCount / 10) % 10 + ":0");
-        ctx.drawImage(amountTextureTens, xpX + (int) (32 * scale), xpY, numberScale, numberScale, Main.getGamePanel());
-
-        BufferedImage amountTextureHunds = Main.getResources().getTexture("ui/numbers/" + (xpCount / 100) % 10 + ":0");
-        ctx.drawImage(amountTextureHunds, xpX + (int) (16 * scale), xpY, numberScale, numberScale, Main.getGamePanel());
-
-        BufferedImage amountTextureThous = Main.getResources().getTexture("ui/numbers/" + (xpCount / 1000) % 10 + ":0");
-        ctx.drawImage(amountTextureThous, xpX, xpY, numberScale, numberScale, Main.getGamePanel());
+        drawText(ctx, size, Main.getGamePanel().getHeight() - size * 2, size, String.valueOf(xpCount), Color.WHITE);
     }
 
     public static void drawPauseMenu(Graphics2D ctx) {
@@ -219,25 +194,83 @@ public class UI {
 
         BufferedImage menuTexture = Main.getResources().getTexture("ui/menu");
         ctx.drawImage(menuTexture, menuX, menuY, menuWidth, menuHeight, Main.getGamePanel());
+
+        drawCenteredText(ctx, menuX + menuWidth / 2, menuY + menuHeight / 2 - (int) (80.0f * scale), (int) (20.0f * scale), "Resume", pauseMenuSelection == 0 ? pauseMenuSelectColor : pauseMenuDefaultColor);
+        drawCenteredText(ctx, menuX + menuWidth / 2, menuY + menuHeight / 2 - (int) (40.0f * scale), (int) (20.0f * scale), "Stay Paused", pauseMenuSelection == 1 ? pauseMenuSelectColor : pauseMenuDefaultColor);
+        drawCenteredText(ctx, menuX + menuWidth / 2, menuY + menuHeight / 2 /*    Random  Spacer    */, (int) (20.0f * scale), "Be Paused", pauseMenuSelection == 2 ? pauseMenuSelectColor : pauseMenuDefaultColor);
+        drawCenteredText(ctx, menuX + menuWidth / 2, menuY + menuHeight / 2 + (int) (40.0f * scale), (int) (20.0f * scale), "Keep Pausing", pauseMenuSelection == 3 ? pauseMenuSelectColor : pauseMenuDefaultColor);
+        drawCenteredText(ctx, menuX + menuWidth / 2, menuY + menuHeight / 2 + (int) (80.0f * scale), (int) (20.0f * scale), "Exit Game", pauseMenuSelection == 4 ? pauseMenuSelectColor : pauseMenuDefaultColor);
     }
 
-    public static void drawText(Graphics2D ctx, int x, int y, int magnitude, String text) {
-        double scale = getGuiScale();
+    public static void drawText(Graphics2D ctx, int x, int y, int size, String text, Color color) {
+        BufferedImage textImg = tintImage(generateText(size, text), color);
+
+        ctx.drawImage(textImg, x, y, textImg.getWidth(), textImg.getHeight(), Main.getGamePanel());
+    }
+
+    public static void drawCenteredText(Graphics2D ctx, int x, int y, int size, String text, Color color) {
+        double sub = size / 5.0d; // Unit for a sub pixel of a letter
+        drawText(ctx, (int) (x - (size + sub) / 2.0d * text.length() + (size + sub) / 4.0d), (int) (y - size / 2.0d), size, text, color);
+    }
+
+    private static BufferedImage generateText(int size, String text) {
         String matText = text.toUpperCase();
+        double sub = size / 5.0d; // Unit for a sub pixel of a letter
+        BufferedImage textImg = new BufferedImage(size * matText.length() + (int) (sub * matText.length() - 1), size, BufferedImage.TRANSLUCENT);
+        Graphics2D ctx = (Graphics2D) textImg.getGraphics();
 
-        int size = (int) (7 * magnitude * scale);
-        int sub = size / 7;
-
-        for (int i = 0, offset = -sub; i < matText.length(); i++, offset += size - sub) {
+        for (int i = 0; i < matText.length(); i++) {
             char letter = matText.charAt(i);
-            int charIndex = (int) letter - 1;
 
-            BufferedImage letterTexture = Main.getResources().getTexture("ui/font/" + charIndex + ":0");
-            ctx.drawImage(letterTexture, x + offset, y, size, size, Main.getGamePanel());
+            BufferedImage letterTexture = Main.getResources().getTexture("ui/font/" + (int) letter + ":0");
+            ctx.drawImage(letterTexture, (int) (i * size + i * sub), 0, size, size, Main.getGamePanel());
         }
+
+        return textImg;
+    }
+
+    public static BufferedImage tintImage(BufferedImage sprite, float red, float green, float blue, float alpha) {
+        BufferedImage maskImg = new BufferedImage(sprite.getWidth(), sprite.getHeight(), BufferedImage.TRANSLUCENT);
+        int rgb = new Color(red, green, blue, alpha).getRGB();
+
+        for (int i = 0; i < sprite.getWidth(); i++) {
+            for (int j = 0; j < sprite.getHeight(); j++) {
+                int color = sprite.getRGB(i, j);
+
+                if (color != 0) {
+                    maskImg.setRGB(i, j, rgb);
+                }
+            }
+        }
+
+        return maskImg;
+    }
+
+    public static BufferedImage tintImage(BufferedImage sprite, Color color) {
+        float r = color.getRed() / 255.0f;
+        float g = color.getGreen() / 255.0f;
+        float b = color.getBlue() / 255.0f;
+        float a = color.getAlpha() / 255.0f;
+
+        return tintImage(sprite, r, g, b, a);
     }
 
     private static double getGuiScale() {
         return Math.min(Math.min(Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight()), 800.0) / 800.0;
     }
+
+    @EventHandler(eventName = "keyDown")
+    public static void onPauseMenuUpdate() {
+        if (Controls.isKeyPressed(Controls.downKey)) {
+            pauseMenuSelection = (int) Caboodle.wrap(pauseMenuSelection + 1, 0, 5);
+        } else if (Controls.isKeyPressed(Controls.upKey)) {
+            pauseMenuSelection = (int) Caboodle.wrap(pauseMenuSelection - 1, 0, 5);
+        } else if (Controls.isKeyPressed(Controls.selectKey)) {
+            switch (pauseMenuSelection) {
+                case 0 -> Main.getGamePanel().setPaused(false);
+                case 4 -> System.exit(0);
+            }
+        }
+    }
+
 }

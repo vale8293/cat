@@ -47,7 +47,7 @@ public class Tile {
     }
 
     public BufferedImage getTexture(Connector connector) {
-        return Main.getResources().getTexture(textureKey + "/" + connector.getX() + ":" + connector.getY());
+        return Main.getResources().getTexture(textureKey + "/" + connector.getTextureX() + ":" + connector.getTextureY());
     }
 
     public boolean isConnected() {

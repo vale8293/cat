@@ -2,11 +2,12 @@ package org.acitech.entities.enemies;
 
 import org.acitech.entities.Enemy;
 import org.acitech.inventory.ItemType;
+import org.acitech.tilemap.Room;
 
 public class Jordan extends Enemy {
 
-    public Jordan(double startX, double startY) {
-        super(startX, startY, "Jordan", "Skitter");
+    public Jordan(Room room, double startX, double startY) {
+        super(room, startX, startY, "Jordan", "Skitter");
 
         // Animation & Visuals
         this.aniLength = 6;
