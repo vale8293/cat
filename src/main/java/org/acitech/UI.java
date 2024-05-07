@@ -202,6 +202,10 @@ public class UI {
         drawCenteredText(ctx, menuX + menuWidth / 2, menuY + menuHeight / 2 + (int) (80.0f * scale), (int) (20.0f * scale), "Exit Game", pauseMenuSelection == 4 ? pauseMenuSelectColor : pauseMenuDefaultColor);
     }
 
+    public static void drawTopText(Graphics2D ctx, String text) {
+        UI.drawCenteredText(ctx, Main.getGamePanel().getWidth() / 2, Main.getGamePanel().getHeight() / 4, (int) (20.0f * getGuiScale()), text, Color.white);
+    }
+
     public static void drawText(Graphics2D ctx, int x, int y, int size, String text, Color color) {
         BufferedImage textImg = tintImage(generateText(size, text), color);
 

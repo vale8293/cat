@@ -2,6 +2,7 @@ package org.acitech.tilemap;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.entities.Enemy;
 import org.acitech.entities.Entity;
 import org.acitech.entities.Item;
 import org.acitech.entities.enemies.Jordan;
@@ -97,8 +98,7 @@ public class Room {
         ArrayList<Item> pickupItems = new ArrayList<>();
 
         // Add newly created entities
-        entities.addAll(newEntities);
-        newEntities.clear();
+        flushNewEntities();
 
         // Loop through each entity and tick them
         for (Entity entity : entities) {
@@ -131,15 +131,32 @@ public class Room {
     }
 
     public void addNewEntity(Entity entity) {
-        newEntities.add(entity);
+        this.newEntities.add(entity);
+    }
+
+    /** Force adds new entities into the entities list */
+    public void flushNewEntities() {
+        entities.addAll(newEntities);
+        newEntities.clear();
     }
 
     public void removeEntity(Entity entity) {
-        entities.remove(entity);
+        this.entities.remove(entity);
     }
 
     public HashSet<Entity> getEntities() {
-        return entities;
+        return this.entities;
+    }
+
+    /** @return Whether the room is clear of enemies */
+    public boolean isRoomClear() {
+        for (Entity entity : this.entities) {
+            if (entity instanceof Enemy) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private void drawBackground(Graphics2D ctx) {

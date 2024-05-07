@@ -16,6 +16,7 @@ public class Map {
     public void generateRooms(int amount) {
         for (int i = 0; i < amount; i++) {
             Room room = new Room(21, 21, this.seedRng.nextInt());
+            room.flushNewEntities();
             rooms.add(room);
         }
 
@@ -26,6 +27,10 @@ public class Map {
 
     public Room getRoom(int index) {
         return rooms.get(index);
+    }
+
+    public ArrayList<Room> getRooms() {
+        return rooms;
     }
 
     public Room getCurrentRoom() {

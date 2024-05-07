@@ -5,12 +5,14 @@ import org.acitech.inputs.Controls;
 import org.acitech.inventory.ItemStack;
 import org.acitech.inventory.ItemType;
 import org.acitech.tilemap.Map;
+import org.acitech.tilemap.Room;
 import org.acitech.tilemap.Tile;
 import org.acitech.utils.Broadcast;
 import org.acitech.utils.Vector2d;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -23,6 +25,8 @@ public class GamePanel extends JPanel implements Runnable {
     private static Vector2d camera = new Vector2d(0, 0);
     private static Vector2d upperBounds = new Vector2d(0, 0);
     private static Vector2d lowerBounds = new Vector2d(0, 0);
+    private double teleportTime = fps * 10;
+    private double teleportTimer = teleportTime;
 
     public GamePanel() {
         // Configure the JPanel
@@ -95,6 +99,25 @@ public class GamePanel extends JPanel implements Runnable {
         if (!paused) {
             map.getCurrentRoom().tick(delta);
 
+            if (map.getCurrentRoom().isRoomClear()) {
+                teleportTimer -= delta;
+
+                if (teleportTimer <= 0) {
+                    teleportTimer = teleportTime;
+                    ArrayList<Room> rooms = map.getRooms();
+                    Room unclearedRoom = getNextAvailableRoom();
+
+                    System.out.println("fuck " + unclearedRoom + " | " + rooms.size());
+
+                    if (unclearedRoom != null) { // There be another room to fight
+                        player.changeRoom(unclearedRoom);
+                        map.changeRoom(rooms.indexOf(unclearedRoom));
+                    } else { // All rooms have been cleared
+                        // TODO: game over broski
+                    }
+                }
+            }
+
             // Clear the list of mouse clicks
             Controls.flushClicks();
 
@@ -107,8 +130,7 @@ public class GamePanel extends JPanel implements Runnable {
                 paused = true;
                 unEscaped = false;
             }
-        }
-        else {
+        } else {
             // Check for pausing
             if (!Controls.isKeyPressed(Controls.pauseKey)) {
                 unEscaped = true;
@@ -136,9 +158,23 @@ public class GamePanel extends JPanel implements Runnable {
 
         if (paused) {
             UI.drawPauseMenu(ctx);
+        } else {
+            if (teleportTimer != teleportTime) {
+                UI.drawTopText(ctx, "Teleporting in " + (Math.floor(teleportTimer / fps * 10.0d) / 10.0d));
+            }
         }
 
         ctx.dispose();
+    }
+
+    private Room getNextAvailableRoom() {
+        for (Room room : this.map.getRooms()) {
+            if (!room.isRoomClear()) {
+                return room;
+            }
+        }
+
+        return null;
     }
 
     private void updateCamera() {
