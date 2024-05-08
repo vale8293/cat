@@ -27,6 +27,7 @@ public class GamePanel extends JPanel implements Runnable {
     private static Vector2d lowerBounds = new Vector2d(0, 0);
     private double teleportTime = fps * 10;
     private double teleportTimer = teleportTime;
+    private boolean gameOver = false;
 
     public GamePanel() {
         // Configure the JPanel
@@ -100,20 +101,17 @@ public class GamePanel extends JPanel implements Runnable {
             map.getCurrentRoom().tick(delta);
 
             if (map.getCurrentRoom().isRoomClear()) {
-                teleportTimer -= delta;
+                if (getNextAvailableRoom() == null) {
+                    gameOver = true;
+                } else {
+                    if (teleportTimer <= 0) {
+                        teleportTimer = teleportTime;
+                        ArrayList<Room> rooms = map.getRooms();
+                        Room unclearedRoom = getNextAvailableRoom();
 
-                if (teleportTimer <= 0) {
-                    teleportTimer = teleportTime;
-                    ArrayList<Room> rooms = map.getRooms();
-                    Room unclearedRoom = getNextAvailableRoom();
-
-                    System.out.println("fuck " + unclearedRoom + " | " + rooms.size());
-
-                    if (unclearedRoom != null) { // There be another room to fight
+                        // Place the player in the next available room
                         player.changeRoom(unclearedRoom);
                         map.changeRoom(rooms.indexOf(unclearedRoom));
-                    } else { // All rooms have been cleared
-                        // TODO: game over broski
                     }
                 }
             }
@@ -159,7 +157,9 @@ public class GamePanel extends JPanel implements Runnable {
         if (paused) {
             UI.drawPauseMenu(ctx);
         } else {
-            if (teleportTimer != teleportTime) {
+            if (gameOver) {
+                UI.drawTopText(ctx, "Game Over");
+            } else if (teleportTimer != teleportTime) {
                 UI.drawTopText(ctx, "Teleporting in " + (Math.floor(teleportTimer / fps * 10.0d) / 10.0d));
             }
         }
