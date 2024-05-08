@@ -1,5 +1,7 @@
 package org.acitech.tilemap;
 
+import org.acitech.tilemap.rooms.StandardRoom;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -15,7 +17,7 @@ public class Map {
 
     public void generateRooms(int amount) {
         for (int i = 0; i < amount; i++) {
-            Room room = new Room(21, 21, this.seedRng.nextInt());
+            Room room = new StandardRoom(21, 21, this.seedRng.nextInt());
             room.flushNewEntities();
             rooms.add(room);
         }

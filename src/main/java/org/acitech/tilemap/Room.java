@@ -5,9 +5,6 @@ import org.acitech.Main;
 import org.acitech.entities.Enemy;
 import org.acitech.entities.Entity;
 import org.acitech.entities.Item;
-import org.acitech.entities.enemies.Jordan;
-import org.acitech.entities.enemies.Pepto;
-import org.acitech.entities.enemies.Rico;
 import org.acitech.utils.Caboodle;
 import org.acitech.utils.Vector2d;
 import org.spongepowered.noise.module.source.Simplex;
@@ -18,19 +15,19 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 
-public class Room {
+abstract public class Room {
 
     private final Tile[][] tilemap;
     private final Connector[][][] ctmmap;
     private final Vector2d cloudOffset;
     private double cloudAngle;
     private final Random cloudRng;
-    private final int maxWidth;
-    private final int maxHeight;
+    protected final int maxWidth;
+    protected final int maxHeight;
     private final Color skyColor;
     private final Random seedRng;
     private final Simplex tuftSimplex;
-    private final Simplex terrainSimplex;
+    protected final Simplex terrainSimplex;
     private final HashSet<Entity> newEntities = new HashSet<>();
     private final HashSet<Entity> entities = new HashSet<>();
 
@@ -58,41 +55,10 @@ public class Room {
         generateEntities();
     }
 
-    private void generateTilemap() {
-        Vector2d centerMap = new Vector2d(this.maxWidth / 2d, this.maxHeight / 2d);
+    protected abstract void generateTilemap();
 
-        for (int x = 0; x < this.maxWidth; x++) {
-            for (int y = 0; y < this.maxHeight; y++) {
-                if (centerMap.distance(new Vector2d(x, y)) < this.maxWidth / 2d) {
-                    double noise = this.terrainSimplex.get((double) x / 10, (double) y / 10, 0);
+    protected abstract void generateEntities();
 
-                    if (noise > 1) {
-                        setTile(x, y, Tile.dirt);
-                    } else {
-                        setTile(x, y, Tile.grass);
-                    }
-                }
-            }
-        }
-    }
-
-    private void generateEntities() {
-        // Test Rico
-        for (int i = 0; i < 5; i++) {
-            new Rico(this, Math.random() * getWidth() * Tile.tileSize, Math.random() * getHeight() * Tile.tileSize);
-        }
-
-        // Test Pepto
-        for (int i = 0; i < 5; i++) {
-            new Pepto(this, Math.random() * getWidth() * Tile.tileSize, Math.random() * getHeight() * Tile.tileSize);
-        }
-
-        // Test Jordan
-        for (int i = 0; i < 5; i++) {
-            new Jordan(this, Math.random() * getWidth() * Tile.tileSize, Math.random() * getHeight() * Tile.tileSize);
-        }
-    }
-    
     public void tick(double delta) {
         ArrayList<Entity> disposedEntities = new ArrayList<>();
         ArrayList<Item> pickupItems = new ArrayList<>();
