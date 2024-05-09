@@ -5,6 +5,9 @@ import org.acitech.entities.enemies.Pepto;
 import org.acitech.entities.enemies.Rico;
 import org.acitech.tilemap.Room;
 import org.acitech.tilemap.Tile;
+import org.acitech.utils.Vector2d;
+
+import java.util.ArrayList;
 
 public class StandardRoom extends Room {
 
@@ -29,19 +32,27 @@ public class StandardRoom extends Room {
 
     @Override
     protected void generateEntities() {
+        ArrayList<Vector2d> safeSpawns = this.getSafeTiles();
+
         // Test Rico
         for (int i = 0; i < 5; i++) {
-            new Rico(this, Math.random() * getWidth() * Tile.tileSize, Math.random() * getHeight() * Tile.tileSize);
+            Vector2d pos = safeSpawns.get(spawnRng.nextInt(safeSpawns.size()));
+
+            new Rico(this, pos.getX(), pos.getY());
         }
 
         // Test Pepto
         for (int i = 0; i < 5; i++) {
-            new Pepto(this, Math.random() * getWidth() * Tile.tileSize, Math.random() * getHeight() * Tile.tileSize);
+            Vector2d pos = safeSpawns.get(spawnRng.nextInt(safeSpawns.size()));
+
+            new Pepto(this, pos.getX(), pos.getY());
         }
 
         // Test Jordan
         for (int i = 0; i < 5; i++) {
-            new Jordan(this, Math.random() * getWidth() * Tile.tileSize, Math.random() * getHeight() * Tile.tileSize);
+            Vector2d pos = safeSpawns.get(spawnRng.nextInt(safeSpawns.size()));
+
+            new Jordan(this, pos.getX(), pos.getY());
         }
     }
 }

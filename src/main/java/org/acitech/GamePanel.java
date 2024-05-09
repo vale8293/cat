@@ -58,7 +58,8 @@ public class GamePanel extends JPanel implements Runnable {
 
         // Position the player
         player = new Player(map.getCurrentRoom());
-        player.position.set(Tile.tileSize * 7.0d, Tile.tileSize * 7.0d);
+        ArrayList<Vector2d> safeSpawns = player.getRoom().getSafeTiles();
+        player.position.set(safeSpawns.get(new Random().nextInt(safeSpawns.size())));
 
         // Give spell tomes
         player.spellInv.addItem(new ItemStack(ItemType.FIRE_TOME_1));

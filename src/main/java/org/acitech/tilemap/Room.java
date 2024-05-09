@@ -25,6 +25,7 @@ abstract public class Room {
     protected final int maxWidth;
     protected final int maxHeight;
     private final Color skyColor;
+    protected final Random spawnRng;
     private final Random seedRng;
     private final Simplex tuftSimplex;
     protected final Simplex terrainSimplex;
@@ -47,6 +48,7 @@ abstract public class Room {
         this.tuftSimplex.setSeed(seedRng.nextInt());
         this.terrainSimplex = new Simplex();
         this.terrainSimplex.setSeed(seedRng.nextInt());
+        this.spawnRng = new Random(seedRng.nextInt());
 
         // Generate the tilemap
         generateTilemap();
@@ -94,55 +96,6 @@ abstract public class Room {
         for (Entity entity : disposedEntities) {
             entities.remove(entity);
         }
-    }
-
-    public void addNewEntity(Entity entity) {
-        this.newEntities.add(entity);
-    }
-
-    /** Force adds new entities into the entities list */
-    public void flushNewEntities() {
-        entities.addAll(newEntities);
-        newEntities.clear();
-    }
-
-    public void removeEntity(Entity entity) {
-        this.entities.remove(entity);
-    }
-
-    public HashSet<Entity> getEntities() {
-        return this.entities;
-    }
-
-    /** @return Whether the room is clear of enemies */
-    public boolean isRoomClear() {
-        for (Entity entity : this.entities) {
-            if (entity instanceof Enemy) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private void drawBackground(Graphics2D ctx) {
-        ctx.setColor(this.skyColor);
-        ctx.fillRect(0, 0, Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight());
-
-        BufferedImage image = Main.getResources().getTexture("environment/clouds");
-        int size = Math.max(Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight());
-        int span = size / Tile.tileSize * Tile.tileSize / 4;
-
-        cloudOffset.set(Caboodle.wrap(cloudOffset.getX(), 0, image.getWidth() - span), Caboodle.wrap(cloudOffset.getY(), 0, image.getHeight() - span));
-
-        ctx.drawImage(image, 0, 0, size, size, (int) cloudOffset.getX(), (int) cloudOffset.getY(), (int) cloudOffset.getX() + span, (int) cloudOffset.getY() + span, Main.getGamePanel());
-
-        double x = Math.cos(cloudAngle) * 0.5;
-        double y = Math.sin(cloudAngle) * 0.5;
-
-        cloudOffset.add(x, y);
-        cloudAngle += cloudRng.nextDouble(-0.1, 0.1);
-        cloudAngle = cloudAngle % (Math.PI * 2);
     }
 
     public void draw(Graphics2D ctx) {
@@ -208,6 +161,55 @@ abstract public class Room {
         for (Entity entity : new ArrayList<>(entities)) {
             entity.draw(ctx);
         }
+    }
+
+    private void drawBackground(Graphics2D ctx) {
+        ctx.setColor(this.skyColor);
+        ctx.fillRect(0, 0, Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight());
+
+        BufferedImage image = Main.getResources().getTexture("environment/clouds");
+        int size = Math.max(Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight());
+        int span = size / Tile.tileSize * Tile.tileSize / 4;
+
+        cloudOffset.set(Caboodle.wrap(cloudOffset.getX(), 0, image.getWidth() - span), Caboodle.wrap(cloudOffset.getY(), 0, image.getHeight() - span));
+
+        ctx.drawImage(image, 0, 0, size, size, (int) cloudOffset.getX(), (int) cloudOffset.getY(), (int) cloudOffset.getX() + span, (int) cloudOffset.getY() + span, Main.getGamePanel());
+
+        double x = Math.cos(cloudAngle) * 0.5;
+        double y = Math.sin(cloudAngle) * 0.5;
+
+        cloudOffset.add(x, y);
+        cloudAngle += cloudRng.nextDouble(-0.1, 0.1);
+        cloudAngle = cloudAngle % (Math.PI * 2);
+    }
+
+    public void addNewEntity(Entity entity) {
+        this.newEntities.add(entity);
+    }
+
+    /** Force adds new entities into the entities list */
+    public void flushNewEntities() {
+        entities.addAll(newEntities);
+        newEntities.clear();
+    }
+
+    public void removeEntity(Entity entity) {
+        this.entities.remove(entity);
+    }
+
+    public HashSet<Entity> getEntities() {
+        return this.entities;
+    }
+
+    /** @return Whether the room is clear of enemies */
+    public boolean isRoomClear() {
+        for (Entity entity : this.entities) {
+            if (entity instanceof Enemy) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /** Checks if a specific tile type is at specific coordinates */
@@ -288,6 +290,22 @@ abstract public class Room {
 
     public int getHeight() {
         return this.maxHeight;
+    }
+
+    public ArrayList<Vector2d> getSafeTiles() {
+        ArrayList<Vector2d> safeTiles = new ArrayList<>();
+
+        for (int x = 0; x < this.maxWidth; x++) {
+            for (int y = 0; y < this.maxHeight; y++) {
+                Tile tile = tilemap[x][y];
+
+                if (tile != null) {
+                    safeTiles.add(new Vector2d(x, y).multiply(Tile.tileSize).add(Tile.tileSize / 2d));
+                }
+            }
+        }
+
+        return safeTiles;
     }
 
 }
