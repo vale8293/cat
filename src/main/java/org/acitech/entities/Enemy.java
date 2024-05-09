@@ -5,6 +5,7 @@ import org.acitech.Main;
 import org.acitech.UI;
 import org.acitech.entities.ai.AI;
 import org.acitech.entities.ai.Fighter;
+import org.acitech.entities.ai.Hawk;
 import org.acitech.entities.ai.Skitter;
 import org.acitech.inventory.ItemStack;
 import org.acitech.inventory.ItemType;
@@ -19,12 +20,12 @@ import java.util.Random;
 abstract public class Enemy extends Entity {
 
     // Identifiers
-    private final String enemyName;
+    protected final String enemyName;
     private final AI enemyAI;
     public ArrayList<ItemType> itemPool = new ArrayList<>();
 
     // Animation & Visuals
-    private int animationTick = 0;
+    protected int animationTick = 0;
     public int aniLength = 1;
     public int aniFrameDuration = 1;
     public int width = 160;
@@ -60,6 +61,7 @@ abstract public class Enemy extends Entity {
         switch (ai.toLowerCase()) {
             case "fighter" -> this.enemyAI = new Fighter(this);
             case "skitter" -> this.enemyAI = new Skitter(this);
+            case "hawk" -> this.enemyAI = new Hawk(this);
             default -> this.enemyAI = null;
         }
     }
@@ -116,7 +118,6 @@ abstract public class Enemy extends Entity {
             }
         }
     }
-
     @Override
     // Handles graphics
     public void draw(Graphics2D ctx) {
@@ -193,12 +194,16 @@ abstract public class Enemy extends Entity {
     public int getHealth() {
         return health;
     }
-
     public int getMaxHealth() {
         return maxHealth;
     }
-
     public AI getAI() {
         return enemyAI;
+    }
+    public int getAnimationTick() {
+        return animationTick;
+    }
+    public void resetTick(){
+        animationTick = 0;
     }
 }

@@ -14,9 +14,9 @@ public class Explosion extends Entity {
     // Animation & Visuals
     private String explosionType;
     private int animationTick = -1;
-    public int aniLength = 4;
-    public int aniFrameDuration = 3;
-    public int kbMult = 0;
+    public int aniLength;
+    public int aniFrameDuration;
+    public int kbMult;
     public int width = 160;
     public int height = 160;
 

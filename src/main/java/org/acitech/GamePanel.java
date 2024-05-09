@@ -54,7 +54,7 @@ public class GamePanel extends JPanel implements Runnable {
     private void initGame() {
         // Create a map
         map = new Map(new Random().nextInt());
-        map.generateRooms(3);
+        map.generateRooms(1);
 
         // Position the player
         player = new Player(map.getCurrentRoom());

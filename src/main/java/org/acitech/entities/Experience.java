@@ -40,7 +40,6 @@ public class Experience extends Entity {
             this.dispose();
         }
     }
-
     @Override
     // Handles graphics
     public void draw(Graphics2D ctx) {

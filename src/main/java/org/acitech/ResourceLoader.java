@@ -34,6 +34,8 @@ public class ResourceLoader {
                 loadSpriteSheet("enemies/Rico", "enemies/Rico.png", 32, 32) &&
                 loadSpriteSheet("enemies/Pepto", "enemies/Pepto.png", 32, 32) &&
                 loadSpriteSheet("enemies/Jordan", "enemies/Jordan.png", 32, 32) &&
+                loadSpriteSheet("enemies/Pteri", "enemies/Pteri.png", 32, 32) &&
+
 
                 // Items
                 loadTexture("items/water_material", "items/water_material.png") &&
@@ -56,7 +58,7 @@ public class ResourceLoader {
                 loadSound("fireball", "player/fireCast.wav") &&
 
                 // Other Projectiles
-
+                        loadSpriteSheet("projectiles/featherProj", "projectiles/featherProj.png", 16, 16) &&
 
                 // Effects
                 loadSpriteSheet("effect/explosion_fire", "effect/explosion_fire.png", 32, 32) &&
