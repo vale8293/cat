@@ -17,7 +17,7 @@ public class BossRoom extends Room {
 
         for (int x = 0; x < this.maxWidth; x++) {
             for (int y = 0; y < this.maxHeight; y++) {
-                if (centerMap.distance(new Vector2d(x, y)) < this.maxWidth / 2d) {
+                if (centerMap.distance(new Vector2d(x, y)) < Math.max(this.maxWidth, this.maxHeight) / 2d) {
                     double noise = this.terrainSimplex.get((double) x / 10, (double) y / 10, 0);
 
                     if (noise > 1) {
