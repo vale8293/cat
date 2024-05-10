@@ -56,7 +56,7 @@ public class GamePanel extends JPanel implements Runnable {
         map = new Map(new Random().nextInt());
 
         // Position the player
-        player = new Player(map.getCurrentRoom());
+        player = new Player(map.getRooms().get(0));
         ArrayList<Vector2d> safeSpawns = player.getRoom().getSafeTiles();
         player.position.set(safeSpawns.get(new Random().nextInt(safeSpawns.size())));
 
@@ -98,7 +98,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     private void update(double delta) {
         if (!paused) {
-            map.getCurrentRoom().tick(delta);
+            map.tick(delta);
 
             if (map.getCurrentRoom().isRoomClear()) {
                 Room unclearedRoom = getNextAvailableRoom();
@@ -110,11 +110,9 @@ public class GamePanel extends JPanel implements Runnable {
 
                     if (teleportTimer <= 0) {
                         teleportTimer = teleportTime;
-                        ArrayList<Room> rooms = map.getRooms();
 
                         // Place the player in the next available room
                         player.changeRoom(unclearedRoom);
-                        map.changeRoom(rooms.indexOf(unclearedRoom));
                         UI.restartDarknessTransition();
                     }
                 }
@@ -150,7 +148,7 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D ctx = (Graphics2D) g;
 
         // Draw the current room
-        map.getCurrentRoom().draw(ctx);
+        map.draw(ctx);
 
         // Draw the player & ui
         UI.draw(ctx);
