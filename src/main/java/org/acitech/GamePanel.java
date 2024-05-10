@@ -54,7 +54,6 @@ public class GamePanel extends JPanel implements Runnable {
     private void initGame() {
         // Create a map
         map = new Map(new Random().nextInt());
-        map.generateRooms(1);
 
         // Position the player
         player = new Player(map.getCurrentRoom());
@@ -102,17 +101,21 @@ public class GamePanel extends JPanel implements Runnable {
             map.getCurrentRoom().tick(delta);
 
             if (map.getCurrentRoom().isRoomClear()) {
-                if (getNextAvailableRoom() == null) {
+                Room unclearedRoom = getNextAvailableRoom();
+
+                if (unclearedRoom == null) {
                     gameOver = true;
                 } else {
+                    teleportTimer -= delta;
+
                     if (teleportTimer <= 0) {
                         teleportTimer = teleportTime;
                         ArrayList<Room> rooms = map.getRooms();
-                        Room unclearedRoom = getNextAvailableRoom();
 
                         // Place the player in the next available room
                         player.changeRoom(unclearedRoom);
                         map.changeRoom(rooms.indexOf(unclearedRoom));
+                        UI.restartDarknessTransition();
                     }
                 }
             }
@@ -154,6 +157,9 @@ public class GamePanel extends JPanel implements Runnable {
 
         // Update the camera position
         updateCamera();
+
+        // Draw darkness
+        UI.drawDarknessTransition(ctx);
 
         if (paused) {
             UI.drawPauseMenu(ctx);

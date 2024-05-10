@@ -17,6 +17,7 @@ public class UI {
     private static int pauseMenuSelection = 0;
     private static final Color pauseMenuSelectColor = new Color(0xff3399);
     private static final Color pauseMenuDefaultColor = new Color(0xffffff);
+    private static float darknessTransition = 0;
 
     // Draws all UI elements
     public static void draw(Graphics2D ctx) {
@@ -204,6 +205,19 @@ public class UI {
 
     public static void drawTopText(Graphics2D ctx, String text) {
         UI.drawCenteredText(ctx, Main.getGamePanel().getWidth() / 2, Main.getGamePanel().getHeight() / 4, (int) (20.0f * getGuiScale()), text, Color.white);
+    }
+
+    public static void drawDarknessTransition(Graphics2D ctx) {
+        if (darknessTransition == 0) return;
+
+        ctx.setColor(new Color(0.0f, 0.0f, 0.0f, darknessTransition));
+        ctx.fillRect(0, 0, Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight());
+
+        darknessTransition = Math.max(0.0f, darknessTransition - 0.05f);
+    }
+
+    public static void restartDarknessTransition() {
+        darknessTransition = 1.0f;
     }
 
     public static void drawText(Graphics2D ctx, int x, int y, int size, String text, Color color) {

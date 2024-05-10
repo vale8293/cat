@@ -1,5 +1,6 @@
 package org.acitech.tilemap;
 
+import org.acitech.tilemap.rooms.BossRoom;
 import org.acitech.tilemap.rooms.StandardRoom;
 
 import java.util.ArrayList;
@@ -13,14 +14,16 @@ public class Map {
 
     public Map(int seed) {
         this.seedRng = new Random(seed);
-    }
 
-    public void generateRooms(int amount) {
-        for (int i = 0; i < amount; i++) {
-            Room room = new StandardRoom(21, 21, this.seedRng.nextInt());
+        for (int i = 0; i < 2; i++) {
+            StandardRoom room = new StandardRoom(21, 21, this.seedRng.nextInt());
             room.flushNewEntities();
             rooms.add(room);
         }
+
+        BossRoom room = new BossRoom(21, 21, this.seedRng.nextInt());
+        room.flushNewEntities();
+        rooms.add(room);
 
         if (currentRoomIndex == -1) {
             currentRoomIndex = 0;
@@ -42,4 +45,5 @@ public class Map {
     public void changeRoom(int index) {
         this.currentRoomIndex = index;
     }
+
 }
