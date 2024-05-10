@@ -52,7 +52,6 @@ public class Projectile extends Entity {
     }
 
     @Override
-    // Do this stuff every frame
     protected void tick(double delta) {
         if (this.projectileAI != null) {
             this.projectileAI.execute(delta);
@@ -60,7 +59,6 @@ public class Projectile extends Entity {
     }
 
     @Override
-    // Handles graphics
     public void draw(Graphics2D ctx) {
         BufferedImage texture;
 

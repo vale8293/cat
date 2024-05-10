@@ -80,7 +80,6 @@ public class Player extends Entity {
     Clip sndFire = Main.getResources().getSound("fireball");
 
     @Override
-    // Do this stuff every frame
     protected void tick(double delta) {
         if (this.alive) {
             this.deathCheck();
@@ -189,7 +188,6 @@ public class Player extends Entity {
     }
 
     @Override
-    // Handles graphics
     public void draw(Graphics2D ctx) {
         BufferedImage texture = Main.getResources().getTexture("cow");
 

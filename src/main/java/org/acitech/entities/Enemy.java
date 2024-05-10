@@ -67,7 +67,6 @@ abstract public class Enemy extends Entity {
     }
 
     @Override
-    // Do this stuff every frame
     protected void tick(double delta) {
         if (this.damageTimer > 0) this.damageTimer--; // Reduce damage timer
 
@@ -119,7 +118,6 @@ abstract public class Enemy extends Entity {
         }
     }
     @Override
-    // Handles graphics
     public void draw(Graphics2D ctx) {
         BufferedImage texture = Main.getResources().getTexture("cow");
 

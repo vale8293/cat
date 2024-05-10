@@ -40,7 +40,6 @@ public class Pteri extends Enemy {
     }
 
     @Override
-    // Handles graphics
     public void draw(Graphics2D ctx) {
         BufferedImage texture = Main.getResources().getTexture("cow");
 
