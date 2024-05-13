@@ -292,6 +292,7 @@ abstract public class Room {
         return this.maxHeight;
     }
 
+    /** @return List of tile positions that an entity can safely spawn on */
     public ArrayList<Vector2d> getSafeTiles() {
         ArrayList<Vector2d> safeTiles = new ArrayList<>();
 

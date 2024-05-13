@@ -27,7 +27,6 @@ public class Experience extends Entity {
     }
 
     @Override
-    // Do this stuff every frame
     protected void tick(double delta) {
         Vector2d playerPos = GamePanel.getPlayer().position;
 
@@ -41,7 +40,6 @@ public class Experience extends Entity {
         }
     }
     @Override
-    // Handles graphics
     public void draw(Graphics2D ctx) {
         BufferedImage texture;
 

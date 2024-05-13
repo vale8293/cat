@@ -69,7 +69,9 @@ abstract public class Entity {
         }
     }
 
+    /** Ticks the entity */
     abstract protected void tick(double delta);
+    /** Draws the entity */
     abstract public void draw(Graphics2D ctx);
 
     /** @return The room the entity belongs to */

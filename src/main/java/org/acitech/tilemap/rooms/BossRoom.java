@@ -5,6 +5,8 @@ import org.acitech.tilemap.Room;
 import org.acitech.tilemap.Tile;
 import org.acitech.utils.Vector2d;
 
+import java.util.ArrayList;
+
 public class BossRoom extends Room {
 
     public BossRoom(int maxWidth, int maxHeight, int seed) {

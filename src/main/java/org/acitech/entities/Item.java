@@ -28,7 +28,6 @@ public class Item extends Entity {
     }
 
     @Override
-    // Do this stuff every frame
     protected void tick(double delta) {
         if (this.pickupImmunity > 0) {
             this.pickupImmunity--;
@@ -56,7 +55,6 @@ public class Item extends Entity {
     }
 
     @Override
-    // Handles graphics
     public void draw(Graphics2D ctx) {
         BufferedImage texture = this.itemStack.getType().getTexture();
         ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.getCamera().getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.getCamera().getY(), width, height, Main.getGamePanel());
