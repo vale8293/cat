@@ -57,6 +57,7 @@ public class Hawk implements AI {
                     this.enemy.resetTick();
                     this.aniWait = true;
                 }
+
                 if (this.enemy.getAnimationTick() == this.enemy.aniLength) {
                     this.aniWait = false;
                     this.aniCount = 0;
@@ -75,28 +76,62 @@ public class Hawk implements AI {
                     this.aniCount++;
 
                     // Spawn a feather projectile
-                    new Feather(this.enemy.getRoom(), this.enemy.position.getX(), this.enemy.position.getY(), playerPos.angleTo(this.enemy.position.getX(), this.enemy.position.getY()));
+                    new Feather(this.enemy.getRoom(), this.enemy.position.getX(), this.enemy.position.getY(), this.enemy.position.angleTo(playerPos), "enemy");
                 }
 
                 if (this.aniCount == 10) {
                     this.cycle++;
+                    this.aniCount = 0;
                     this.aniWait = false;
                 }
             }
 
             case 3 -> {
-                this.state = "landing";
-                this.cycle++;
+                if (!this.aniWait) {
+                    this.state = "landing";
+                    this.enemy.resetTick();
+                    this.aniWait = true;
+                }
+
+                if (this.aggression) {
+                    this.aniWait = false;
+                    this.cycle++;
+                }
             }
 
             case 4 -> {
-                this.state = "run";
-                this.cycle = 1;
+                if (!this.aniWait) {
+                    this.state = "run";
+                    this.enemy.resetTick();
+                    this.aniWait = true;
+                }
+
+                this.enemy.acceleration.set(playerPos);
+                this.enemy.acceleration.multiply(this.enemy.moveSpeed);
+
+                // If the enemy makes contact with the player
+                if (this.enemy.position.distance(playerPos) < Math.max(this.enemy.width / 2, this.enemy.height / 2)) {
+                    // Deal damage w/ elemental effect (none by default)
+                    if (GamePanel.getPlayer().damageTimer == 0) {
+                        GamePanel.getPlayer().damageTaken(this.enemy.attackDamage, this.enemy.damageElement);
+                    }
+
+                    // Knock back the enemy and player
+                    this.enemy.velocity.set(this.enemy.kbMult * -playerPos.getX(), this.enemy.kbMult * -playerPos.getY());
+                    GamePanel.getPlayer().velocity = this.enemy.velocity.copy().multiply((double) -GamePanel.getPlayer().kbMult / this.enemy.kbMult);
+                }
+
+                if (this.enemy.getAnimationTick() == this.enemy.aniLength) {
+                    this.aniCount++;
+                }
+
+                if (this.aniCount == 8) {
+                    this.cycle = 1;
+                    this.aniWait = false;
+                }
             }
-
         }
-
-        System.out.println(this.state + ", " + this.stateNum);
+        System.out.println(this.state);
     }
 
     @Override

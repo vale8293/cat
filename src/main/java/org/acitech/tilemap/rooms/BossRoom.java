@@ -1,6 +1,6 @@
 package org.acitech.tilemap.rooms;
 
-import org.acitech.entities.enemies.Rico;
+import org.acitech.entities.enemies.Pteri;
 import org.acitech.tilemap.Room;
 import org.acitech.tilemap.Tile;
 import org.acitech.utils.Vector2d;
@@ -32,7 +32,6 @@ public class BossRoom extends Room {
 
     @Override
     protected void generateEntities() {
-        // TODO: change to boss enemy
-        new Rico(this, Math.random() * getWidth() * Tile.tileSize, Math.random() * getHeight() * Tile.tileSize);
+        new Pteri(this, 19 * Tile.tileSize, 11 * Tile.tileSize);
     }
 }

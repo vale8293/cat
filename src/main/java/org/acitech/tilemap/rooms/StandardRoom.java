@@ -37,21 +37,18 @@ public class StandardRoom extends Room {
         // Test Rico
         for (int i = 0; i < 5; i++) {
             Vector2d pos = safeSpawns.get(spawnRng.nextInt(safeSpawns.size()));
-
             new Rico(this, pos.getX(), pos.getY());
         }
 
         // Test Pepto
         for (int i = 0; i < 5; i++) {
             Vector2d pos = safeSpawns.get(spawnRng.nextInt(safeSpawns.size()));
-
             new Pepto(this, pos.getX(), pos.getY());
         }
 
         // Test Jordan
         for (int i = 0; i < 5; i++) {
             Vector2d pos = safeSpawns.get(spawnRng.nextInt(safeSpawns.size()));
-
             new Jordan(this, pos.getX(), pos.getY());
         }
     }

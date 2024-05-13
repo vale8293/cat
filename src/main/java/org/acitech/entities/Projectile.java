@@ -14,7 +14,8 @@ import java.awt.image.BufferedImage;
 public class Projectile extends Entity {
 
     // Identifiers
-    private final String projectileName;
+    public final String projectileName;
+    protected String owner;
     public final double angle;
     public final Vector2d originPosition;
     private AI projectileAI;
@@ -30,18 +31,20 @@ public class Projectile extends Entity {
     public String onDeath = "none"; // Specifies what happens after the projectile runs out of collisions (ex: explode)
     public int onDeathDamage = 0;
     public int maxCollisions = 1;
+    public int lifetime;
     public int damage = 1;
     public String damageElement = "None";
     public double moveSpeed = 1;
     public int kbMult = 10;
 
-    public Projectile(Room room, double startX, double startY, double rot, String projectileName, String ai) {
+    public Projectile(Room room, double startX, double startY, double rot, String owner, String projectileName, String ai) {
         super(room);
 
         this.position = new Vector2d(startX, startY);
         this.originPosition = position.copy();
         this.angle = rot;
         this.friction = 0.9;
+        this.owner = owner;
         this.projectileName = projectileName;
 
         switch (ai.toLowerCase()) {
@@ -78,5 +81,9 @@ public class Projectile extends Entity {
         ctx.drawImage(texture, -width / 2, (int) -this.originPosition.distance(this.position) - height / 2, width, height, Main.getGamePanel());
 
         ctx.setTransform(oldXForm);
+    }
+
+    public String getOwner() {
+        return owner;
     }
 }

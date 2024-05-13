@@ -5,8 +5,8 @@ import org.acitech.tilemap.Room;
 
 public class Windball extends Projectile {
 
-    public Windball(Room room, double startX, double startY, double rot) {
-        super(room, startX, startY, rot, "windball", "bullet");
+    public Windball(Room room, double startX, double startY, double rot, String owner) {
+        super(room, startX, startY, rot, owner, "windball", "bullet");
 
         // Animation & Visuals
         this.aniLength = 5;
@@ -21,6 +21,7 @@ public class Windball extends Projectile {
         this.moveSpeed = 18;
         this.damage = 2;
         this.maxCollisions = 1;
+        this.lifetime = 120;
         this.kbMult = 35;
     }
 }

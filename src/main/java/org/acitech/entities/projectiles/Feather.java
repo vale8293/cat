@@ -5,8 +5,8 @@ import org.acitech.tilemap.Room;
 
 public class Feather extends Projectile {
 
-    public Feather(Room room, double startX, double startY, double rot) {
-        super(room, startX, startY, rot, "feather", "bullet");
+    public Feather(Room room, double startX, double startY, double rot, String owner) {
+        super(room, startX, startY, rot, owner, "featherProj", "bullet");
 
         // Animation & Visuals
         this.aniLength = 4;
@@ -19,7 +19,8 @@ public class Feather extends Projectile {
         this.onDeath = "none";
         this.moveSpeed = 12;
         this.damage = 2;
-        this.maxCollisions = 1;
+        this.maxCollisions = 2;
+        this.lifetime = 120;
         this.kbMult = 5;
     }
 }

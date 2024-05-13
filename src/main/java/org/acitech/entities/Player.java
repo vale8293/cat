@@ -444,7 +444,7 @@ public class Player extends Entity {
                                 if (this.spellTimer == 0) { // If spells are off cooldown
                                     if (this.mana >= this.fireballManaCost) {
                                         double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
-                                        new Fireball(this.getRoom(), this.position.getX(), this.position.getY(), angle);
+                                        new Fireball(this.getRoom(), this.position.getX(), this.position.getY(), angle, "player");
                                         sndFire.setFramePosition(0);
                                         sndFire.loop(0);
                                         sndFire.start();
@@ -459,7 +459,7 @@ public class Player extends Entity {
                                 if (this.spellTimer == 0) {
                                     if (this.mana >= this.aquaballManaCost) {
                                         double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
-                                        new Aquaball(this.getRoom(), this.position.getX(), this.position.getY(), angle);
+                                        new Aquaball(this.getRoom(), this.position.getX(), this.position.getY(), angle, "player");
                                         sndFire.setFramePosition(0);
                                         sndFire.loop(0);
                                         sndFire.start();
@@ -475,7 +475,7 @@ public class Player extends Entity {
 
                                     if (this.mana >= this.windballManaCost) {
                                         double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
-                                        new Windball(this.getRoom(), this.position.getX(), this.position.getY(), angle);
+                                        new Windball(this.getRoom(), this.position.getX(), this.position.getY(), angle, "player");
                                         sndFire.setFramePosition(0);
                                         sndFire.loop(0);
                                         sndFire.start();

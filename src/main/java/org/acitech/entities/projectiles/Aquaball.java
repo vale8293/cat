@@ -5,8 +5,8 @@ import org.acitech.tilemap.Room;
 
 public class Aquaball extends Projectile {
 
-    public Aquaball(Room room, double startX, double startY, double rot) {
-        super(room, startX, startY, rot, "aquaball", "bullet");
+    public Aquaball(Room room, double startX, double startY, double rot, String owner) {
+        super(room, startX, startY, rot, owner, "aquaball", "bullet");
 
         // Animation & Visuals
         this.aniLength = 5;
@@ -20,6 +20,7 @@ public class Aquaball extends Projectile {
         this.moveSpeed = 8;
         this.damage = 3;
         this.maxCollisions = 2;
+        this.lifetime = 120;
         this.kbMult = 2;
     }
 }

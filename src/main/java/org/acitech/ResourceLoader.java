@@ -58,7 +58,7 @@ public class ResourceLoader {
                 loadSound("fireball", "player/fireCast.wav") &&
 
                 // Other Projectiles
-                        loadSpriteSheet("projectiles/featherProj", "projectiles/featherProj.png", 16, 16) &&
+                loadSpriteSheet("projectiles/featherProj", "projectiles/featherProj.png", 16, 16) &&
 
                 // Effects
                 loadSpriteSheet("effect/explosion_fire", "effect/explosion_fire.png", 32, 32) &&
