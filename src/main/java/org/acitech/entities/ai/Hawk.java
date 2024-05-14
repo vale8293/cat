@@ -106,7 +106,10 @@ public class Hawk implements AI {
                     this.aniWait = true;
                 }
 
-                this.enemy.acceleration.set(playerPos);
+                // Gets the angle between the player and the enemy
+                Vector2d direction = playerPos.directionTo(this.enemy.position).multiply(0.5);
+
+                this.enemy.acceleration.set(direction);
                 this.enemy.acceleration.multiply(this.enemy.moveSpeed);
 
                 // If the enemy makes contact with the player
@@ -117,7 +120,7 @@ public class Hawk implements AI {
                     }
 
                     // Knock back the enemy and player
-                    this.enemy.velocity.set(this.enemy.kbMult * -playerPos.getX(), this.enemy.kbMult * -playerPos.getY());
+                    this.enemy.velocity.set(this.enemy.kbMult * -direction.getX(), this.enemy.kbMult * -direction.getY());
                     GamePanel.getPlayer().velocity = this.enemy.velocity.copy().multiply((double) -GamePanel.getPlayer().kbMult / this.enemy.kbMult);
                 }
 
