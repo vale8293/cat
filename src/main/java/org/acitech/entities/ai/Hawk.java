@@ -134,7 +134,6 @@ public class Hawk implements AI {
                 }
             }
         }
-        System.out.println(this.state);
     }
 
     @Override

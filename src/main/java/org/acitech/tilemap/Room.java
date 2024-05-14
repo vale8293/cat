@@ -18,6 +18,7 @@ import java.util.Random;
 abstract public class Room {
 
     private final Tile[][] tilemap;
+    private final Decor[][] decoremap;
     private final Connector[][][] ctmmap;
     private final Vector2d cloudOffset;
     private double cloudAngle;
@@ -29,11 +30,14 @@ abstract public class Room {
     private final Random seedRng;
     private final Simplex tuftSimplex;
     protected final Simplex terrainSimplex;
+    private final Simplex skySimplex;
+    private int frame = 0;
     private final HashSet<Entity> newEntities = new HashSet<>();
     private final HashSet<Entity> entities = new HashSet<>();
 
     public Room(int maxWidth, int maxHeight, int seed) {
         this.tilemap = new Tile[maxWidth][maxHeight];
+        this.decoremap = new Decor[maxWidth][maxHeight];
         this.ctmmap = new Connector[maxWidth][maxHeight][];
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
@@ -48,6 +52,9 @@ abstract public class Room {
         this.tuftSimplex.setSeed(seedRng.nextInt());
         this.terrainSimplex = new Simplex();
         this.terrainSimplex.setSeed(seedRng.nextInt());
+        this.terrainSimplex.setOctaveCount(30);
+        this.skySimplex = new Simplex();
+        this.skySimplex.setSeed(seedRng.nextInt());
         this.spawnRng = new Random(seedRng.nextInt());
 
         // Generate the tilemap
@@ -113,29 +120,17 @@ abstract public class Room {
         for (int x = widthN; x < widthP; x++) {
             for (int y = heightN; y < heightP; y++) {
                 Tile tile = tilemap[x][y]; // Get the tile at the iterated coordinate
+                Decor decor = decoremap[x][y]; // Get the decor at the iterated coordinate
 
                 // If the tile is defined, draw it
                 if (tile != null) {
                     BufferedImage image = tile.getFullTexture();
                     ctx.drawImage(image, x * Tile.tileSize - (int) GamePanel.getCamera().getX(), y * Tile.tileSize - (int) GamePanel.getCamera().getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
+                }
 
-                    if (tile.getId().equals(Tile.grass.getId())) {
-                        double tuftValue = this.tuftSimplex.get(x * 10, y * 10, 0);
-
-                        if (tuftValue > 0.15) {
-                            BufferedImage imageTufts = Main.getResources().getTexture("environment/grass_tufts/" + ((int) (tuftValue * 10e7) % 8) + ":0");
-                            ctx.drawImage(imageTufts, x * Tile.tileSize - (int) GamePanel.getCamera().getX(), y * Tile.tileSize - (int) GamePanel.getCamera().getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
-                        }
-                    }
-
-                    if (tile.getId().equals(Tile.dirt.getId())) {
-                        double tuftValue = this.tuftSimplex.get(x, y, 0);
-
-                        if (tuftValue > 0.15) {
-                            BufferedImage imageTufts = Main.getResources().getTexture("environment/pebbles/" + ((int) (tuftValue * 10e7) % 4) + ":0");
-                            ctx.drawImage(imageTufts, x * Tile.tileSize - (int) GamePanel.getCamera().getX(), y * Tile.tileSize - (int) GamePanel.getCamera().getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
-                        }
-                    }
+                if (decor != null) {
+                    BufferedImage image = decor.getTexture();
+                    ctx.drawImage(image, x * Tile.tileSize - (int) GamePanel.getCamera().getX(), y * Tile.tileSize - (int) GamePanel.getCamera().getY(), Tile.tileSize, Tile.tileSize, Main.getGamePanel());
                 }
             }
         }
@@ -161,6 +156,8 @@ abstract public class Room {
         for (Entity entity : new ArrayList<>(entities)) {
             entity.draw(ctx);
         }
+
+        frame += 1;
     }
 
     private void drawBackground(Graphics2D ctx) {
@@ -168,6 +165,7 @@ abstract public class Room {
         ctx.fillRect(0, 0, Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight());
 
         BufferedImage image = Main.getResources().getTexture("environment/clouds");
+
         int size = Math.max(Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight());
         int span = size / Tile.tileSize * Tile.tileSize / 4;
 
@@ -265,8 +263,37 @@ abstract public class Room {
         }
     }
 
+    /** Generates the appropriate decor for a specific tile type at specific coordinates */
+    private Decor computeDecor(int x, int y, Tile tile) {
+        return switch (tile.getId()) {
+            case "grass": {
+                double tuftValue = this.tuftSimplex.get(x * 10, y * 10, 0);
+
+                if (tuftValue > 0.15) {
+                    yield Decor.GRASS_DECORS.get(((int) (tuftValue * 10e7) % Decor.GRASS_DECORS.size()));
+                }
+            }
+            case "dirt": {
+                double tuftValue = this.tuftSimplex.get(x, y, 0);
+
+                if (tuftValue > 0.15) {
+                    yield Decor.DIRT_DECORS.get(((int) (tuftValue * 10e7) % Decor.DIRT_DECORS.size()));
+                }
+            }
+            default: {
+                yield null;
+            }
+        };
+    }
+
     public void setTile(int x, int y, Tile tile) {
         tilemap[x][y] = tile;
+
+        if (tile != null) {
+            decoremap[x][y] = computeDecor(x, y, tile);
+        } else {
+            decoremap[x][y] = null;
+        }
 
         // Calculate the nearby connected textures
         for (int cx = x - 2; cx < x + 2; cx++) { // TODO: figure out why a expansion of 2 works instead of just 1
