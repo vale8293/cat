@@ -38,7 +38,7 @@ public class Bullet implements AI {
                 }
             }
             case "enemy" -> {
-                if (collisionCheckPlayer(60) >= this.projectile.maxCollisions) {
+                if (collisionCheckPlayer(50) >= this.projectile.maxCollisions) {
                     // Self destruct
                     this.deathTypeCheck();
                 }

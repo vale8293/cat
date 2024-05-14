@@ -17,7 +17,6 @@ public class Hawk implements AI {
     private int turnTimer;
     boolean aggression = true;
     private String state = "idle";
-    private int stateNum;
 
     public Hawk(Enemy enemy) {
         this.enemy = enemy;
@@ -32,15 +31,7 @@ public class Hawk implements AI {
             this.turnTimer = 30;
         }
 
-        switch (this.state) {
-            case "run" -> this.stateNum = 0;
-            case "takeoff" -> this.stateNum = 1;
-            case "idle" -> this.stateNum = 2;
-            case "feather" -> this.stateNum = 3;
-            case "shadow" -> this.stateNum = 4;
-            case "landing" -> this.stateNum = 5;
-//            default -> this.stateNum = 0;
-        }
+        int stateNum = getStateNum();
 
         Vector2d playerPos = GamePanel.getPlayer().position;
         switch (this.cycle) {
@@ -51,7 +42,7 @@ public class Hawk implements AI {
                 }
             }
 
-            case 1 -> {
+            case 2 -> {
                 if (!this.aniWait) {
                     this.state = "takeoff";
                     this.enemy.resetTick();
@@ -65,7 +56,7 @@ public class Hawk implements AI {
                 }
             }
 
-            case 2 -> {
+            case 1 -> {
                 if (!this.aniWait) {
                     this.state = "feather";
                     this.enemy.resetTick();
@@ -73,10 +64,9 @@ public class Hawk implements AI {
                 }
 
                 if (this.enemy.getAnimationTick() == this.enemy.aniLength) {
-                    this.aniCount++;
-
                     // Spawn a feather projectile
                     new Feather(this.enemy.getRoom(), this.enemy.position.getX(), this.enemy.position.getY(), this.enemy.position.angleTo(playerPos), "enemy");
+                    this.aniCount++;
                 }
 
                 if (this.aniCount == 10) {
@@ -93,7 +83,7 @@ public class Hawk implements AI {
                     this.aniWait = true;
                 }
 
-                if (this.aggression) {
+                if (this.enemy.getAnimationTick() == this.enemy.aniLength) {
                     this.aniWait = false;
                     this.cycle++;
                 }
@@ -130,11 +120,11 @@ public class Hawk implements AI {
 
                 if (this.aniCount == 8) {
                     this.cycle = 1;
+                    this.aniCount = 0;
                     this.aniWait = false;
                 }
             }
         }
-        System.out.println(this.state);
     }
 
     @Override
@@ -142,5 +132,20 @@ public class Hawk implements AI {
 
     }
 
+    public int getStateNum() {
+        return switch (this.state) {
+            case "run" -> 0;
+            case "takeoff" -> 1;
+            case "idle" -> 2;
+            case "feather" -> 3;
+            case "shadow" -> 4;
+            case "landing" -> 5;
+            default -> 0;
+        };
+    }
+
+    public int getTurnTimer() {
+        return this.turnTimer;
+    }
 
 }

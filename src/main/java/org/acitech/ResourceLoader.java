@@ -34,8 +34,7 @@ public class ResourceLoader {
                 loadSpriteSheet("enemies/Rico", "enemies/Rico.png", 32, 32) &&
                 loadSpriteSheet("enemies/Pepto", "enemies/Pepto.png", 32, 32) &&
                 loadSpriteSheet("enemies/Jordan", "enemies/Jordan.png", 32, 32) &&
-                loadSpriteSheet("enemies/Pteri", "enemies/Pteri.png", 32, 32) &&
-
+                loadSpriteSheet("enemies/Pteri", "enemies/Pteri.png", 96, 96) &&
 
                 // Items
                 loadTexture("items/water_material", "items/water_material.png") &&
