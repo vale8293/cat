@@ -18,8 +18,8 @@ public class Feather extends Projectile {
         this.damageElement = "none";
         this.onDeath = "none";
         this.moveSpeed = 12;
-        this.damage = 2;
-        this.maxCollisions = 2;
+        this.damage = 1;
+        this.maxCollisions = 1;
         this.lifetime = 120;
         this.kbMult = 5;
     }

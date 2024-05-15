@@ -33,6 +33,8 @@ public class Bullet implements AI {
         switch (this.projectile.getOwner()) {
             case "player" -> {
                 if (collisionCheckEnemy(65) >= this.projectile.maxCollisions) {
+
+
                     // Self destruct
                     this.deathTypeCheck();
                 }
@@ -56,6 +58,8 @@ public class Bullet implements AI {
             if (!(entity instanceof Enemy enemy)) continue;
 
             if (this.projectile.position.distance(enemy.position) < radius) {
+                enemy.dealDamage(this.projectile.damage, this.projectile);
+                enemy.dealKnockback(this.projectile.damage, this.projectile.position, true);
                 collisions += 1;
             }
         }
@@ -66,9 +70,10 @@ public class Bullet implements AI {
     private int collisionCheckPlayer(double radius) {
         int collisions = 0;
 
-            if (this.projectile.position.distance(GamePanel.getPlayer().position) < radius) {
-                collisions += 1;
-            }
+        if (this.projectile.position.distance(GamePanel.getPlayer().position) < radius) {
+            GamePanel.getPlayer().damageTaken(this.projectile.damage, this.projectile.damageElement);
+            collisions += 1;
+        }
 
         return collisions;
     }
@@ -83,7 +88,6 @@ public class Bullet implements AI {
             new Explosion(this.projectile.getRoom(), this.projectile.position.getX(), this.projectile.position.getY(), this.projectile.damageElement, this.projectile.onDeathDamage);
             exploSfx.start();
         }
-
         this.projectile.dispose();
     }
 }

@@ -20,8 +20,8 @@ public class Pteri extends Enemy {
         // Animation & Visuals
         this.aniLength = 6;
         this.aniFrameDuration = 5;
-        this.width = 192;
-        this.height = 192;
+        this.width = 288;
+        this.height = 288;
 
         // Stats
         this.maxHealth = 80;
@@ -59,10 +59,10 @@ public class Pteri extends Enemy {
             direction = 1; // Add 1 in texture (Facing right)
         }
 
-        System.out.println(aniFrame + ", " + (2 * stateNum + direction));
+        // System.out.println(aniFrame + ", " + (2 * stateNum + direction));
         texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":" + (2 * stateNum + direction));
         ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.getCamera().getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.getCamera().getY(), width, height, Main.getGamePanel());
-
+        
         // If an enemy gets hit, tint it red and have it fade until its immunity frames run out
         if (this.damageTimer > 0) {
             BufferedImage wow = UI.tintImage(texture, 1, 0, 0, ((float) this.damageTimer / this.immunity * 0.8f) / 2);
