@@ -22,6 +22,6 @@ public class Windball extends Projectile {
         this.damage = 2;
         this.maxCollisions = 1;
         this.lifetime = 120;
-        this.kbMult = 35;
+        this.kbMult = 350;
     }
 }

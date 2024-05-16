@@ -25,7 +25,7 @@ public class GamePanel extends JPanel implements Runnable {
     private static Vector2d camera = new Vector2d(0, 0);
     private static Vector2d upperBounds = new Vector2d(0, 0);
     private static Vector2d lowerBounds = new Vector2d(0, 0);
-    private double teleportTime = fps * 10;
+    private double teleportTime = fps * 3;
     private double teleportTimer = teleportTime;
     private boolean gameOver = false;
 
@@ -113,6 +113,8 @@ public class GamePanel extends JPanel implements Runnable {
 
                         // Place the player in the next available room
                         player.changeRoom(unclearedRoom);
+                        player.damageTimer = 120;
+                        player.position.equals(new Vector2d(19 * Tile.tileSize, 11 * Tile.tileSize));
                         UI.restartDarknessTransition();
                     }
                 }

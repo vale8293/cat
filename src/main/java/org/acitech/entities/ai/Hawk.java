@@ -10,11 +10,9 @@ import java.util.Random;
 
 public class Hawk implements AI {
     private final Enemy enemy;
-    Random randomCycle = new Random();
     private int cycle = 0;
     private boolean aniWait = false;
     private int aniCount;
-    private int turnTimer;
     boolean aggression = true;
     private String state = "idle";
 
@@ -25,14 +23,8 @@ public class Hawk implements AI {
     // Defines the Hawk Boss's AI
     @Override
     public void execute(double delta) {
-        if (this.turnTimer > 0) {
-            this.turnTimer--;
-        } else {
-            this.turnTimer = 30;
-        }
 
         Vector2d playerPos = GamePanel.getPlayer().position;
-        int stateNum = getStateNum();
 
         switch (this.cycle) {
             case 0 -> {
@@ -49,7 +41,7 @@ public class Hawk implements AI {
                     this.aniWait = true;
                 }
 
-                if (this.enemy.getAnimationTick() == this.enemy.aniLength - 3) {
+                if (this.enemy.getAnimationTick() == this.enemy.aniLength) {
                     // Spawn a feather projectile
                     new Feather(this.enemy.getRoom(), this.enemy.position.getX(), this.enemy.position.getY(), this.enemy.position.angleTo(playerPos), "enemy");
                     this.aniCount++;
@@ -107,12 +99,12 @@ public class Hawk implements AI {
                     this.aniWait = true;
                 }
 
-                if (this.enemy.getAnimationTick() == this.enemy.aniLength) {
+                if (this.enemy.getAnimationTick() == 5 * this.enemy.aniFrameDuration) {
                     this.aniCount++;
                 }
 
                 if (this.aniCount >= 1) {
-                    for (int i = 0; i < 8; i ++) {
+                    for (int i = 0; i < 8; i++) {
                         new Feather(this.enemy.getRoom(), this.enemy.position.getX(), this.enemy.position.getY(), (Math.PI * i / 4), "enemy");
                     }
 
@@ -126,6 +118,7 @@ public class Hawk implements AI {
                 if (!this.aniWait) {
                     this.enemy.damageTimer = 1200;
                     this.state = "shadowUp";
+                    this.enemy.moveSpeed = 0.6;
                     this.enemy.resetTick();
                     this.aniWait = true;
                 }
@@ -148,6 +141,7 @@ public class Hawk implements AI {
                 if (!this.aniWait) {
                     this.enemy.damageTimer = 1200;
                     this.state = "shadowDown";
+                    this.enemy.moveSpeed = 1.5;
                     this.enemy.resetTick();
                     this.aniWait = true;
                 }
@@ -156,6 +150,10 @@ public class Hawk implements AI {
 
                 if (this.enemy.getAnimationTick() == this.enemy.aniLength) {
                     this.aniCount++;
+                }
+
+                if (this.aniCount >= 3) {
+                    this.enemy.moveSpeed = 0;
                 }
 
                 if (this.aniCount >= 5) {
@@ -169,17 +167,18 @@ public class Hawk implements AI {
             case 7 -> {
                 if (!this.aniWait) {
                     this.state = "landingSmear";
+                    this.enemy.moveSpeed = 1.1;
                     this.enemy.resetTick();
                     this.aniWait = true;
                 }
 
-                if (this.enemy.getAnimationTick() == this.enemy.aniLength) {
+                if (this.enemy.getAnimationTick() == 2 * this.enemy.aniFrameDuration) {
                     this.aniCount++;
                 }
 
                 if (this.aniCount >= 1) {
-                    for (int i = 0; i < 8; i ++) {
-                        new Feather(this.enemy.getRoom(), this.enemy.position.getX(), this.enemy.position.getY(), (Math.PI * i / 4), "enemy");
+                    for (int i = 0; i < 16; i++) {
+                        new Feather(this.enemy.getRoom(), this.enemy.position.getX(), this.enemy.position.getY(), (Math.PI * i / 8), "enemy");
                     }
 
                     this.aniWait = false;
@@ -201,7 +200,6 @@ public class Hawk implements AI {
                 }
             }
         }
-        System.out.println(this.aniCount + ", " + this.cycle + ", " + this.enemy.getHealth());
     }
 
     public Vector2d chase(Vector2d playerPos) {
@@ -228,9 +226,7 @@ public class Hawk implements AI {
     }
 
     @Override
-    public void damageHandler(Entity damager) {
-
-    }
+    public void damageHandler(Entity damager) {}
 
     public int getStateNum() {
         return switch (this.state) {
@@ -240,16 +236,13 @@ public class Hawk implements AI {
             case "takeoff" -> 3;
             case "takeoffSmear" -> 4;
             case "shadowUp" -> 5;
-            case "ShadowDown" -> 6;
+            case "shadowDown" -> 6;
             case "landingSmear" -> 7;
             case "landing" -> 8;
             default -> 2;
         };
     }
 
-    public int getTurnTimer() {
-        return this.turnTimer;
-    }
     public int getCycle() {
         return this.cycle;
     }

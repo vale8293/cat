@@ -16,7 +16,7 @@ public class Map {
     public Map(int seed) {
         this.seedRng = new Random(seed);
 
-        for (int i = 0; i < 0; i++) {
+        for (int i = 0; i < 2; i++) {
             StandardRoom room = new StandardRoom(21, 21, this.seedRng.nextInt());
             room.flushNewEntities();
             rooms.add(room);

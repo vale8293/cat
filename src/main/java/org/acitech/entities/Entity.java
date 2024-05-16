@@ -79,7 +79,7 @@ abstract public class Entity {
         return this.room;
     }
     public void changeRoom(Room room) {
-        // TODO: remove the entity from the current room and add it to the new room
+        // TODO: remove the entity from the current room and add it to the new room (you did this)
         this.room.removeEntity(this);
         this.room = room;
         room.addNewEntity(this);

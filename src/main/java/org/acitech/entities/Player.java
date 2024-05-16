@@ -50,7 +50,7 @@ public class Player extends Entity {
     public int magicDefense = 0; // Can be changed in gameplay (Default: 0)
     public int kbMult = 20; // Can be changed in gameplay (Default: 20)
     public int immunity = 30; // Can be changed in gameplay (Default: 30)
-    public int damageTimer;
+    public int damageTimer = 120;
     public int effectTimer1;
     public int effectTimer2;
     public int actionTimer;
@@ -365,12 +365,12 @@ public class Player extends Entity {
                     }
                     case ATTACK_POTION -> { // Increases Scratch damage by 1 for 30 seconds
                         this.scratchDamage++;
-                        this.effectTimer1 += 1800;
+                        this.effectTimer1 += 900;
                         item.setCount(item.getCount() - 1);
                     }
                     case SPEED_POTION -> { // Increases move speed by 1 for one minute
                         this.moveSpeed += 0.2;
-                        this.effectTimer1 += 3600;
+                        this.effectTimer1 += 1800;
                         item.setCount(item.getCount() - 1);
                     }
                 }

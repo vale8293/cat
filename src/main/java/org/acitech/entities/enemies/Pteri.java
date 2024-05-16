@@ -59,12 +59,11 @@ public class Pteri extends Enemy {
             direction = 1; // Add 1 in texture (Facing right)
         }
 
-        // System.out.println(aniFrame + ", " + (2 * stateNum + direction));
         texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":" + (2 * stateNum + direction));
         ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.getCamera().getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.getCamera().getY(), width, height, Main.getGamePanel());
         
         // If an enemy gets hit, tint it red and have it fade until its immunity frames run out
-        if (this.damageTimer > 0) {
+        if (this.damageTimer > 0 && (hawkAI.getCycle() != 5 && hawkAI.getCycle() != 6)) {
             BufferedImage wow = UI.tintImage(texture, 1, 0, 0, ((float) this.damageTimer / this.immunity * 0.8f) / 2);
             ctx.drawImage(wow, (int) this.position.getX() - width / 2 - (int) GamePanel.getCamera().getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.getCamera().getY(), width, height, Main.getGamePanel());
         }
