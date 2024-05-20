@@ -33,12 +33,12 @@ public class Explosion extends Entity {
         this.onDeathDamage = onDeathDamage;
 
         switch (explosionType) {
-            case ("fire") -> {
+            case "fire" -> {
                 this.aniLength = 4;
                 this.aniFrameDuration = 4;
                 this.kbMult = 15;
             }
-            case ("aqua"), ("wind") -> {
+            case "aqua", "wind" -> {
                 this.aniLength = 5;
                 this.aniFrameDuration = 3;
                 this.kbMult = 10;

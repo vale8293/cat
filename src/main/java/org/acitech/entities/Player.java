@@ -107,84 +107,85 @@ public class Player extends Entity {
     }
 
     public String levelUpCheck() { // Used in Experience, return type for later use
-        switch (this.level) {
-            case (1) -> { // Raise mana cap by 1 star, restore mana
+        return switch (this.level) {
+            case 1: { // Raise mana cap by 1 star, restore mana
                 if (this.xpCount >= 20) {
                     this.level += 1;
                     this.maxMana += 6;
                     this.mana = this.maxMana;
-                    return "+Mana!";
+                    yield "+Mana!";
                 }
             }
-            case (2) -> { // Make streak timer take longer to dissipate, adjust current streak timer if not 0
+            case 2: { // Make streak timer take longer to dissipate, adjust current streak timer if not 0
                 if (this.xpCount >= 50) {
                     this.level += 1;
                     this.streakTimerMax += 60;
                     if (this.streakTimer > 0) {
                         this.streakTimer += 60;
                     }
-                    return "+Streak Duration!";
+                    yield "+Streak Duration!";
                 }
             }
-            case (3) -> { // Raise max health by 1 heart, restore health
+            case 3: { // Raise max health by 1 heart, restore health
                 if (this.xpCount >= 100) {
                     this.level += 1;
                     this.maxHealth += 2;
                     this.health = maxHealth;
-                    return "+HP!";
+                    yield "+HP!";
                 }
             }
-            case (4) -> { // Raise scratch damage by 1
+            case 4: { // Raise scratch damage by 1
                 if (this.xpCount >= 200) {
                     this.level += 1;
                     this.scratchDamage += 1;
-                    return "+Scratch Damage!";
+                    yield "+Scratch Damage!";
                 }
             }
-            case (5) -> { // Increase i-frames by 10
+            case 5: { // Increase i-frames by 10
                 if (this.xpCount >= 300) {
                     this.level += 1;
                     this.immunity += 10;
-                    return "+Immunity Length!";
+                    yield "+Immunity Length!";
                 }
             }
-            case (6) -> { // Raise mana cap by 1 star, restore mana
+            case 6: { // Raise mana cap by 1 star, restore mana
                 if (this.xpCount >= 425) {
                     this.level += 1;
                     this.maxMana += 6;
                     this.mana = this.maxMana;
-                    return "+Mana!";
+                    yield "+Mana!";
                 }
             }
-            case (7) -> { // Make streak timer take longer to dissipate, adjust current streak timer if not 0
+            case 7: { // Make streak timer take longer to dissipate, adjust current streak timer if not 0
                 if (this.xpCount >= 575) {
                     this.level += 1;
                     this.streakTimerMax += 60;
                     if (this.streakTimer > 0) {
                         this.streakTimer += 60;
                     }
-                    return "+Streak Duration!";
+                    yield "+Streak Duration!";
                 }
             }
-            case (8) -> {
+            case 8: {
                 if (this.xpCount >= 750) {
                     this.level += 1;
                     this.maxHealth += 2;
                     this.health = maxHealth;
-                    return "+HP!";
+                    yield "+HP!";
                 }
             }
-            case (9) -> { // Increases melee and magic defenses by 1
+            case 9: { // Increases melee and magic defenses by 1
                 if (this.xpCount >= 1000) {
                     this.level += 1;
                     this.meleeDefense += 1;
                     this.magicDefense += 1;
-                    return "+Defenses!";
+                    yield "+Defenses!";
                 }
             }
-            default -> {}
-        }
-        return "";
+            default: {
+                yield "";
+            }
+        };
     }
 
     @Override
@@ -416,9 +417,8 @@ public class Player extends Entity {
             for (Click click : Controls.getMouseClicks()) {
                 // Checks for clicks (Scratch / Other thing)
                 switch (click.getButton()) {
-
                     // Left Click
-                    case (1) -> { // Scratches
+                    case 1 -> { // Scratches
                         if (this.scratchTimer == 0) {
                             clickPos.set(click.getX(), click.getY());
                             double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
@@ -431,14 +431,14 @@ public class Player extends Entity {
                     }
 
                     // Right Click
-                    case (3) -> {
+                    case 3 -> {
                         switch (elementState) {
-                            case ("base") -> { // todo: Pounces
+                            case "base" -> { // todo: Pounces
                                 System.out.print("hello");
                             }
 
                             /* Uses a fireball */
-                            case ("fire") -> {
+                            case "fire" -> {
                                 if (this.spellTimer == 0) { // If spells are off cooldown
                                     if (this.mana >= this.fireballManaCost) {
                                         double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
@@ -453,7 +453,7 @@ public class Player extends Entity {
                             }
 
                             /* Uses a aquaball */
-                            case ("aqua") -> {
+                            case "aqua" -> {
                                 if (this.spellTimer == 0) {
                                     if (this.mana >= this.aquaballManaCost) {
                                         double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
@@ -468,9 +468,8 @@ public class Player extends Entity {
                             }
 
                             /* Uses a windball */
-                            case ("wind") -> {
+                            case "wind" -> {
                                 if (this.spellTimer == 0) {
-
                                     if (this.mana >= this.windballManaCost) {
                                         double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
                                         new Windball(this.getRoom(), this.position.getX(), this.position.getY(), angle, "player");

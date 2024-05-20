@@ -79,8 +79,8 @@ public class Bullet implements AI {
     private void deathTypeCheck() {
         if (this.projectile.onDeath.equalsIgnoreCase("explosion")) {
             switch (this.projectile.damageElement) {
-                case ("fire") -> this.projectile.onDeathDamage = this.projectile.damage / 2;
-                case ("aqua") -> this.projectile.onDeathDamage = this.projectile.damage / 3;
+                case "fire" -> this.projectile.onDeathDamage = this.projectile.damage / 2;
+                case "aqua" -> this.projectile.onDeathDamage = this.projectile.damage / 3;
             }
 
             new Explosion(this.projectile.getRoom(), this.projectile.position.getX(), this.projectile.position.getY(), this.projectile.damageElement, this.projectile.onDeathDamage);
