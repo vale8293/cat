@@ -1,5 +1,7 @@
 package org.acitech;
 
+import org.acitech.assets.ResourceLoader;
+
 import javax.swing.*;
 import java.util.HashMap;
 
