@@ -1,7 +1,7 @@
 package org.acitech.entities.ai;
 
 import org.acitech.GamePanel;
-import org.acitech.Main;
+import org.acitech.assets.AssetLoader;
 import org.acitech.entities.Enemy;
 import org.acitech.entities.Entity;
 import org.acitech.entities.Projectile;
@@ -10,8 +10,8 @@ import org.acitech.entities.effects.Explosion;
 import javax.sound.sampled.Clip;
 
 public class Bullet implements AI {
+
     private final Projectile projectile;
-    private static final Clip exploSfx = Main.getResources().getSound("explosion"); // like from splatoon
 
     public Bullet(Projectile projectile) {
         this.projectile = projectile;
@@ -84,6 +84,7 @@ public class Bullet implements AI {
             }
 
             new Explosion(this.projectile.getRoom(), this.projectile.position.getX(), this.projectile.position.getY(), this.projectile.damageElement, this.projectile.onDeathDamage);
+            Clip exploSfx = AssetLoader.EXPLOSION.createClip(); // like from splatoon
             exploSfx.start();
         }
         this.projectile.dispose();

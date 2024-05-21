@@ -1,6 +1,6 @@
 package org.acitech;
 
-import org.acitech.assets.ResourceLoader;
+import org.acitech.assets.AssetLoader;
 
 import javax.swing.*;
 import java.util.HashMap;
@@ -8,14 +8,14 @@ import java.util.HashMap;
 public class Main {
 
     private static HashMap<String, Long> profiles = new HashMap<>();
-    private static ResourceLoader resources;
+    private static AssetLoader resources;
     private static GamePanel gamePanel;
 
     public static void main(String[] args) {
         startProfile("Startup");
 
         // Load the resource loader
-        resources = new ResourceLoader();
+        resources = new AssetLoader();
         boolean resourcesLoaded = resources.load();
 
         if (!resourcesLoaded) {
@@ -42,7 +42,7 @@ public class Main {
         finishProfile("Startup");
     }
 
-    public static ResourceLoader getResources() {
+    public static AssetLoader getResources() {
         return resources;
     }
 

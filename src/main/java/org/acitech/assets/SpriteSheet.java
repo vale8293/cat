@@ -1,5 +1,7 @@
 package org.acitech.assets;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.image.BufferedImage;
 
 public class SpriteSheet {
@@ -8,7 +10,7 @@ public class SpriteSheet {
     private final int rows;
     private final int cols;
 
-    public SpriteSheet(BufferedImage sheet, int width, int height) {
+    public SpriteSheet(@NotNull BufferedImage sheet, int width, int height) {
         int sheetWidth = sheet.getWidth();
         int sheetHeight = sheet.getHeight();
 

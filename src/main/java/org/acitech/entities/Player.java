@@ -2,6 +2,7 @@ package org.acitech.entities;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.assets.AssetLoader;
 import org.acitech.entities.projectiles.Aquaball;
 import org.acitech.entities.projectiles.Fireball;
 import org.acitech.entities.projectiles.Windball;
@@ -74,10 +75,6 @@ public class Player extends Entity {
 
     // Misc.
     public Vector2d clickPos = new Vector2d();
-
-    // Load important assets
-    Clip sndScratch = Main.getResources().getSound("scratch");
-    Clip sndFire = Main.getResources().getSound("fireball");
 
     @Override
     protected void tick(double delta) {
@@ -190,17 +187,15 @@ public class Player extends Entity {
 
     @Override
     public void draw(Graphics2D ctx) {
-        BufferedImage texture = Main.getResources().getTexture("cow");
-
         // Increments the frame of the animation
         animationTick += 1;
         animationTick = animationTick % (aniLength * aniFrameDuration);
         int aniFrame = animationTick / (aniFrameDuration);
 
+        // Check which direction has the largest speed
         double largest = 0;
         String direction = "right";
 
-        // Check which direction has the largest speed
         if (Math.abs(this.velocity.getX()) > largest) {
             largest = Math.abs(this.velocity.getX());
             direction = this.velocity.getX() > 0 ? "right" : "left";
@@ -211,26 +206,27 @@ public class Player extends Entity {
         }
 
         // If the player is moving enough, draw the sprite in the direction that movement is
+        Integer spriteY = null;
+
         if (largest > 0.5) {
             switch (direction) {
-                case "left" -> texture = Main.getResources().getTexture("player/" + elementState + "/" + aniFrame + ":0");
-                case "right" -> texture = Main.getResources().getTexture("player/" + elementState + "/" + aniFrame + ":1");
-                case "up" -> texture = Main.getResources().getTexture("player/" + elementState + "/" + aniFrame + ":2");
-                case "down" -> texture = Main.getResources().getTexture("player/" + elementState + "/" + aniFrame + ":3");
+                case "left" -> spriteY = 0;
+                case "right" -> spriteY = 1;
+                case "up" -> spriteY = 2;
+                case "down" -> spriteY = 3;
             }
+        } else { // Idle animation
+            spriteY = direction.equals("left")
+                ? 4
+                : 5;
         }
 
-        // Idle animation
-        else {
-            if (direction.equals("left")) {
-                texture = Main.getResources().getTexture("player/" + elementState + "/" + aniFrame + ":4");
-            } else {
-                texture = Main.getResources().getTexture("player/" + elementState + "/" + aniFrame + ":5");
-            }
-        }
+        BufferedImage texture;
 
-        if (!this.alive) {
-            texture = Main.getResources().getTexture("player/death");
+        if (this.alive) {
+            texture = AssetLoader.getPlayerByElement(elementState).getSprite(aniFrame, spriteY);
+        } else {
+            texture = AssetLoader.PLAYER_DEATH;
         }
 
         ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.getCamera().getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.getCamera().getY(), width, height, Main.getGamePanel());
@@ -423,6 +419,7 @@ public class Player extends Entity {
                             clickPos.set(click.getX(), click.getY());
                             double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
                             new Scratch(this.getRoom(), (int) this.position.getX(), (int) this.position.getY(), 120, angle, this.elementState);
+                            Clip sndScratch = AssetLoader.SCRATCH.createClip();
                             sndScratch.setFramePosition(0);
                             sndScratch.loop(0);
                             sndScratch.start();
@@ -443,6 +440,7 @@ public class Player extends Entity {
                                     if (this.mana >= this.fireballManaCost) {
                                         double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
                                         new Fireball(this.getRoom(), this.position.getX(), this.position.getY(), angle, "player");
+                                        Clip sndFire = AssetLoader.FIREBALL.createClip();
                                         sndFire.setFramePosition(0);
                                         sndFire.loop(0);
                                         sndFire.start();
@@ -458,6 +456,7 @@ public class Player extends Entity {
                                     if (this.mana >= this.aquaballManaCost) {
                                         double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
                                         new Aquaball(this.getRoom(), this.position.getX(), this.position.getY(), angle, "player");
+                                        Clip sndFire = AssetLoader.FIREBALL.createClip();
                                         sndFire.setFramePosition(0);
                                         sndFire.loop(0);
                                         sndFire.start();
@@ -473,6 +472,7 @@ public class Player extends Entity {
                                     if (this.mana >= this.windballManaCost) {
                                         double angle = click.toVector().angleTo(Main.getGamePanel().getCameraCenter().getY() + width / 2d, Main.getGamePanel().getCameraCenter().getX() + height / 2d) + Math.PI;
                                         new Windball(this.getRoom(), this.position.getX(), this.position.getY(), angle, "player");
+                                        Clip sndFire = AssetLoader.FIREBALL.createClip();
                                         sndFire.setFramePosition(0);
                                         sndFire.loop(0);
                                         sndFire.start();

@@ -6,7 +6,7 @@ import org.acitech.tilemap.Room;
 public class Feather extends Projectile {
 
     public Feather(Room room, double startX, double startY, double rot, String owner) {
-        super(room, startX, startY, rot, owner, "featherProj", "bullet");
+        super(room, startX, startY, rot, owner, "feather", "bullet");
 
         // Animation & Visuals
         this.aniLength = 4;

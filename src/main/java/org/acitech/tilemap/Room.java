@@ -2,6 +2,7 @@ package org.acitech.tilemap;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.assets.AssetLoader;
 import org.acitech.entities.Enemy;
 import org.acitech.entities.Entity;
 import org.acitech.entities.Item;
@@ -164,7 +165,7 @@ abstract public class Room {
         ctx.setColor(this.skyColor);
         ctx.fillRect(0, 0, Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight());
 
-        BufferedImage image = Main.getResources().getTexture("environment/clouds");
+        BufferedImage image = AssetLoader.ENVIRONMENT_CLOUDS;
 
         int size = Math.max(Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight());
         int span = size / Tile.tileSize * Tile.tileSize / 4;
@@ -304,11 +305,9 @@ abstract public class Room {
     }
 
     public Tile getTile(int x, int y) {
-        try { // TODO: do math instead of catch
-            return tilemap[x][y];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            return null;
-        }
+        if (x < 0 || x >= maxWidth || y < 0 || y >= maxHeight) return null;
+
+        return tilemap[x][y];
     }
 
     public int getWidth() {

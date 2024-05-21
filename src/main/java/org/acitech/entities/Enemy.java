@@ -3,6 +3,7 @@ package org.acitech.entities;
 import org.acitech.GamePanel;
 import org.acitech.Main;
 import org.acitech.UI;
+import org.acitech.assets.AssetLoader;
 import org.acitech.entities.ai.AI;
 import org.acitech.entities.ai.Fighter;
 import org.acitech.entities.ai.Hawk;
@@ -119,17 +120,15 @@ abstract public class Enemy extends Entity {
     }
     @Override
     public void draw(Graphics2D ctx) {
-        BufferedImage texture = Main.getResources().getTexture("cow");
-
         // Increments the frame of the animation
         animationTick += 1;
         animationTick = animationTick % (aniLength * aniFrameDuration);
         int aniFrame = animationTick / (aniFrameDuration);
 
+        // Check which direction has the largest speed
         double largest = 0;
         String direction = "right";
 
-        // Check which direction has the largest speed
         if (Math.abs(this.velocity.getX()) > largest) {
             largest = Math.abs(this.velocity.getX());
             direction = this.velocity.getX() > 0 ? "right" : "left";
@@ -140,24 +139,24 @@ abstract public class Enemy extends Entity {
         }
 
         // If the enemy is moving enough, draw the sprite in the direction that movement is
+        Integer spriteY = null;
+
         if (largest > 0.5) {
             switch (direction) {
-                case "left" -> texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":" + 0);
-                case "right" -> texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":" + 1);
-                case "up" -> texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":" + 2);
-                case "down" -> texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":" + 3);
+                case "left" -> spriteY = 0;
+                case "right" -> spriteY = 1;
+                case "up" -> spriteY = 2;
+                case "down" -> spriteY = 3;
             }
-        }
-
-        // Idle animation
-        else {
+        } else { // Idle animation
             if (direction.equals("left")) {
-                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":" + 4);
+                spriteY = 4;
             } else {
-                texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":" + 5);
+                spriteY = 5;
             }
         }
 
+        BufferedImage texture = AssetLoader.getEnemyByName(enemyName).getSprite(aniFrame, spriteY);
         ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.getCamera().getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.getCamera().getY(), width, height, Main.getGamePanel());
 
         // If an enemy gets hit, tint it red and have it fade until its immunity frames run out

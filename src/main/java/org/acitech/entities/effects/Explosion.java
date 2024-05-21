@@ -2,6 +2,7 @@ package org.acitech.entities.effects;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.assets.AssetLoader;
 import org.acitech.entities.Enemy;
 import org.acitech.entities.Entity;
 import org.acitech.tilemap.Room;
@@ -83,7 +84,7 @@ public class Explosion extends Entity {
         animationTick = animationTick % (aniLength * aniFrameDuration);
         int aniFrame = animationTick / (aniFrameDuration);
 
-        BufferedImage texture = Main.getResources().getTexture("effect/explosion_" + explosionType + "/" + aniFrame + ":" + 0);
+        BufferedImage texture = AssetLoader.getExplosionByType(explosionType).getSprite(aniFrame, 0);
         ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.getCamera().getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.getCamera().getY(), width, height, Main.getGamePanel());
     }
 }

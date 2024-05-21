@@ -2,6 +2,7 @@ package org.acitech.entities;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.assets.AssetLoader;
 import org.acitech.entities.ai.AI;
 import org.acitech.entities.ai.Bullet;
 import org.acitech.tilemap.Room;
@@ -63,14 +64,12 @@ public class Projectile extends Entity {
 
     @Override
     public void draw(Graphics2D ctx) {
-        BufferedImage texture;
-
         // Increments the frame of the animation
         animationTick += 1;
         animationTick = animationTick % (aniLength * aniFrameDuration);
         int aniFrame = animationTick / (aniFrameDuration);
 
-        texture = Main.getResources().getTexture("projectiles/" + projectileName + "/" + aniFrame + ":" + 0);
+        BufferedImage texture = AssetLoader.getProjectileByName(projectileName).getSprite(aniFrame, 0);
 
         AffineTransform oldXForm = ctx.getTransform();
 

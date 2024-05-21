@@ -1,9 +1,10 @@
 package org.acitech;
 
+import org.acitech.assets.AssetLoader;
 import org.acitech.inputs.Controls;
+import org.acitech.inventory.ItemStack;
 import org.acitech.utils.Caboodle;
 import org.acitech.utils.EventHandler;
-import org.acitech.inventory.ItemStack;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -40,26 +41,20 @@ public class UI {
         int heartGap = (int) (4.0 * scale);
 
         for (int i = 0; i < GamePanel.getPlayer().maxHealth / 2; i++) {
-            BufferedImage texture;
+            int spriteX;
 
-            // Draws a full heart for every 2 health you have
-            if (cobalt >= 2) {
-                texture = Main.getResources().getTexture("ui/hearts/0:0"); // full
+            if (cobalt >= 2) { // Draws a full heart for every 2 health you have
+                spriteX = 0; // full
                 cobalt -= 2;
-            }
-
-            // Draws a half heart for every 1 health aside from the 2s (should be 1 or 0)
-            else if (cobalt == 1) {
-                texture = Main.getResources().getTexture("ui/hearts/1:0"); // half
+            } else if (cobalt == 1) { // Draws a half heart for every 1 health aside from the 2s (should be 1 or 0)
+                spriteX = 1; // half
                 cobalt--;
-            }
-
-            // Draws empty hearts for all health remaining in the max that isn't in the current
-            else {
-                texture = Main.getResources().getTexture("ui/hearts/2:0"); // empty
+            } else { // Draws empty hearts for all health remaining in the max that isn't in the current
+                spriteX = 2; // empty
             }
 
             // Draws hearts rightward with small gaps between
+            BufferedImage texture = AssetLoader.UI_HEARTS.getSprite(spriteX, 0);
             ctx.drawImage(texture, x + statsPadding, statsPadding, heartWidth, heartHeight, Main.getGamePanel());
             x += heartWidth + heartGap;
         }
@@ -79,31 +74,32 @@ public class UI {
         int manaGap = (int) (4.0 * scale);
 
         for (int i = 0; i < GamePanel.getPlayer().maxMana / 6; i++) {
-            BufferedImage texture;
+            int spriteX;
 
             if (cobalt >= 6) {
-                texture = Main.getResources().getTexture("ui/mana/0:0"); // full pink
+                spriteX = 0; // full pink
                 cobalt -= 6;
             } else if (cobalt == 5) {
-                texture = Main.getResources().getTexture("ui/mana/1:0"); // full blue
+                spriteX = 1; // full blue
                 cobalt -= 5;
             } else if (cobalt == 4) {
-                texture = Main.getResources().getTexture("ui/mana/2:0"); // blue - 1
+                spriteX = 2; // blue - 1
                 cobalt -= 4;
             } else if (cobalt == 3) {
-                texture = Main.getResources().getTexture("ui/mana/3:0"); // blue - 2
+                spriteX = 3; // blue - 2
                 cobalt -= 3;
             } else if (cobalt == 2) {
-                texture = Main.getResources().getTexture("ui/mana/4:0"); // blue - 3
+                spriteX = 4; // blue - 3
                 cobalt -= 2;
             } else if (cobalt == 1) {
-                texture = Main.getResources().getTexture("ui/mana/5:0"); // blue - 4
+                spriteX = 5; // blue - 4
                 cobalt--;
             } else {
-                texture = Main.getResources().getTexture("ui/mana/6:0"); // empty
+                spriteX = 6; // empty
             }
 
             // Draws stars rightward with small gaps between
+            BufferedImage texture = AssetLoader.UI_MANA.getSprite(spriteX, 0);
             ctx.drawImage(texture, x + statsPadding, statsPadding + heartHeight + manaSize, manaWidth, manaHeight, Main.getGamePanel());
             x += manaWidth + manaGap;
         }
@@ -119,7 +115,7 @@ public class UI {
         int invY = Main.getGamePanel().getHeight() - (int) (invHeight * 1.5d);
         int invLeftPadding = (int) (32.0 * scale);
 
-        BufferedImage barTexture = Main.getResources().getTexture("ui/inv_bar_default");
+        BufferedImage barTexture = AssetLoader.UI_INV_BAR_DEFAULT;
         ctx.drawImage(barTexture, invX, invY, invWidth, invHeight, Main.getGamePanel());
 
         int itemScale = (int) (invHeight * 0.8);
@@ -152,7 +148,7 @@ public class UI {
             drawCenteredText(ctx, itemPos + itemScale, invY + (int) (itemScale * 0.8d) + itemYOffset, textSize, String.valueOf(itemCount), Color.WHITE);
         }
 
-        BufferedImage cursorTexture = Main.getResources().getTexture("ui/cursor");
+        BufferedImage cursorTexture = AssetLoader.UI_CURSOR;
         ctx.drawImage(cursorTexture, (int) (invX + invLeftPadding + itemScale * 1.25d * GamePanel.getPlayer().selectedSlot), invY + itemScale + itemYOffset, itemScale, (int) ((5d / 22d) * itemScale), Main.getGamePanel());
     }
 
@@ -167,7 +163,7 @@ public class UI {
         int streakY = invY - invHeight + (int) (10.0 * scale);
         int textSize = (int) (20.0 * scale);
 
-        BufferedImage streakTexture = Main.getResources().getTexture("ui/streak_bar/" + ((3 - (GamePanel.getPlayer().streakTimer + (GamePanel.getPlayer().streakTimerMax / 3) - 1) / (GamePanel.getPlayer().streakTimerMax / 3))) + ":0");
+        BufferedImage streakTexture = AssetLoader.UI_STREAK_BAR.getSprite(((3 - (GamePanel.getPlayer().streakTimer + (GamePanel.getPlayer().streakTimerMax / 3) - 1) / (GamePanel.getPlayer().streakTimerMax / 3))), 0);
         ctx.drawImage(streakTexture, streakX, streakY, streakWidth, streakHeight, Main.getGamePanel());
 
         drawCenteredText(ctx, streakX + streakWidth / 2, streakY - textSize, textSize, "Streak " + GamePanel.getPlayer().currentStreak, Color.WHITE);
@@ -193,7 +189,7 @@ public class UI {
         ctx.setColor(new Color(0f, 0f, 0f, 0.3f));
         ctx.fillRect(0, 0, Main.getGamePanel().getWidth(), Main.getGamePanel().getHeight());
 
-        BufferedImage menuTexture = Main.getResources().getTexture("ui/menu");
+        BufferedImage menuTexture = AssetLoader.UI_MENU;
         ctx.drawImage(menuTexture, menuX, menuY, menuWidth, menuHeight, Main.getGamePanel());
 
         drawCenteredText(ctx, menuX + menuWidth / 2, menuY + menuHeight / 2 - (int) (80.0f * scale), (int) (20.0f * scale), "Resume", pauseMenuSelection == 0 ? pauseMenuSelectColor : pauseMenuDefaultColor);
@@ -240,7 +236,7 @@ public class UI {
         for (int i = 0; i < matText.length(); i++) {
             char letter = matText.charAt(i);
 
-            BufferedImage letterTexture = Main.getResources().getTexture("ui/font/" + (int) letter + ":0");
+            BufferedImage letterTexture = AssetLoader.UI_FONT.getSprite(letter, 0);
             ctx.drawImage(letterTexture, (int) (i * size + i * sub), 0, size, size, Main.getGamePanel());
         }
 

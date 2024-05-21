@@ -2,6 +2,7 @@ package org.acitech.entities;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.assets.AssetLoader;
 import org.acitech.tilemap.Room;
 import org.acitech.utils.Vector2d;
 
@@ -71,7 +72,7 @@ public class Scratch extends Entity {
 
     @Override
     public void draw(Graphics2D ctx) {
-        BufferedImage texture = Main.getResources().getTexture("effect/scratch/" + (animationTick / 3) + ":0");
+        BufferedImage texture = AssetLoader.EFFECT_SCRATCH.getSprite(animationTick / 3, 0);
 
         AffineTransform oldXForm = ctx.getTransform();
 
