@@ -178,6 +178,11 @@ abstract public class Enemy extends Entity {
         return true;
     }
 
+    /**
+     * @param force The magnitude of the knockback force
+     * @param origin The origin of the knockback force
+     * @param override Whether to overwrite the enemy's velocity or simply add to its acceleration
+     */
     public void dealKnockback(double force, Vector2d origin, boolean override) {
         Vector2d direction = this.position.directionTo(origin).multiply(force);
 
