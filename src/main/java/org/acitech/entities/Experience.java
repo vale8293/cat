@@ -2,6 +2,7 @@ package org.acitech.entities;
 
 import org.acitech.GamePanel;
 import org.acitech.Main;
+import org.acitech.assets.AssetLoader;
 import org.acitech.tilemap.Room;
 import org.acitech.utils.Vector2d;
 
@@ -41,14 +42,12 @@ public class Experience extends Entity {
     }
     @Override
     public void draw(Graphics2D ctx) {
-        BufferedImage texture;
-
         // Increments the frame of the animation
         animationTick += 1;
         animationTick = animationTick % (aniLength * aniFrameDuration);
         int aniFrame = animationTick / (aniFrameDuration);
 
-        texture = Main.getResources().getTexture("items/experience/" + aniFrame + ":0");
+        BufferedImage texture = AssetLoader.ITEMS_EXPERIENCE.getSprite(aniFrame, 0);
         ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.getCamera().getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.getCamera().getY(), width, height, Main.getGamePanel());
     }
 }

@@ -5,8 +5,6 @@ import org.acitech.tilemap.Room;
 import org.acitech.tilemap.Tile;
 import org.acitech.utils.Vector2d;
 
-import java.util.ArrayList;
-
 public class BossRoom extends Room {
 
     public BossRoom(int maxWidth, int maxHeight, int seed) {
@@ -23,9 +21,9 @@ public class BossRoom extends Room {
                     double noise = this.terrainSimplex.get((double) x / 10, (double) y / 10, 0);
 
                     if (noise > 1) {
-                        setTile(x, y, Tile.dirt);
+                        setTile(x, y, Tile.DIRT);
                     } else {
-                        setTile(x, y, Tile.grass);
+                        setTile(x, y, Tile.GRASS);
                     }
                 }
             }

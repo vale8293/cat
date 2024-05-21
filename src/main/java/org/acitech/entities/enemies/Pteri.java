@@ -3,6 +3,7 @@ package org.acitech.entities.enemies;
 import org.acitech.GamePanel;
 import org.acitech.Main;
 import org.acitech.UI;
+import org.acitech.assets.AssetLoader;
 import org.acitech.entities.Enemy;
 import org.acitech.entities.ai.Hawk;
 import org.acitech.inventory.ItemType;
@@ -41,7 +42,6 @@ public class Pteri extends Enemy {
 
     @Override
     public void draw(Graphics2D ctx) {
-        BufferedImage texture;
         Hawk hawkAI = (Hawk) getAI();
         int stateNum = hawkAI.getStateNum();
         int direction;
@@ -59,7 +59,7 @@ public class Pteri extends Enemy {
             direction = 1; // Add 1 in texture (Facing right)
         }
 
-        texture = Main.getResources().getTexture("enemies/" + enemyName + "/" + aniFrame + ":" + (2 * stateNum + direction));
+        BufferedImage texture = AssetLoader.getEnemyByName(enemyName).getSprite(aniFrame, 2 * stateNum + direction);
         ctx.drawImage(texture, (int) this.position.getX() - width / 2 - (int) GamePanel.getCamera().getX(), (int) this.position.getY() - height / 2 - (int) GamePanel.getCamera().getY(), width, height, Main.getGamePanel());
         
         // If an enemy gets hit, tint it red and have it fade until its immunity frames run out

@@ -1,6 +1,8 @@
 package org.acitech.tilemap;
 
-import org.acitech.Main;
+import org.acitech.assets.AssetLoader;
+import org.acitech.assets.SpriteSheet;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -8,10 +10,10 @@ import java.util.List;
 public class Tile {
 
     // Define the static tiles
-    public static Tile grass = new Tile("grass", "environment/grass", true);
-    public static Tile dirt = new Tile("dirt", "environment/dirt", false);
+    public static Tile GRASS = new Tile("grass", AssetLoader.ENVIRONMENT_GRASS);
+    public static Tile DIRT = new Tile("dirt", AssetLoader.ENVIRONMENT_DIRT);
 
-    public static final List<Tile> TILE_LIST = List.of(grass);
+    public static final List<Tile> TILE_LIST = List.of(GRASS, DIRT);
 
     public static Tile getTileById(String id) {
         return TILE_LIST.stream().filter(t -> t.id.equals(id)).findFirst().orElse(null);
@@ -25,29 +27,39 @@ public class Tile {
 
     // Tile constructor
     private final String id;
-    private final String textureKey;
+    private final BufferedImage texture;
+    private final SpriteSheet spriteSheet;
     private final boolean connected;
 
-    public Tile(String id, String textureKey, boolean connected) {
+    public Tile(String id, BufferedImage texture) {
         this.id = id;
-        this.textureKey = textureKey;
-        this.connected = connected;
+        this.texture = texture;
+        this.spriteSheet = null;
+        this.connected = false;
+    }
+
+    public Tile(String id, SpriteSheet spriteSheet) {
+        this.id = id;
+        this.texture = null;
+        this.spriteSheet = spriteSheet;
+        this.connected = true;
     }
 
     public String getId() {
         return id;
     }
 
-    public BufferedImage getTexture() {
-        return Main.getResources().getTexture(textureKey);
+    public BufferedImage getTexture(@Nullable Connector connector) {
+        if (!this.connected) return null;
+        assert spriteSheet != null;
+
+        if (connector == null) return spriteSheet.getSprite(1, 1); // Get center texture
+
+        return spriteSheet.getSprite(connector.getTextureX(), connector.getTextureY());
     }
 
     public BufferedImage getFullTexture() {
-        return connected ? Main.getResources().getTexture(textureKey + "/1:1") : getTexture();
-    }
-
-    public BufferedImage getTexture(Connector connector) {
-        return Main.getResources().getTexture(textureKey + "/" + connector.getTextureX() + ":" + connector.getTextureY());
+        return connected ? getTexture(null) : texture;
     }
 
     public boolean isConnected() {

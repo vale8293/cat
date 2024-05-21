@@ -22,9 +22,9 @@ public class StandardRoom extends Room {
                 double noise = this.terrainSimplex.get((double) x / 10, (double) y / 10, 0);
 
                 if (noise > 0.6666) {
-                    setTile(x, y, Tile.grass);
+                    setTile(x, y, Tile.GRASS);
                 } else if (noise > 0.3333) {
-                    setTile(x, y, Tile.dirt);
+                    setTile(x, y, Tile.DIRT);
                 }
             }
         }

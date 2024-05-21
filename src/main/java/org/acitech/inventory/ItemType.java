@@ -1,6 +1,6 @@
 package org.acitech.inventory;
 
-import org.acitech.Main;
+import org.acitech.assets.AssetLoader;
 
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
@@ -8,16 +8,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 public enum ItemType {
-    WATER(8, "items/water_material", 1, "consumable", "aqua", null),
-    STRING(16, "items/string_material", 1, "none", "none", null),
-    BONE(4, "cow", 1,"none", "none", null),
-    FEATHER(8, "items/feather_material", 1,"none", "none", null),
-    FIRE_TOME_1(1, "spells/fire_tome_lv1", 3, "none", "fire", null),
-    AQUA_TOME_1(1, "spells/aqua_tome_lv1", 3, "none", "aqua", null),
-    HEALTH_POTION(3, "items/health_potion", 1, "consumable", "none", null),
-    MANA_POTION(3, "items/mana_potion", 1, "consumable", "none", null),
-    ATTACK_POTION(3, "items/attack_potion", 1, "consumable", "none", 1800),
-    SPEED_POTION(3, "items/speed_potion", 1, "consumable", "none", 3600);
+    WATER(8, AssetLoader.ITEMS_WATER_MATERIAL, 1, "consumable", "aqua", null),
+    STRING(16, AssetLoader.ITEMS_STRING_MATERIAL, 1, "none", "none", null),
+    BONE(4, AssetLoader.COW, 1,"none", "none", null),
+    FEATHER(8, AssetLoader.ITEMS_FEATHER_MATERIAL, 1,"none", "none", null),
+    FIRE_TOME_1(1, AssetLoader.SPELLS_FIRE_TOME_LV1, 3, "none", "fire", null),
+    AQUA_TOME_1(1, AssetLoader.SPELLS_AQUA_TOME_LV1, 3, "none", "aqua", null),
+    HEALTH_POTION(3, AssetLoader.ITEMS_HEALTH_POTION, 1, "consumable", "none", null),
+    MANA_POTION(3, AssetLoader.ITEMS_MANA_POTION, 1, "consumable", "none", null),
+    ATTACK_POTION(3, AssetLoader.ITEMS_ATTACK_POTION, 1, "consumable", "none", 1800),
+    SPEED_POTION(3, AssetLoader.ITEMS_SPEED_POTION, 1, "consumable", "none", 3600);
 
     /*
      * Predefined groups of similar item types
@@ -34,7 +34,7 @@ public enum ItemType {
     private final int stackSize;
 
     /** The item's texture */
-    private final String textureKey;
+    private final BufferedImage texture;
 
     /** The item's action when used */
     private final String useMod;
@@ -52,9 +52,9 @@ public enum ItemType {
     // inv 4 (1 2 3 4, Potions)
     private final int defaultInvNum;
 
-    ItemType(int stackSize, String textureKey, int defaultInvNum, String useMod, String effectMod, Integer duration) {
+    ItemType(int stackSize, BufferedImage texture, int defaultInvNum, String useMod, String effectMod, Integer duration) {
         this.stackSize = stackSize;
-        this.textureKey = textureKey;
+        this.texture = texture;
         this.defaultInvNum = defaultInvNum;
         this.useMod = useMod;
         this.effectMod = effectMod;
@@ -66,7 +66,7 @@ public enum ItemType {
     }
 
     public BufferedImage getTexture() {
-        return Main.getResources().getTexture(this.textureKey);
+        return texture;
     }
 
     public String getUseMod() {
